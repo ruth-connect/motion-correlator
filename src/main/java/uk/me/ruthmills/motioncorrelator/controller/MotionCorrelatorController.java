@@ -26,6 +26,7 @@ public class MotionCorrelatorController {
 	public void vector(@PathVariable String camera, @RequestBody String vectorLine)
 			throws UnsupportedEncodingException {
 		vectorLine = URLDecoder.decode(vectorLine, StandardCharsets.UTF_8.name());
+		vectorLine = vectorLine.substring(0, vectorLine.length() - 1);
 		logger.info(camera + " : " + vectorLine);
 	}
 }
