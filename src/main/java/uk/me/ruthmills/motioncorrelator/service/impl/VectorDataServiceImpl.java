@@ -25,6 +25,8 @@ public class VectorDataServiceImpl implements VectorDataService {
 	@Override
 	public void handleVectorData(String camera, String vectorData) {
 		VectorDataList vectorDataList = parseVectorData(vectorData);
+		logger.info("Camera: " + camera);
+		logger.info("Vector Data: " + vectorDataList);
 	}
 
 	private VectorDataList parseVectorData(String vectorDataString) {
