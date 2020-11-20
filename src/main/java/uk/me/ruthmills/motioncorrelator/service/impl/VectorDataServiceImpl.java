@@ -34,14 +34,16 @@ public class VectorDataServiceImpl implements VectorDataService {
 		List<VectorData> vectorDataLines = new ArrayList<>();
 		LocalDateTime timestamp = null;
 		for (String line : vectorDataArray) {
-			if (line.startsWith("</motion>")) {
-				break;
-			}
-			VectorData vectorData = parseLine(line.trim().replaceAll("\\s{2,}", " "));
-			if (vectorData instanceof Timestamp) {
-				timestamp = ((Timestamp) vectorData).getTimestamp();
-			} else {
-				vectorDataLines.add(vectorData);
+			if (line != "") {
+				if (line.startsWith("</motion>")) {
+					break;
+				}
+				VectorData vectorData = parseLine(line.trim().replaceAll("\\s{2,}", " "));
+				if (vectorData instanceof Timestamp) {
+					timestamp = ((Timestamp) vectorData).getTimestamp();
+				} else {
+					vectorDataLines.add(vectorData);
+				}
 			}
 		}
 		VectorDataList vectorDataList = new VectorDataList();
