@@ -21,12 +21,12 @@ public class MotionCorrelatorController {
 
 	private final Logger logger = LoggerFactory.getLogger(MotionCorrelatorController.class);
 
-	@PostMapping(path = "/vectorLine/{camera}", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	@PostMapping(path = "/vectorData/{camera}", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	@ResponseStatus(value = HttpStatus.OK)
-	public void vector(@PathVariable String camera, @RequestBody String vectorLine)
+	public void vectorData(@PathVariable String camera, @RequestBody String vectorData)
 			throws UnsupportedEncodingException {
-		vectorLine = URLDecoder.decode(vectorLine, StandardCharsets.UTF_8.name());
-		vectorLine = vectorLine.substring(0, vectorLine.length() - 1);
-		logger.info(camera + " : " + vectorLine);
+		vectorData = URLDecoder.decode(vectorData, StandardCharsets.UTF_8.name());
+		vectorData = vectorData.substring(0, vectorData.length() - 1);
+		logger.info(camera + " : " + vectorData);
 	}
 }
