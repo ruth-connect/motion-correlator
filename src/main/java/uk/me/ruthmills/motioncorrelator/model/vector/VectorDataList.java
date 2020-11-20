@@ -19,9 +19,9 @@ public class VectorDataList extends ArrayList<VectorData> {
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Timestamp: " + timestamp);
+		stringBuilder.append("Timestamp: " + timestamp + "\n");
 		for (VectorData vectorData : this) {
-			stringBuilder.append(vectorData);
+			stringBuilder.append(vectorData + "\n");
 		}
 		return stringBuilder.toString();
 	}

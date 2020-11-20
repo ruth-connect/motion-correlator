@@ -115,6 +115,7 @@ public class VectorDataServiceImpl implements VectorDataService {
 		int magnitude = Integer.parseInt(elements[5]);
 		int count = Integer.parseInt(elements[6]);
 		Vector vector = new Vector();
+		vector.setRegion(region);
 		vector.setX(x);
 		vector.setY(y);
 		vector.setDx(dx);
