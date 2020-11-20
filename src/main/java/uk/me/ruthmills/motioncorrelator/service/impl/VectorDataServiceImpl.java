@@ -37,7 +37,7 @@ public class VectorDataServiceImpl implements VectorDataService {
 			if (line.startsWith("</motion>")) {
 				break;
 			}
-			VectorData vectorData = parseLine(line.trim().replaceAll(" +", " "));
+			VectorData vectorData = parseLine(line.trim().replaceAll("\\s{2,}", " "));
 			if (vectorData instanceof Timestamp) {
 				timestamp = ((Timestamp) vectorData).getTimestamp();
 			} else {
