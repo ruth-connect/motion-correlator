@@ -2,7 +2,7 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import uk.me.ruthmills.motioncorrelator.model.VectorDataList;
+import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.service.VectorDataService;
 
 @Service
