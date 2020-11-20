@@ -100,12 +100,12 @@ public class VectorDataServiceImpl implements VectorDataService {
 	}
 
 	private Vector parseVector(String line) {
+		logger.info("Vector: " + line);
 		String[] elements = line.split(" ");
 		String region = elements[0];
 		if (!region.equals("f")) {
 			Integer.parseInt(region); // will throw exception if not a number.
 		}
-		logger.info("Vector: " + line);
 		int x = Integer.parseInt(elements[1]);
 		int y = Integer.parseInt(elements[2]);
 		int dx = Integer.parseInt(elements[3]);
