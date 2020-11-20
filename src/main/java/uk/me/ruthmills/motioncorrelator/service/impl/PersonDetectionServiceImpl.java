@@ -2,6 +2,7 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import javax.annotation.PostConstruct;
 
+import org.opencv.core.Core;
 import org.opencv.objdetect.CascadeClassifier;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@PostConstruct
 	public void initialise() {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		frontalFaceClassifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
 		profileFaceClassifier = new CascadeClassifier("haarcascade_profileface.xml");
 		upperBodyClassifier = new CascadeClassifier("haarcascade_upperbody.xml");
