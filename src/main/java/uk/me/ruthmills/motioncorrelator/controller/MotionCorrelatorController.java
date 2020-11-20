@@ -34,6 +34,6 @@ public class MotionCorrelatorController {
 		vectorData = URLDecoder.decode(vectorData, StandardCharsets.UTF_8.name());
 		vectorData = vectorData.substring(0, vectorData.length() - 1);
 		logger.info(camera + " : " + vectorData);
-		vectorDataService.handleVectorData(vectorData);
+		vectorDataService.handleVectorData(camera, vectorData);
 	}
 }
