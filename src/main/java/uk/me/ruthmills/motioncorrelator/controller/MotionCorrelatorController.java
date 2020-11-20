@@ -1,5 +1,9 @@
 package uk.me.ruthmills.motioncorrelator.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,7 +23,9 @@ public class MotionCorrelatorController {
 
 	@PostMapping(path = "/vectorLine/{camera}", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	@ResponseStatus(value = HttpStatus.OK)
-	public void vector(@PathVariable String camera, @RequestBody String vectorLine) {
+	public void vector(@PathVariable String camera, @RequestBody String vectorLine)
+			throws UnsupportedEncodingException {
+		vectorLine = URLDecoder.decode(vectorLine, StandardCharsets.UTF_8.name());
 		logger.info(camera + " : " + vectorLine);
 	}
 }
