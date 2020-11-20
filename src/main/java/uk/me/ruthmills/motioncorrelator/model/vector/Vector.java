@@ -1,5 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.model.vector;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class Vector extends VectorData {
 
 	private String region;
@@ -64,5 +66,10 @@ public class Vector extends VectorData {
 
 	public int getCount() {
 		return count;
+	}
+
+	public String toString() {
+		return new ToStringBuilder(this).append("region", region).append("x", x).append("y", y).append("dx", dx)
+				.append("dy", dy).append("magnitude", magnitude).append("count", count).toString();
 	}
 }

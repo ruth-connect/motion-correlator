@@ -16,4 +16,13 @@ public class VectorDataList extends ArrayList<VectorData> {
 	public LocalDateTime getTimestamp() {
 		return timestamp;
 	}
+
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Timestamp: " + timestamp);
+		for (VectorData vectorData : this) {
+			stringBuilder.append(vectorData);
+		}
+		return stringBuilder.toString();
+	}
 }
