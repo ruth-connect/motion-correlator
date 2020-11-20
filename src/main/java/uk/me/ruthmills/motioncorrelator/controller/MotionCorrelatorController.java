@@ -19,6 +19,6 @@ public class MotionCorrelatorController {
 	@PostMapping(value = "/vectorLine/{camera}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public void vector(@PathVariable String camera, @RequestBody String vectorLine) {
-		logger.debug(camera + " : " + vectorLine);
+		logger.info(camera + " : " + vectorLine);
 	}
 }
