@@ -1,4 +1,4 @@
-package uk.me.ruthmills.motioncorrelator.model;
+package uk.me.ruthmills.motioncorrelator.model.vector;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
