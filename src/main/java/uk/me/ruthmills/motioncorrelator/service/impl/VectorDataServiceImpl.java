@@ -34,7 +34,7 @@ public class VectorDataServiceImpl implements VectorDataService {
 		List<VectorData> vectorDataLines = new ArrayList<>();
 		LocalDateTime timestamp = null;
 		for (String line : vectorDataArray) {
-			if (line != "") {
+			if (line.trim().length() > 0) {
 				if (line.startsWith("</motion>")) {
 					break;
 				}
