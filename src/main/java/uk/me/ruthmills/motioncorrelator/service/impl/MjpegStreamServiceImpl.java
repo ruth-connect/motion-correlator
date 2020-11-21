@@ -18,7 +18,7 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 	@PostConstruct
 	public void initialise() throws IOException {
 		mjpegReader = new MJpegReaderRunner1();
-		mjpegReader.init("http://hal9000/mjpeg_stream.php", "", "");
+		mjpegReader.init("http://hal9000/mjpeg_stream.php", null, null);
 		mjpegReader.run();
 	}
 }
