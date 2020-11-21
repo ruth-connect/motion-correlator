@@ -2,6 +2,8 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -11,6 +13,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.objdetect.CascadeClassifier;
@@ -57,11 +60,11 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		Mat frame = decodeImage(image);
 		logger.info("Frame size: " + frame.size());
 		PersonDetection personDetection = new PersonDetection();
-		personDetection.setFrontalFaceDetection(detect(frontalFaceClassifier, frame));
-		personDetection.setProfileFaceDetection(detect(profileFaceClassifier, frame));
-		personDetection.setUpperBodyDetection(detect(upperBodyClassifier, frame));
-		personDetection.setLowerBodyDetection(detect(lowerBodyClassifier, frame));
-		personDetection.setFullBodyDetection(detect(fullBodyClassifier, frame));
+		personDetection.setFrontalFaceDetections(detect(frontalFaceClassifier, frame));
+		personDetection.setProfileFaceDetections(detect(profileFaceClassifier, frame));
+		personDetection.setUpperBodyDetections(detect(upperBodyClassifier, frame));
+		personDetection.setLowerBodyDetections(detect(lowerBodyClassifier, frame));
+		personDetection.setFullBodyDetections(detect(fullBodyClassifier, frame));
 		frame.release();
 		return personDetection;
 	}
@@ -85,17 +88,24 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		return decoded;
 	}
 
-	private ObjectDetection detect(CascadeClassifier classifier, Mat frame) {
-		MatOfRect objects = new MatOfRect();
-		MatOfInt rejectLevels = new MatOfInt();
-		MatOfDouble levelWeights = new MatOfDouble();
-		classifier.detectMultiScale3(frame, objects, rejectLevels, levelWeights, 1.1, 3, 0, new Size(), new Size(),
-				true);
-		ObjectDetection objectDetection = new ObjectDetection();
-		objectDetection.setObjects(objects.toList());
-		objectDetection.setRejectLevels(rejectLevels.toList());
-		objectDetection.setLevelWeights(levelWeights.toList());
-		logger.info("Number of detections: " + objectDetection.getObjects().size());
-		return objectDetection;
+	private List<ObjectDetection> detect(CascadeClassifier classifier, Mat frame) {
+		MatOfRect objectsMat = new MatOfRect();
+		MatOfInt rejectLevelsMat = new MatOfInt();
+		MatOfDouble levelWeightsMat = new MatOfDouble();
+		classifier.detectMultiScale3(frame, objectsMat, rejectLevelsMat, levelWeightsMat, 1.1, 3, 0, new Size(),
+				new Size(), true);
+		List<Rect> objects = objectsMat.toList();
+		List<Integer> rejectLevels = rejectLevelsMat.toList();
+		List<Double> levelWeights = levelWeightsMat.toList();
+		List<ObjectDetection> objectDetections = new ArrayList<>();
+		for (int i = 0; i < objects.size(); i++) {
+			ObjectDetection objectDetection = new ObjectDetection();
+			objectDetection.setObject(objects.get(i));
+			objectDetection.setRejectLevel(rejectLevels.get(i));
+			objectDetection.setLevelWeight(levelWeights.get(i));
+			objectDetections.add(objectDetection);
+		}
+		logger.info("Number of detections: " + objectDetections.size());
+		return objectDetections;
 	}
 }

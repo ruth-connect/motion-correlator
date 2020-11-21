@@ -1,15 +1,16 @@
 package uk.me.ruthmills.motioncorrelator.model.persondetection;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PersonDetection {
 
 	private LocalDateTime timestamp;
-	private ObjectDetection frontalFaceDetection;
-	private ObjectDetection profileFaceDetection;
-	private ObjectDetection upperBodyDetection;
-	private ObjectDetection lowerBodyDetection;
-	private ObjectDetection fullBodyDetection;
+	private List<ObjectDetection> frontalFaceDetections;
+	private List<ObjectDetection> profileFaceDetections;
+	private List<ObjectDetection> upperBodyDetections;
+	private List<ObjectDetection> lowerBodyDetections;
+	private List<ObjectDetection> fullBodyDetections;
 
 	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
@@ -19,43 +20,43 @@ public class PersonDetection {
 		return timestamp;
 	}
 
-	public void setFrontalFaceDetection(ObjectDetection frontalFaceDetection) {
-		this.frontalFaceDetection = frontalFaceDetection;
+	public void setFrontalFaceDetections(List<ObjectDetection> frontalFaceDetections) {
+		this.frontalFaceDetections = frontalFaceDetections;
 	}
 
-	public ObjectDetection getFrontalFaceDetection() {
-		return frontalFaceDetection;
+	public List<ObjectDetection> getFrontalFaceDetections() {
+		return frontalFaceDetections;
 	}
 
-	public void setProfileFaceDetection(ObjectDetection profileFaceDetection) {
-		this.profileFaceDetection = profileFaceDetection;
+	public void setProfileFaceDetections(List<ObjectDetection> profileFaceDetections) {
+		this.profileFaceDetections = profileFaceDetections;
 	}
 
-	public ObjectDetection getProfileFaceDetection() {
-		return profileFaceDetection;
+	public List<ObjectDetection> getProfileFaceDetections() {
+		return profileFaceDetections;
 	}
 
-	public void setUpperBodyDetection(ObjectDetection upperBodyDetection) {
-		this.upperBodyDetection = upperBodyDetection;
+	public void setUpperBodyDetections(List<ObjectDetection> upperBodyDetections) {
+		this.upperBodyDetections = upperBodyDetections;
 	}
 
-	public ObjectDetection getUpperBodyDetection() {
-		return upperBodyDetection;
+	public List<ObjectDetection> getUpperBodyDetections() {
+		return upperBodyDetections;
 	}
 
-	public void setLowerBodyDetection(ObjectDetection lowerBodyDetection) {
-		this.lowerBodyDetection = lowerBodyDetection;
+	public void setLowerBodyDetections(List<ObjectDetection> lowerBodyDetections) {
+		this.lowerBodyDetections = lowerBodyDetections;
 	}
 
-	public ObjectDetection getLowerBodyDetection() {
-		return lowerBodyDetection;
+	public List<ObjectDetection> getLowerBodyDetections() {
+		return lowerBodyDetections;
 	}
 
-	public void setFullBodyDetection(ObjectDetection fullBodyDetection) {
-		this.fullBodyDetection = fullBodyDetection;
+	public void setFullBodyDetections(List<ObjectDetection> fullBodyDetections) {
+		this.fullBodyDetections = fullBodyDetections;
 	}
 
-	public ObjectDetection getFullBodyDetection() {
-		return fullBodyDetection;
+	public List<ObjectDetection> getFullBodyDetections() {
+		return fullBodyDetections;
 	}
 }
