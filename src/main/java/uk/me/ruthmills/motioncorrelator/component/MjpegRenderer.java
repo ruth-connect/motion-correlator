@@ -1,29 +1,24 @@
-package uk.me.ruthmills.motioncorrelator.mjpeg;
+package uk.me.ruthmills.motioncorrelator.component;
 
 import java.awt.image.BufferedImage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.bitplan.mjpegstreamer.MJpegRenderer;
 import com.bitplan.mjpegstreamer.ViewerSetting;
 
-import uk.me.ruthmills.motioncorrelator.service.impl.MjpegStreamServiceImpl;
 import uk.me.ruthmills.motioncorrelator.service.impl.MotionCorrelatorServiceImpl;
 
+@Component
 public class MjpegRenderer implements MJpegRenderer {
 	private ViewerSetting viewerSetting;
-	private MjpegStreamServiceImpl mjpegStreamServiceImpl;
 
 	private final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
 
-	public MjpegRenderer(MjpegStreamServiceImpl mjpegStreamServiceImpl) {
-		this.mjpegStreamServiceImpl = mjpegStreamServiceImpl;
-	}
-
 	@Override
 	public ViewerSetting getViewerSetting() {
-		logger.info("getViewerSetting() called");
 		return viewerSetting;
 	}
 
@@ -39,7 +34,6 @@ public class MjpegRenderer implements MJpegRenderer {
 
 	@Override
 	public void setViewerSetting(ViewerSetting viewerSetting) {
-		logger.info("setViewerSetting() called with viewerSetting: " + viewerSetting);
 		this.viewerSetting = viewerSetting;
 	}
 
