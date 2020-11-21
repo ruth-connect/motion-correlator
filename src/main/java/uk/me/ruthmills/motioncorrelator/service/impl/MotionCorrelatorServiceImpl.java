@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
@@ -34,11 +35,16 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 	public void correlateMotionAndPersonDetection(String camera, String vectorData)
 			throws IOException, URISyntaxException {
 		VectorDataList vectorDataList = vectorDataService.parseVectorData(vectorData);
-		logger.info("Vector data for camera " + camera + ": " + vectorDataList);
+		logger.info("Got vector data for camera " + camera);
 		Image image = imageService.readImage(camera);
 		logger.info("Got image from camera: " + camera);
 		PersonDetection personDetection = personDetectionService.detectPerson(image);
 		logger.info("Finished getting vector data and person detection data for camera: " + camera);
-		logger.info("Person detection data for camera " + camera + ": " + personDetection);
+
+		MotionCorrelation motionCorrelation = new MotionCorrelation();
+		motionCorrelation.setVectorData(vectorDataList);
+		motionCorrelation.setImage(image);
+		motionCorrelation.setPersonDetection(personDetection);
+		logger.info("Motion correlation data for camera " + camera + ": " + motionCorrelation);
 	}
 }
