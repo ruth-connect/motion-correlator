@@ -40,21 +40,26 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		String currentWorkingDirectory = new File("").getAbsolutePath();
 		logger.info("Current working directory: " + currentWorkingDirectory);
 
-		frontalFaceClassifier = new CascadeClassifier();
+		frontalFaceClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
 		loadClassifier(frontalFaceClassifier,
 				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
 
-		profileFaceClassifier = new CascadeClassifier();
+		profileFaceClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_profileface.xml");
 		loadClassifier(profileFaceClassifier,
 				currentWorkingDirectory + "/src/main/resources/haarcascade_profileface.xml");
 
-		upperBodyClassifier = new CascadeClassifier();
+		upperBodyClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_upperbody.xml");
 		loadClassifier(upperBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_upperbody.xml");
 
-		lowerBodyClassifier = new CascadeClassifier();
+		lowerBodyClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
 		loadClassifier(lowerBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
 
-		fullBodyClassifier = new CascadeClassifier();
+		fullBodyClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
 		loadClassifier(fullBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
 
 		if (frontalFaceClassifier.empty()) {
