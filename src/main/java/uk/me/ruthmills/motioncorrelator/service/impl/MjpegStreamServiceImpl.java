@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bitplan.mjpegstreamer.MJpegReaderRunner1;
 import com.bitplan.mjpegstreamer.ViewerSetting;
+import com.bitplan.mjpegstreamer.ViewerSetting.DebugMode;
 
 import uk.me.ruthmills.motioncorrelator.mjpeg.MjpegRenderer;
 import uk.me.ruthmills.motioncorrelator.service.MjpegStreamService;
@@ -22,6 +23,7 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 	@PostConstruct
 	public void initialise() throws IOException {
 		viewerSetting = new ViewerSetting();
+		viewerSetting.setDebugMode(DebugMode.Verbose);
 		renderer = new MjpegRenderer();
 		renderer.setViewerSetting(viewerSetting);
 		mjpegReader = new MJpegReaderRunner1();
