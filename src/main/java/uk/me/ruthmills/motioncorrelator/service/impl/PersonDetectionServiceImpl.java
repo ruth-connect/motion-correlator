@@ -99,8 +99,16 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		for (int detectionIndex = 0; detectionIndex < objects.size(); detectionIndex++) {
 			ObjectDetection objectDetection = new ObjectDetection();
 			objectDetection.setObject(objects.get(detectionIndex));
-			objectDetection.setRejectLevels(((MatOfInt) rejectLevelsMat.row(detectionIndex)).toList());
-			objectDetection.setLevelWeights(((MatOfDouble) levelWeightsMat.row(detectionIndex)).toList());
+			List<Integer> rejectLevels = new ArrayList<>();
+			for (int rejectLevelIndex = 0; rejectLevelIndex < rejectLevelsMat.cols(); rejectLevelIndex++) {
+				rejectLevels.add((int) rejectLevelsMat.get(detectionIndex, rejectLevelIndex)[0]);
+			}
+			objectDetection.setRejectLevels(rejectLevels);
+			List<Double> levelWeights = new ArrayList<>();
+			for (int levelWeightIndex = 0; levelWeightIndex < levelWeightsMat.cols(); levelWeightIndex++) {
+				levelWeights.add(levelWeightsMat.get(detectionIndex, levelWeightIndex)[0]);
+			}
+			objectDetection.setLevelWeights(levelWeights);
 			objectDetections.add(objectDetection);
 		}
 		logger.info("Number of detections: " + objectDetections.size());
