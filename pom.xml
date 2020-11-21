@@ -65,6 +65,12 @@
 			<artifactId>opencv</artifactId>
 			<version>4.0.0-0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.bitplan</groupId>
+			<artifactId>com.bitplan.mjpegstreamer</artifactId>
+			<version>0.0.7</version>
+		</dependency>
 	</dependencies>
 
 	<build>
