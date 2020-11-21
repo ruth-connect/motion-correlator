@@ -8,4 +8,6 @@ import uk.me.ruthmills.motioncorrelator.model.image.Image;
 public interface ImageService {
 
 	public Image readImage(String camera) throws IOException, URISyntaxException;
+
+	public void writeImage(String camera, Image image) throws IOException;
 }

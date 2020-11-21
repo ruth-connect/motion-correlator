@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 
 import org.apache.commons.io.IOUtils;
@@ -40,6 +43,12 @@ public class ImageServiceImpl implements ImageService {
 		image.setTimestamp(timestamp);
 		image.setBytes(bytes);
 		return image;
+	}
+
+	public void writeImage(String camera, Image image) throws IOException {
+		String path = "/mnt/media/motioncorrelator/" + camera;
+		String filename = image.getTimestamp() + ".jpg";
+		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {

@@ -13,6 +13,7 @@ import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.service.ImageService;
+import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 import uk.me.ruthmills.motioncorrelator.service.MotionCorrelatorService;
 import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
 import uk.me.ruthmills.motioncorrelator.service.VectorDataService;
@@ -28,6 +29,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 	@Autowired
 	private PersonDetectionService personDetectionService;
+
+	@Autowired
+	private ImageStampingService imageStampingService;
 
 	private final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
 
@@ -46,5 +50,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		motionCorrelation.setImage(image);
 		motionCorrelation.setPersonDetection(personDetection);
 		logger.info("Motion correlation data for camera " + camera + ": " + motionCorrelation);
+
+		imageStampingService.stampImage(motionCorrelation);
+		imageService.writeImage(camera, motionCorrelation.getStampedImage());
 	}
 }
