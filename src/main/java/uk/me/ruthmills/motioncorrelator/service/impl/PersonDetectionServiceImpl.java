@@ -40,16 +40,22 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		String currentWorkingDirectory = new File("").getAbsolutePath();
 		logger.info("Current working directory: " + currentWorkingDirectory);
 
-		frontalFaceClassifier = new CascadeClassifier(
+		frontalFaceClassifier = new CascadeClassifier();
+		loadClassifier(frontalFaceClassifier,
 				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
-		profileFaceClassifier = new CascadeClassifier(
+
+		profileFaceClassifier = new CascadeClassifier();
+		loadClassifier(profileFaceClassifier,
 				currentWorkingDirectory + "/src/main/resources/haarcascade_profileface.xml");
-		upperBodyClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_upperbody.xml");
-		lowerBodyClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
-		fullBodyClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
+
+		upperBodyClassifier = new CascadeClassifier();
+		loadClassifier(upperBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_upperbody.xml");
+
+		lowerBodyClassifier = new CascadeClassifier();
+		loadClassifier(lowerBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
+
+		fullBodyClassifier = new CascadeClassifier();
+		loadClassifier(fullBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
 
 		if (frontalFaceClassifier.empty()) {
 			throw new IOException("Failed to load frontal face classifier");
@@ -80,6 +86,13 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		personDetection.setFullBodyDetection(detect(fullBodyClassifier, frame));
 		frame.release();
 		return personDetection;
+	}
+
+	private void loadClassifier(CascadeClassifier classifier, String filename) throws IOException {
+		classifier.load(filename);
+		if (classifier.empty()) {
+			throw new IOException("Failed to load: " + filename);
+		}
 	}
 
 	private Mat decodeImage(Image image) {
