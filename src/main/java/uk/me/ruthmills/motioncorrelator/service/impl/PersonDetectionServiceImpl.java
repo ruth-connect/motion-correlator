@@ -89,6 +89,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 	}
 
 	private void loadClassifier(CascadeClassifier classifier, String filename) throws IOException {
+		logger.info("About to load classifier: " + filename);
 		classifier.load(filename);
 		if (classifier.empty()) {
 			throw new IOException("Failed to load: " + filename);
