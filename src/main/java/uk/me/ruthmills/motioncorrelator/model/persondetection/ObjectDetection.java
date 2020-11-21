@@ -36,8 +36,8 @@ public class ObjectDetection {
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("x: " + object.x + ", y: " + object.y + ", width: " + object.width + ", height: "
-				+ object.height + "\n");
+		stringBuilder.append("left: " + object.tl().x + ", top: " + object.tl().y + ", right: " + object.br().x
+				+ ", bottom: " + object.br().y + "\n");
 		stringBuilder.append("Reject Levels: " + rejectLevels + "\n");
 		stringBuilder.append("Level Weights: " + levelWeights + "\n");
 		return stringBuilder.toString();
