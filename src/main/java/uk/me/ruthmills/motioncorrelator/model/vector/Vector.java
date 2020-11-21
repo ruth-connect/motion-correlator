@@ -66,36 +66,20 @@ public class Vector extends VectorData {
 		return count;
 	}
 
-	public int getLeft() {
-		if (dx > 0) {
-			return convertX(x);
-		} else {
-			return convertX(x - dx);
-		}
+	public int getStartX() {
+		return convertX(x);
 	}
 
-	public int getTop() {
-		if (dy > 0) {
-			return convertY(y - dy);
-		} else {
-			return convertY(y);
-		}
+	public int getStartY() {
+		return convertY(y);
 	}
 
-	public int getRight() {
-		if (dx > 0) {
-			return convertX(x + dx);
-		} else {
-			return convertX(x);
-		}
+	public int getEndX() {
+		return convertX(x + dx);
 	}
 
-	public int getBottom() {
-		if (dy > 0) {
-			return convertY(y);
-		} else {
-			return convertY(y + dy);
-		}
+	public int getEndY() {
+		return convertY(y + dy);
 	}
 
 	public String toString() {
