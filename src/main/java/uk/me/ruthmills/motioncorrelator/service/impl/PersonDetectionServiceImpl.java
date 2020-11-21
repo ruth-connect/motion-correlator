@@ -91,7 +91,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		MatOfDouble levelWeights = new MatOfDouble();
 		classifier.detectMultiScale3(frame, objects, rejectLevels, levelWeights, 1.1, 3, 0, new Size(), new Size(),
 				true);
-		logger.info("Number of detections: " + objects.size());
+		logger.info("Number of detections: " + objects.toList().size());
 		ObjectDetection objectDetection = new ObjectDetection();
 		objectDetection.setObjects(objects);
 		objectDetection.setRejectLevels(rejectLevels);
