@@ -1,6 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 
@@ -33,10 +34,12 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 	private final Logger logger = LoggerFactory.getLogger(PersonDetectionServiceImpl.class);
 
 	@PostConstruct
-	public void initialise() {
+	public void initialise() throws IOException {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
 		String currentWorkingDirectory = new File("").getAbsolutePath();
 		logger.info("Current working directory: " + currentWorkingDirectory);
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
 		frontalFaceClassifier = new CascadeClassifier(
 				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
 		profileFaceClassifier = new CascadeClassifier(
@@ -47,23 +50,28 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 				currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
 		fullBodyClassifier = new CascadeClassifier(
 				currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
+
+		if (frontalFaceClassifier.empty()) {
+			throw new IOException("Failed to load frontal face classifier");
+		}
+		if (profileFaceClassifier.empty()) {
+			throw new IOException("Failed to load profile face classifier");
+		}
+		if (upperBodyClassifier.empty()) {
+			throw new IOException("Failed to load upper body classifier");
+		}
+		if (lowerBodyClassifier.empty()) {
+			throw new IOException("Failed to load lower body classifier");
+		}
+		if (fullBodyClassifier.empty()) {
+			throw new IOException("Failed to load full body classifier");
+		}
 	}
 
 	@Override
 	public PersonDetection detectPerson(Image image) {
-		String currentWorkingDirectory = new File("").getAbsolutePath();
-		CascadeClassifier frontalFaceClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
-		CascadeClassifier profileFaceClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_profileface.xml");
-		CascadeClassifier upperBodyClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_upperbody.xml");
-		CascadeClassifier lowerBodyClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
-		CascadeClassifier fullBodyClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
-
 		Mat frame = decodeImage(image);
+		logger.info("Frame size: " + frame.size());
 		PersonDetection personDetection = new PersonDetection();
 		personDetection.setFrontalFaceDetection(detect(frontalFaceClassifier, frame));
 		personDetection.setProfileFaceDetection(detect(profileFaceClassifier, frame));
@@ -75,6 +83,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 	}
 
 	private Mat decodeImage(Image image) {
+		logger.info("Image length in bytes: " + image.getBytes().length);
 		Mat encoded = new Mat(1, image.getBytes().length, CvType.CV_8U);
 		encoded.put(0, 0, image.getBytes());
 		Mat decoded = Imgcodecs.imdecode(encoded, Imgcodecs.IMREAD_GRAYSCALE);
