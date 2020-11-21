@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.imageio.ImageIO;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
+import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.ObjectDetection;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
@@ -26,6 +28,12 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		Graphics2D graphics2D = bufferedImage.createGraphics();
 		drawPersonDetection(graphics2D, motionCorrelation.getPersonDetection());
 		graphics2D.dispose();
+		Image stampedImage = new Image();
+		stampedImage.setTimestamp(motionCorrelation.getImage().getTimestamp());
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+		stampedImage.setBytes(byteArrayOutputStream.toByteArray());
+		motionCorrelation.setStampedImage(stampedImage);
 	}
 
 	private void drawPersonDetection(Graphics2D graphics2D, PersonDetection personDetection) {
