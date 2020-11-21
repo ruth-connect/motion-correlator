@@ -11,13 +11,14 @@ import com.bitplan.mjpegstreamer.ViewerSetting;
 import uk.me.ruthmills.motioncorrelator.service.impl.MotionCorrelatorServiceImpl;
 
 public class MjpegRenderer implements MJpegRenderer {
+	private ViewerSetting viewerSetting;
 
 	private final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
 
 	@Override
 	public ViewerSetting getViewerSetting() {
 		logger.info("getViewerSetting() called");
-		return null;
+		return viewerSetting;
 	}
 
 	@Override
