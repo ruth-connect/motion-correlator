@@ -60,6 +60,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		Mat frame = decodeImage(image);
 		logger.info("Frame size: " + frame.size());
 		PersonDetection personDetection = new PersonDetection();
+		personDetection.setTimestamp(image.getTimestamp());
 		personDetection.setFrontalFaceDetections(detect(frontalFaceClassifier, frame));
 		personDetection.setProfileFaceDetections(detect(profileFaceClassifier, frame));
 		personDetection.setUpperBodyDetections(detect(upperBodyClassifier, frame));
