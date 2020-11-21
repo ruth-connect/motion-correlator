@@ -1,7 +1,5 @@
 package uk.me.ruthmills.motioncorrelator.model.vector;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 public class Vector extends VectorData {
 
 	private String region;
@@ -68,8 +66,20 @@ public class Vector extends VectorData {
 		return count;
 	}
 
+	public int convertX(int x) {
+		return Math.round((float) x * 640f / 100f);
+	}
+
+	public int convertY(int y) {
+		return Math.round((float) y * 480f / 100f);
+	}
+
 	public String toString() {
-		return new ToStringBuilder(this).append("region", region).append("x", x).append("y", y).append("dx", dx)
-				.append("dy", dy).append("magnitude", magnitude).append("count", count).toString();
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("ORIGINAL. region: " + region + ", x: " + x + ", y: " + y + ", dx: " + dx + ", dy: " + dy
+				+ ", magnitude: " + magnitude + ", count: " + count + "\n");
+		stringBuilder.append("CONVERTED. region: " + region + ", x: " + convertX(x) + ", y: " + convertY(y) + "dx: "
+				+ convertX(dx) + ", dy: " + convertY(dy) + ", magnitude: " + magnitude + ", count: " + count + "\n");
+		return stringBuilder.toString();
 	}
 }
