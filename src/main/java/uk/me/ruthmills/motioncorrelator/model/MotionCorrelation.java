@@ -9,6 +9,7 @@ public class MotionCorrelation {
 	private VectorDataList vectorData;
 	private Image image;
 	private PersonDetection personDetection;
+	private Image stampedImage;
 
 	public void setVectorData(VectorDataList vectorData) {
 		this.vectorData = vectorData;
@@ -39,5 +40,13 @@ public class MotionCorrelation {
 		stringBuilder.append("Vector Data: " + vectorData + "\n");
 		stringBuilder.append("Person Detection Data: " + personDetection + "\n");
 		return stringBuilder.toString();
+	}
+
+	public void setStampedImage(Image stampedImage) {
+		this.stampedImage = stampedImage;
+	}
+
+	public Image getStampedImage() {
+		return stampedImage;
 	}
 }

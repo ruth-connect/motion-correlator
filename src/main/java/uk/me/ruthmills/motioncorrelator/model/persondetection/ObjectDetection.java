@@ -58,6 +58,14 @@ public class ObjectDetection {
 		return (int) Math.round(object.br().y);
 	}
 
+	public int getWidth() {
+		return object.width;
+	}
+
+	public int getHeight() {
+		return object.height;
+	}
+
 	public int getRejectLevel() {
 		return rejectLevels.get(0);
 	}
@@ -74,6 +82,8 @@ public class ObjectDetection {
 		stringBuilder.append(", top: " + getTop());
 		stringBuilder.append(", right: " + getRight());
 		stringBuilder.append(", bottom: " + getBottom());
+		stringBuilder.append(", width: " + getWidth());
+		stringBuilder.append(", height: " + getHeight());
 		stringBuilder.append(", rejectLevel: " + getRejectLevel());
 		stringBuilder.append(", levelWeight: " + getLevelWeight() + "\n");
 		return stringBuilder.toString();
