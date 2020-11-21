@@ -34,6 +34,7 @@ public class MjpegRenderer implements MJpegRenderer {
 	@Override
 	public void setViewerSetting(ViewerSetting viewerSetting) {
 		logger.info("setViewerSetting() called with viewerSetting: " + viewerSetting);
+		this.viewerSetting = viewerSetting;
 	}
 
 	@Override
