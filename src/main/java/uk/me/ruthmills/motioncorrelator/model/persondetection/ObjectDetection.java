@@ -1,36 +1,36 @@
 package uk.me.ruthmills.motioncorrelator.model.persondetection;
 
-import org.opencv.core.MatOfDouble;
-import org.opencv.core.MatOfInt;
-import org.opencv.core.MatOfRect;
+import java.util.List;
+
+import org.opencv.core.Rect;
 
 public class ObjectDetection {
 
-	private MatOfRect objects;
-	private MatOfInt rejectLevels;
-	private MatOfDouble levelWeights;
+	private List<Rect> objects;
+	private List<Integer> rejectLevels;
+	private List<Double> levelWeights;
 
-	public void setObjects(MatOfRect objects) {
+	public void setObjects(List<Rect> objects) {
 		this.objects = objects;
 	}
 
-	public MatOfRect getObjects() {
+	public List<Rect> getObjects() {
 		return objects;
 	}
 
-	public void setRejectLevels(MatOfInt rejectLevels) {
+	public void setRejectLevels(List<Integer> rejectLevels) {
 		this.rejectLevels = rejectLevels;
 	}
 
-	public MatOfInt getRejectLevels() {
+	public List<Integer> getRejectLevels() {
 		return rejectLevels;
 	}
 
-	public void setLevelWeights(MatOfDouble levelWeights) {
+	public void setLevelWeights(List<Double> levelWeights) {
 		this.levelWeights = levelWeights;
 	}
 
-	public MatOfDouble getLevelWeights() {
+	public List<Double> getLevelWeights() {
 		return levelWeights;
 	}
 }
