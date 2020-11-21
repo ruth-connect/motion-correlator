@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.me.ruthmills.motioncorrelator.service.VectorDataService;
+import uk.me.ruthmills.motioncorrelator.service.MotionCorrelatorService;
 
 @Controller
 @RequestMapping("/")
 public class MotionCorrelatorController {
 
 	@Autowired
-	private VectorDataService vectorDataService;
+	private MotionCorrelatorService motionCorrelatorService;
 
 	private final Logger logger = LoggerFactory.getLogger(MotionCorrelatorController.class);
 
@@ -34,6 +34,6 @@ public class MotionCorrelatorController {
 		vectorData = URLDecoder.decode(vectorData, StandardCharsets.UTF_8.name());
 		vectorData = vectorData.substring(0, vectorData.length() - 1);
 		logger.info(camera + " : " + vectorData);
-		vectorDataService.handleVectorData(camera, vectorData);
+		motionCorrelatorService.correlateMotionAndPersonDetection(camera, vectorData);
 	}
 }

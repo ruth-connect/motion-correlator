@@ -22,14 +22,13 @@ public class VectorDataServiceImpl implements VectorDataService {
 
 	private final Logger logger = LoggerFactory.getLogger(VectorDataServiceImpl.class);
 
-	@Override
-	public void handleVectorData(String camera, String vectorData) {
+	public VectorDataList decodeVectorData(String camera, String vectorData) {
 		VectorDataList vectorDataList = parseVectorData(vectorData);
-		logger.info("Camera: " + camera);
-		logger.info("Vector Data: " + vectorDataList);
+		return vectorDataList;
 	}
 
-	private VectorDataList parseVectorData(String vectorDataString) {
+	@Override
+	public VectorDataList parseVectorData(String vectorDataString) {
 		String[] vectorDataArray = vectorDataString.split("\n");
 		List<VectorData> vectorDataLines = new ArrayList<>();
 		LocalDateTime timestamp = null;
@@ -49,6 +48,7 @@ public class VectorDataServiceImpl implements VectorDataService {
 		VectorDataList vectorDataList = new VectorDataList();
 		vectorDataList.setTimestamp(timestamp);
 		vectorDataList.addAll(vectorDataLines);
+		logger.info("Vector Data: " + vectorDataList);
 		return vectorDataList;
 	}
 
