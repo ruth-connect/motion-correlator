@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
 
-import com.bitplan.mjpegstreamer.MJpegReaderRunner1;
+import com.bitplan.mjpegstreamer.MJpegReaderRunner2;
 import com.bitplan.mjpegstreamer.ViewerSetting;
 import com.bitplan.mjpegstreamer.ViewerSetting.DebugMode;
 
@@ -18,7 +18,7 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 
 	ViewerSetting viewerSetting;
 	MjpegRenderer renderer;
-	MJpegReaderRunner1 mjpegReader;
+	MJpegReaderRunner2 mjpegReader;
 
 	@PostConstruct
 	public void initialise() throws IOException {
@@ -26,7 +26,7 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 		viewerSetting.setDebugMode(DebugMode.Verbose);
 		renderer = new MjpegRenderer();
 		renderer.setViewerSetting(viewerSetting);
-		mjpegReader = new MJpegReaderRunner1();
+		mjpegReader = new MJpegReaderRunner2();
 		mjpegReader.setViewer(renderer);
 		mjpegReader.init("http://hal9000/mjpeg_stream.php", null, null);
 		mjpegReader.run();
