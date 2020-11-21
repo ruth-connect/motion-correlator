@@ -65,9 +65,13 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 	}
 
 	private void drawObjectDetection(Graphics2D graphics2D, ObjectDetection objectDetection, Color color) {
-		graphics2D.setColor(color);
-		graphics2D.drawRect(objectDetection.getLeft(), objectDetection.getTop(), objectDetection.getWidth(),
-				objectDetection.getHeight());
+		if (objectDetection.getLevelWeight() + 1d > 0) {
+			int thickness = (int) Math.ceil(objectDetection.getLevelWeight() + 1d);
+			graphics2D.setStroke(new BasicStroke(thickness));
+			graphics2D.setColor(color);
+			graphics2D.drawRect(objectDetection.getLeft(), objectDetection.getTop(), objectDetection.getWidth(),
+					objectDetection.getHeight());
+		}
 	}
 
 	private void drawFrameVector(Graphics2D graphics2D, VectorDataList vectorData) {
