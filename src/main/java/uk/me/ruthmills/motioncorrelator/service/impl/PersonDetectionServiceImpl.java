@@ -38,7 +38,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		logger.info("Current working directory: " + currentWorkingDirectory);
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		frontalFaceClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_defalt.xml");
+				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
 		profileFaceClassifier = new CascadeClassifier(
 				currentWorkingDirectory + "/src/main/resources/haarcascade_profileface.xml");
 		upperBodyClassifier = new CascadeClassifier(
