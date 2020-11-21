@@ -1,5 +1,6 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -47,6 +48,8 @@ public class ImageServiceImpl implements ImageService {
 
 	public void writeImage(String camera, Image image) throws IOException {
 		String path = "/mnt/media/motioncorrelator/" + camera;
+		File file = new File(path);
+		file.mkdir();
 		String filename = image.getTimestamp() + ".jpg";
 		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
 	}
