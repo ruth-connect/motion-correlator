@@ -16,6 +16,8 @@ import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.ObjectDetection;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
+import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
+import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 
 @Service
@@ -27,6 +29,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 		Graphics2D graphics2D = bufferedImage.createGraphics();
 		drawPersonDetection(graphics2D, motionCorrelation.getPersonDetection());
+		drawFrameVector(graphics2D, motionCorrelation.getVectorData());
 		graphics2D.dispose();
 		Image stampedImage = new Image();
 		stampedImage.setTimestamp(motionCorrelation.getImage().getTimestamp());
@@ -54,5 +57,14 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		graphics2D.setColor(color);
 		graphics2D.drawRect(objectDetection.getLeft(), objectDetection.getTop(), objectDetection.getWidth(),
 				objectDetection.getHeight());
+	}
+
+	private void drawFrameVector(Graphics2D graphics2D, VectorDataList vectorData) {
+		Vector frameVector = vectorData.getFrameVector();
+		if (frameVector != null) {
+			graphics2D.setColor(Color.MAGENTA);
+			graphics2D.drawLine(frameVector.getLeft(), frameVector.getTop(), frameVector.getRight(),
+					frameVector.getBottom());
+		}
 	}
 }

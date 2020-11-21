@@ -66,12 +66,36 @@ public class Vector extends VectorData {
 		return count;
 	}
 
-	public int convertX(int x) {
-		return Math.round((float) x * 640f / 100f);
+	public int getLeft() {
+		if (dx > 0) {
+			return convertX(x);
+		} else {
+			return convertX(x - dx);
+		}
 	}
 
-	public int convertY(int y) {
-		return Math.round(480 - ((float) y * 480f / 100f));
+	public int getTop() {
+		if (dy > 0) {
+			return convertY(y - dy);
+		} else {
+			return convertY(y);
+		}
+	}
+
+	public int getRight() {
+		if (dx > 0) {
+			return convertX(x + dx);
+		} else {
+			return convertX(x);
+		}
+	}
+
+	public int getBottom() {
+		if (dy > 0) {
+			return convertY(y);
+		} else {
+			return convertY(y + dy);
+		}
 	}
 
 	public String toString() {
@@ -81,5 +105,15 @@ public class Vector extends VectorData {
 		stringBuilder.append("CONVERTED. region: " + region + ", x: " + convertX(x) + ", y: " + convertY(y) + ", dx: "
 				+ convertX(dx) + ", dy: " + convertY(dy) + ", magnitude: " + magnitude + ", count: " + count + "\n");
 		return stringBuilder.toString();
+	}
+
+	private int convertX(int x) {
+		int converted = Math.round((float) x * 640f / 100f);
+		return converted > 639 ? 639 : converted;
+	}
+
+	private int convertY(int y) {
+		int converted = Math.round(480 - ((float) y * 480f / 100f));
+		return converted > 479 ? 479 : converted;
 	}
 }

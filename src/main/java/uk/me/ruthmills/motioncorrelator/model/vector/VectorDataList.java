@@ -17,6 +17,18 @@ public class VectorDataList extends ArrayList<VectorData> {
 		return timestamp;
 	}
 
+	public Vector getFrameVector() {
+		for (VectorData vectorData : this) {
+			if (vectorData instanceof Vector) {
+				Vector vector = (Vector) vectorData;
+				if (vector.getRegion().equals("f")) {
+					return vector;
+				}
+			}
+		}
+		return null;
+	}
+
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Timestamp: " + timestamp + "\n");
