@@ -11,6 +11,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.objdetect.CascadeClassifier;
 import org.slf4j.Logger;
@@ -40,43 +41,15 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		String currentWorkingDirectory = new File("").getAbsolutePath();
 		logger.info("Current working directory: " + currentWorkingDirectory);
 
-		frontalFaceClassifier = new CascadeClassifier(
+		frontalFaceClassifier = createClassifier(
 				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
-		loadClassifier(frontalFaceClassifier,
-				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
-
-		profileFaceClassifier = new CascadeClassifier(
+		profileFaceClassifier = createClassifier(
 				currentWorkingDirectory + "/src/main/resources/haarcascade_profileface.xml");
-		loadClassifier(profileFaceClassifier,
-				currentWorkingDirectory + "/src/main/resources/haarcascade_profileface.xml");
-
-		upperBodyClassifier = new CascadeClassifier(
+		upperBodyClassifier = createClassifier(
 				currentWorkingDirectory + "/src/main/resources/haarcascade_upperbody.xml");
-		loadClassifier(upperBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_upperbody.xml");
-
-		lowerBodyClassifier = new CascadeClassifier(
+		lowerBodyClassifier = createClassifier(
 				currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
-		loadClassifier(lowerBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
-
-		fullBodyClassifier = new CascadeClassifier(
-				currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
-		loadClassifier(fullBodyClassifier, currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
-
-		if (frontalFaceClassifier.empty()) {
-			throw new IOException("Failed to load frontal face classifier");
-		}
-		if (profileFaceClassifier.empty()) {
-			throw new IOException("Failed to load profile face classifier");
-		}
-		if (upperBodyClassifier.empty()) {
-			throw new IOException("Failed to load upper body classifier");
-		}
-		if (lowerBodyClassifier.empty()) {
-			throw new IOException("Failed to load lower body classifier");
-		}
-		if (fullBodyClassifier.empty()) {
-			throw new IOException("Failed to load full body classifier");
-		}
+		fullBodyClassifier = createClassifier(currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
 	}
 
 	@Override
@@ -93,12 +66,14 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		return personDetection;
 	}
 
-	private void loadClassifier(CascadeClassifier classifier, String filename) throws IOException {
+	private CascadeClassifier createClassifier(String filename) throws IOException {
+		CascadeClassifier classifier = new CascadeClassifier(filename);
 		logger.info("About to load classifier: " + filename);
 		classifier.load(filename);
 		if (classifier.empty()) {
 			throw new IOException("Failed to load: " + filename);
 		}
+		return classifier;
 	}
 
 	private Mat decodeImage(Image image) {
@@ -114,7 +89,8 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		MatOfRect objects = new MatOfRect();
 		MatOfInt rejectLevels = new MatOfInt();
 		MatOfDouble levelWeights = new MatOfDouble();
-		classifier.detectMultiScale3(frame, objects, rejectLevels, levelWeights, 1.1, 3, 0);
+		classifier.detectMultiScale3(frame, objects, rejectLevels, levelWeights, 1.1, 3, 0, new Size(), new Size(),
+				true);
 		ObjectDetection objectDetection = new ObjectDetection();
 		objectDetection.setObjects(objects);
 		objectDetection.setRejectLevels(rejectLevels);
