@@ -34,14 +34,48 @@ public class ObjectDetection {
 		return levelWeights;
 	}
 
+	public int getCentreX() {
+		return (int) Math.round((object.tl().x + object.br().x) / 2d);
+	}
+
+	public int getCentreY() {
+		return (int) Math.round((object.tl().y + object.br().y) / 2d);
+	}
+
+	public int getLeft() {
+		return (int) Math.round(object.tl().x);
+	}
+
+	public int getTop() {
+		return (int) Math.round(object.tl().y);
+	}
+
+	public int getRight() {
+		return (int) Math.round(object.br().x);
+	}
+
+	public int getBottom() {
+		return (int) Math.round(object.br().y);
+	}
+
+	public int getRejectLevel() {
+		return rejectLevels.get(0);
+	}
+
+	public double getLevelWeight() {
+		return levelWeights.get(0);
+	}
+
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("centre x: " + Math.round(((float) object.tl().x + (float) object.br().x) / 2f)
-				+ ", centre y: " + Math.round(((float) object.tl().y + (float) object.br().y) / 2f) + ", left: "
-				+ object.tl().x + ", top: " + object.tl().y + ", right: " + object.br().x + ", bottom: " + object.br().y
-				+ "\n");
-		stringBuilder.append("Reject Levels: " + rejectLevels + "\n");
-		stringBuilder.append("Level Weights: " + levelWeights + "\n");
+		stringBuilder.append("centre x: " + getCentreX());
+		stringBuilder.append(", centre y: " + getCentreY());
+		stringBuilder.append(", left: " + getLeft());
+		stringBuilder.append(", top: " + getTop());
+		stringBuilder.append(", right: " + getRight());
+		stringBuilder.append(", bottom: " + getBottom());
+		stringBuilder.append(", rejectLevel: " + getRejectLevel());
+		stringBuilder.append(", levelWeight: " + getLevelWeight() + "\n");
 		return stringBuilder.toString();
 	}
 }
