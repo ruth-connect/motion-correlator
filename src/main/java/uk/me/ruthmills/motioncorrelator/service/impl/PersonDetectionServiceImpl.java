@@ -36,11 +36,11 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 	public void initialise() {
 		logger.info("Current working directory: " + new File("").getAbsolutePath());
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		frontalFaceClassifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
-		profileFaceClassifier = new CascadeClassifier("haarcascade_profileface.xml");
-		upperBodyClassifier = new CascadeClassifier("haarcascade_upperbody.xml");
-		lowerBodyClassifier = new CascadeClassifier("haarcascade_lowerbody.xml");
-		fullBodyClassifier = new CascadeClassifier("haarcascade_fullbody.xml");
+		frontalFaceClassifier = new CascadeClassifier("./src/main/resources/haarcascade_frontalface_default.xml");
+		profileFaceClassifier = new CascadeClassifier("./src/main/resources/haarcascade_profileface.xml");
+		upperBodyClassifier = new CascadeClassifier("./src/main/resources/haarcascade_upperbody.xml");
+		lowerBodyClassifier = new CascadeClassifier("./src/main/resources/haarcascade_lowerbody.xml");
+		fullBodyClassifier = new CascadeClassifier("./src/main/resources/haarcascade_fullbody.xml");
 	}
 
 	@Override
