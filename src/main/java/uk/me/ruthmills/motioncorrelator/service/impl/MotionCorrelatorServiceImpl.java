@@ -34,10 +34,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 	public void correlateMotionAndPersonDetection(String camera, String vectorData)
 			throws IOException, URISyntaxException {
 		VectorDataList vectorDataList = vectorDataService.parseVectorData(vectorData);
-		logger.info("Got vector data for camera: " + camera);
+		logger.info("Vector data for camera " + camera + ": " + vectorDataList);
 		Image image = imageService.readImage(camera);
 		logger.info("Got image from camera: " + camera);
 		PersonDetection personDetection = personDetectionService.detectPerson(image);
 		logger.info("Finished getting vector data and person detection data for camera: " + camera);
+		logger.info("Person detection data for camera " + camera + ": " + personDetection);
 	}
 }

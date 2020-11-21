@@ -59,4 +59,15 @@ public class PersonDetection {
 	public List<ObjectDetection> getFullBodyDetections() {
 		return fullBodyDetections;
 	}
+
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Timestamp: " + timestamp + "\n");
+		stringBuilder.append("Frontal Face Detections: " + "\n" + frontalFaceDetections);
+		stringBuilder.append("Profile Face Detections: " + "\n" + profileFaceDetections);
+		stringBuilder.append("Upper Body Detections: " + "\n" + upperBodyDetections);
+		stringBuilder.append("Lower Body Detections: " + "\n" + lowerBodyDetections);
+		stringBuilder.append("Full Body Detections: " + "\n" + fullBodyDetections);
+		return stringBuilder.toString();
+	}
 }

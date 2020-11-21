@@ -48,7 +48,6 @@ public class VectorDataServiceImpl implements VectorDataService {
 		VectorDataList vectorDataList = new VectorDataList();
 		vectorDataList.setTimestamp(timestamp);
 		vectorDataList.addAll(vectorDataLines);
-		logger.info("Vector Data: " + vectorDataList);
 		return vectorDataList;
 	}
 

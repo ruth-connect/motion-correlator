@@ -33,4 +33,13 @@ public class ObjectDetection {
 	public List<Double> getLevelWeights() {
 		return levelWeights;
 	}
+
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("x: " + object.x + ", y: " + object.y + ", width: " + object.width + ", height: "
+				+ object.height + "\n");
+		stringBuilder.append("Reject Levels: " + rejectLevels + "\n");
+		stringBuilder.append("Level Weights: " + levelWeights + "\n");
+		return stringBuilder.toString();
+	}
 }
