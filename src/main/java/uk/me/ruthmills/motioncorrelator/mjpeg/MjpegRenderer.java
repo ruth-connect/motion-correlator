@@ -8,17 +8,14 @@ import org.slf4j.LoggerFactory;
 import com.bitplan.mjpegstreamer.MJpegRenderer;
 import com.bitplan.mjpegstreamer.ViewerSetting;
 
-import uk.me.ruthmills.motioncorrelator.service.impl.MjpegStreamServiceImpl;
 import uk.me.ruthmills.motioncorrelator.service.impl.MotionCorrelatorServiceImpl;
 
 public class MjpegRenderer implements MJpegRenderer {
 	private ViewerSetting viewerSetting;
-	private MjpegStreamServiceImpl mjpegStreamServiceImpl;
 
 	private final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
 
-	public MjpegRenderer(MjpegStreamServiceImpl mjpegStreamServiceImpl) {
-		this.mjpegStreamServiceImpl = mjpegStreamServiceImpl;
+	public MjpegRenderer() {
 	}
 
 	@Override

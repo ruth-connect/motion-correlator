@@ -24,7 +24,7 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 	public void initialise() throws IOException {
 		viewerSetting = new ViewerSetting();
 		viewerSetting.setDebugMode(DebugMode.Verbose);
-		renderer = new MjpegRenderer(this);
+		renderer = new MjpegRenderer();
 		renderer.setViewerSetting(viewerSetting);
 		mjpegReader = new MJpegReaderRunner2();
 		mjpegReader.setViewer(renderer);
