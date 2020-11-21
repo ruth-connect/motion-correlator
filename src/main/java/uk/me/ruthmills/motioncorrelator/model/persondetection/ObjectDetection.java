@@ -1,12 +1,14 @@
 package uk.me.ruthmills.motioncorrelator.model.persondetection;
 
+import java.util.List;
+
 import org.opencv.core.Rect;
 
 public class ObjectDetection {
 
 	private Rect object;
-	private int rejectLevel;
-	private double levelWeight;
+	private List<Integer> rejectLevels;
+	private List<Double> levelWeights;
 
 	public void setObject(Rect object) {
 		this.object = object;
@@ -16,19 +18,19 @@ public class ObjectDetection {
 		return object;
 	}
 
-	public void setRejectLevel(int rejectLevel) {
-		this.rejectLevel = rejectLevel;
+	public void setRejectLevels(List<Integer> rejectLevels) {
+		this.rejectLevels = rejectLevels;
 	}
 
-	public int getRejectLevel() {
-		return rejectLevel;
+	public List<Integer> getRejectLevels() {
+		return rejectLevels;
 	}
 
-	public void setLevelWeight(double levelWeight) {
-		this.levelWeight = levelWeight;
+	public void setLevelWeights(List<Double> levelWeights) {
+		this.levelWeights = levelWeights;
 	}
 
-	public double getLevelWeight() {
-		return levelWeight;
+	public List<Double> getLevelWeights() {
+		return levelWeights;
 	}
 }
