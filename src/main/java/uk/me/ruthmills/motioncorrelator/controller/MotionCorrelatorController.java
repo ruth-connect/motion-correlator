@@ -1,6 +1,8 @@
 package uk.me.ruthmills.motioncorrelator.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -30,7 +32,7 @@ public class MotionCorrelatorController {
 	@PostMapping(path = "/vectorData/{camera}", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	@ResponseStatus(value = HttpStatus.OK)
 	public void handleVectorData(@PathVariable String camera, @RequestBody String vectorData)
-			throws UnsupportedEncodingException {
+			throws IOException, UnsupportedEncodingException, URISyntaxException {
 		vectorData = URLDecoder.decode(vectorData, StandardCharsets.UTF_8.name());
 		vectorData = vectorData.substring(0, vectorData.length() - 1);
 		logger.info(camera + " : " + vectorData);
