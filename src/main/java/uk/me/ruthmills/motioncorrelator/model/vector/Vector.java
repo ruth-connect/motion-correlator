@@ -71,7 +71,7 @@ public class Vector extends VectorData {
 	}
 
 	public int convertY(int y) {
-		return Math.round((float) y * 480f / 100f);
+		return Math.round(480 - ((float) y * 480f / 100f));
 	}
 
 	public String toString() {
