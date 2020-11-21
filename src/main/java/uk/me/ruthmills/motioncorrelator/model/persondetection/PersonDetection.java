@@ -63,11 +63,11 @@ public class PersonDetection {
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Timestamp: " + timestamp + "\n");
-		stringBuilder.append("Frontal Face Detections: " + "\n" + frontalFaceDetections);
-		stringBuilder.append("Profile Face Detections: " + "\n" + profileFaceDetections);
-		stringBuilder.append("Upper Body Detections: " + "\n" + upperBodyDetections);
-		stringBuilder.append("Lower Body Detections: " + "\n" + lowerBodyDetections);
-		stringBuilder.append("Full Body Detections: " + "\n" + fullBodyDetections);
+		stringBuilder.append("Frontal Face Detections: " + "\n" + frontalFaceDetections + "\n");
+		stringBuilder.append("Profile Face Detections: " + "\n" + profileFaceDetections + "\n");
+		stringBuilder.append("Upper Body Detections: " + "\n" + upperBodyDetections + "\n");
+		stringBuilder.append("Lower Body Detections: " + "\n" + lowerBodyDetections + "\n");
+		stringBuilder.append("Full Body Detections: " + "\n" + fullBodyDetections + "\n");
 		return stringBuilder.toString();
 	}
 }
