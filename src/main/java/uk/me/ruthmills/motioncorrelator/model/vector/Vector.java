@@ -78,7 +78,7 @@ public class Vector extends VectorData {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("ORIGINAL. region: " + region + ", x: " + x + ", y: " + y + ", dx: " + dx + ", dy: " + dy
 				+ ", magnitude: " + magnitude + ", count: " + count + "\n");
-		stringBuilder.append("CONVERTED. region: " + region + ", x: " + convertX(x) + ", y: " + convertY(y) + "dx: "
+		stringBuilder.append("CONVERTED. region: " + region + ", x: " + convertX(x) + ", y: " + convertY(y) + ", dx: "
 				+ convertX(dx) + ", dy: " + convertY(dy) + ", magnitude: " + magnitude + ", count: " + count + "\n");
 		return stringBuilder.toString();
 	}
