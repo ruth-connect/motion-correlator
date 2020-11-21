@@ -51,6 +51,18 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@Override
 	public PersonDetection detectPerson(Image image) {
+		String currentWorkingDirectory = new File("").getAbsolutePath();
+		CascadeClassifier frontalFaceClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_frontalface_default.xml");
+		CascadeClassifier profileFaceClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_profileface.xml");
+		CascadeClassifier upperBodyClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_upperbody.xml");
+		CascadeClassifier lowerBodyClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_lowerbody.xml");
+		CascadeClassifier fullBodyClassifier = new CascadeClassifier(
+				currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
+
 		Mat frame = decodeImage(image);
 		PersonDetection personDetection = new PersonDetection();
 		personDetection.setFrontalFaceDetection(detect(frontalFaceClassifier, frame));
