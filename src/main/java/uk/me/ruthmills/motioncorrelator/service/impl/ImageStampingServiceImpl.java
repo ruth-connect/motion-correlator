@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -17,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
-import uk.me.ruthmills.motioncorrelator.model.persondetection.ObjectDetection;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
@@ -39,7 +38,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(motionCorrelation.getImage().getBytes());
 		BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 		Graphics2D graphics2D = bufferedImage.createGraphics();
-		drawPersonDetection(graphics2D, motionCorrelation.getPersonDetection());
+		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
 		drawFrameVector(graphics2D, motionCorrelation.getVectorData());
 		graphics2D.dispose();
 		Image stampedImage = new Image();
@@ -50,27 +49,19 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		motionCorrelation.setStampedImage(stampedImage);
 	}
 
-	private void drawPersonDetection(Graphics2D graphics2D, PersonDetection personDetection) {
-		drawObjectDetections(graphics2D, personDetection.getFrontalFaceDetections(), Color.RED);
-		drawObjectDetections(graphics2D, personDetection.getProfileFaceDetections(), Color.ORANGE);
-		drawObjectDetections(graphics2D, personDetection.getUpperBodyDetections(), Color.YELLOW);
-		drawObjectDetections(graphics2D, personDetection.getLowerBodyDetections(), Color.GREEN);
-		drawObjectDetections(graphics2D, personDetection.getFullBodyDetections(), Color.CYAN);
-	}
-
-	private void drawObjectDetections(Graphics2D graphics2D, List<ObjectDetection> objectDetections, Color color) {
-		for (ObjectDetection objectDetection : objectDetections) {
-			drawObjectDetection(graphics2D, objectDetection, color);
+	private void drawPersonDetections(Graphics2D graphics2D, PersonDetections personDetections) {
+		for (PersonDetection personDetection : personDetections.getPersonDetections()) {
+			drawPersonDetection(graphics2D, personDetection, Color.CYAN);
 		}
 	}
 
-	private void drawObjectDetection(Graphics2D graphics2D, ObjectDetection objectDetection, Color color) {
-		if (objectDetection.getLevelWeight() + 1d > 0) {
-			int thickness = (int) Math.ceil(objectDetection.getLevelWeight() + 1d);
+	private void drawPersonDetection(Graphics2D graphics2D, PersonDetection personDetection, Color color) {
+		if (personDetection.getWeight() + 1d > 0) {
+			int thickness = (int) Math.ceil(personDetection.getWeight() + 1d);
 			graphics2D.setStroke(new BasicStroke(thickness));
 			graphics2D.setColor(color);
-			graphics2D.drawRect(objectDetection.getLeft(), objectDetection.getTop(), objectDetection.getWidth(),
-					objectDetection.getHeight());
+			graphics2D.drawRect(personDetection.getLeft(), personDetection.getTop(), personDetection.getWidth(),
+					personDetection.getHeight());
 		}
 	}
 

@@ -1,14 +1,14 @@
 package uk.me.ruthmills.motioncorrelator.model;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
-import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 
 public class MotionCorrelation {
 
 	private VectorDataList vectorData;
 	private Image image;
-	private PersonDetection personDetection;
+	private PersonDetections personDetections;
 	private Image stampedImage;
 
 	public void setVectorData(VectorDataList vectorData) {
@@ -27,18 +27,18 @@ public class MotionCorrelation {
 		return image;
 	}
 
-	public void setPersonDetection(PersonDetection personDetection) {
-		this.personDetection = personDetection;
+	public void setPersonDetections(PersonDetections personDetections) {
+		this.personDetections = personDetections;
 	}
 
-	public PersonDetection getPersonDetection() {
-		return personDetection;
+	public PersonDetections getPersonDetections() {
+		return personDetections;
 	}
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Vector Data: " + vectorData + "\n");
-		stringBuilder.append("Person Detection Data: " + personDetection + "\n");
+		stringBuilder.append("Person Detection Data: " + personDetections + "\n");
 		return stringBuilder.toString();
 	}
 

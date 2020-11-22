@@ -1,73 +1,81 @@
 package uk.me.ruthmills.motioncorrelator.model.persondetection;
 
-import java.time.LocalDateTime;
 import java.util.List;
+
+import org.opencv.core.Rect;
 
 public class PersonDetection {
 
-	private LocalDateTime timestamp;
-	private List<ObjectDetection> frontalFaceDetections;
-	private List<ObjectDetection> profileFaceDetections;
-	private List<ObjectDetection> upperBodyDetections;
-	private List<ObjectDetection> lowerBodyDetections;
-	private List<ObjectDetection> fullBodyDetections;
+	private Rect location;
+	private List<Double> weights;
 
-	public void setTimestamp(LocalDateTime timestamp) {
-		this.timestamp = timestamp;
+	public void setLocation(Rect object) {
+		this.location = object;
 	}
 
-	public LocalDateTime getTimestamp() {
-		return timestamp;
+	public Rect getObject() {
+		return location;
 	}
 
-	public void setFrontalFaceDetections(List<ObjectDetection> frontalFaceDetections) {
-		this.frontalFaceDetections = frontalFaceDetections;
+	public void setWeights(List<Double> weights) {
+		this.weights = weights;
 	}
 
-	public List<ObjectDetection> getFrontalFaceDetections() {
-		return frontalFaceDetections;
+	public List<Double> getWeights() {
+		return weights;
 	}
 
-	public void setProfileFaceDetections(List<ObjectDetection> profileFaceDetections) {
-		this.profileFaceDetections = profileFaceDetections;
+	public int getCentreX() {
+		return (int) Math.round((convert(location.tl().x) + convert(location.br().x)) / 2d);
 	}
 
-	public List<ObjectDetection> getProfileFaceDetections() {
-		return profileFaceDetections;
+	public int getCentreY() {
+		return (int) Math.round((convert(location.tl().y) + convert(location.br().y)) / 2d);
 	}
 
-	public void setUpperBodyDetections(List<ObjectDetection> upperBodyDetections) {
-		this.upperBodyDetections = upperBodyDetections;
+	public int getLeft() {
+		return (int) Math.round(convert(location.tl().x));
 	}
 
-	public List<ObjectDetection> getUpperBodyDetections() {
-		return upperBodyDetections;
+	public int getTop() {
+		return (int) Math.round(convert(location.tl().y));
 	}
 
-	public void setLowerBodyDetections(List<ObjectDetection> lowerBodyDetections) {
-		this.lowerBodyDetections = lowerBodyDetections;
+	public int getRight() {
+		return (int) Math.round(convert(location.br().x));
 	}
 
-	public List<ObjectDetection> getLowerBodyDetections() {
-		return lowerBodyDetections;
+	public int getBottom() {
+		return (int) Math.round(convert(location.br().y));
 	}
 
-	public void setFullBodyDetections(List<ObjectDetection> fullBodyDetections) {
-		this.fullBodyDetections = fullBodyDetections;
+	public int getWidth() {
+		return (int) Math.round(convert(location.width));
 	}
 
-	public List<ObjectDetection> getFullBodyDetections() {
-		return fullBodyDetections;
+	public int getHeight() {
+		return (int) Math.round(convert(location.height));
+	}
+
+	public double getWeight() {
+		return weights.get(0);
 	}
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Timestamp: " + timestamp + "\n");
-		stringBuilder.append("Frontal Face Detections: " + "\n" + frontalFaceDetections + "\n");
-		stringBuilder.append("Profile Face Detections: " + "\n" + profileFaceDetections + "\n");
-		stringBuilder.append("Upper Body Detections: " + "\n" + upperBodyDetections + "\n");
-		stringBuilder.append("Lower Body Detections: " + "\n" + lowerBodyDetections + "\n");
-		stringBuilder.append("Full Body Detections: " + "\n" + fullBodyDetections + "\n");
+		stringBuilder.append("centre x: " + getCentreX());
+		stringBuilder.append(", centre y: " + getCentreY());
+		stringBuilder.append(", left: " + getLeft());
+		stringBuilder.append(", top: " + getTop());
+		stringBuilder.append(", right: " + getRight());
+		stringBuilder.append(", bottom: " + getBottom());
+		stringBuilder.append(", width: " + getWidth());
+		stringBuilder.append(", height: " + getHeight());
+		stringBuilder.append(", weight: " + getWeight() + "\n");
 		return stringBuilder.toString();
+	}
+
+	private double convert(double value) {
+		return value * 640d / 400d;
 	}
 }

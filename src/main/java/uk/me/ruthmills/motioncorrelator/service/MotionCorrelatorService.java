@@ -5,6 +5,6 @@ import java.net.URISyntaxException;
 
 public interface MotionCorrelatorService {
 
-	public void correlateMotionAndPersonDetection(String camera, String vectorData)
+	public void correlateMotionAndPersonDetections(String camera, String vectorData)
 			throws IOException, URISyntaxException;
 }
