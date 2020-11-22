@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -43,16 +45,15 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@Override
 	public PersonDetections detectPersons(Image image) {
-		return detectPersons(image, new PersonDetectionParameters(0.2d, 4, 4, 8, 8, 1.05d));
+		return detectPersons(image, new PersonDetectionParameters(0d, 4, 4, 8, 8, 1.05d));
 	}
 
 	@Override
 	public PersonDetections detectPersons(Image image, PersonDetectionParameters personDetectionParameters) {
 		Mat frame = decodeImage(image);
 		logger.info("Frame size: " + frame.size());
-		PersonDetections personDetections = new PersonDetections();
+		PersonDetections personDetections = detect(frame, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
-		personDetections.setPersonDetections(detect(frame, personDetectionParameters));
 		frame.release();
 		return personDetections;
 	}
@@ -70,14 +71,17 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		return resized;
 	}
 
-	private List<PersonDetection> detect(Mat frame, PersonDetectionParameters personDetectionParameters) {
+	private PersonDetections detect(Mat frame, PersonDetectionParameters personDetectionParameters) {
 		MatOfRect foundLocations = new MatOfRect();
 		MatOfDouble foundWeights = new MatOfDouble();
 		double hitThreshold = personDetectionParameters.getHitThreshold();
 		Size winStride = new Size(personDetectionParameters.getWinStrideX(), personDetectionParameters.getWinStrideY());
 		Size padding = new Size(personDetectionParameters.getPaddingX(), personDetectionParameters.getPaddingY());
 		double scale = personDetectionParameters.getScale();
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		hogDescriptor.detectMultiScale(frame, foundLocations, foundWeights, hitThreshold, winStride, padding, scale);
+		stopWatch.stop();
 		List<Rect> locations = foundLocations.toList();
 		List<PersonDetection> personDetections = new ArrayList<>();
 		for (int detectionIndex = 0; detectionIndex < locations.size(); detectionIndex++) {
@@ -94,6 +98,6 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		logger.info("Number of person detections: " + personDetections.size());
 		foundLocations.release();
 		foundWeights.release();
-		return personDetections;
+		return new PersonDetections(personDetections, stopWatch.getTime(TimeUnit.MILLISECONDS));
 	}
 }

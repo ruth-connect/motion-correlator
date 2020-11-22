@@ -36,6 +36,7 @@
 		</ul>
 	</div>
 	<div th:if="${stamped}">
+		<p>Detection Time: <span th:text="${personDetections.detectionTimeMilliseconds}"/> ms</p>
 		<h3>Person Detections</h3>
 		<p th:each="personDetection: ${personDetections.personDetections}">(<span th:text="${personDetection.left}"/>, <span th:text="${personDetection.top}"/>) - (<span th:text="${personDetection.right}"/>, <span th:text="${personDetection.bottom}"/>) = <span th:text="${personDetection.weight}"/></p>
 	</div>
