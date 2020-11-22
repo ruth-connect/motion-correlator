@@ -15,6 +15,7 @@ public class PersonDetectionParameters {
 
 	public PersonDetectionParameters(int imageWidthPixels, double hitThreshold, int winStrideX, int winStrideY,
 			int paddingX, int paddingY, double scale) {
+		this.imageWidthPixels = imageWidthPixels;
 		this.hitThreshold = hitThreshold;
 		this.winStrideX = winStrideX;
 		this.winStrideY = winStrideY;
