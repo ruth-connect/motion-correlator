@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.mjpeg.Renderer;
+import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.MjpegStreamService;
 
 @Service
@@ -25,5 +26,10 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 
 	private void addCamera(String camera) throws IOException {
 		streams.put(camera, new Renderer(camera));
+	}
+
+	@Override
+	public Image getLatestImage(String camera) {
+		return streams.get(camera).getImages().getLast();
 	}
 }

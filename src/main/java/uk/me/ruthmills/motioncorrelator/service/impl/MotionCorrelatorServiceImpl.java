@@ -14,6 +14,7 @@ import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.service.ImageService;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
+import uk.me.ruthmills.motioncorrelator.service.MjpegStreamService;
 import uk.me.ruthmills.motioncorrelator.service.MotionCorrelatorService;
 import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
 import uk.me.ruthmills.motioncorrelator.service.VectorDataService;
@@ -23,6 +24,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 	@Autowired
 	private VectorDataService vectorDataService;
+
+	@Autowired
+	private MjpegStreamService mjpegStreamService;
 
 	@Autowired
 	private ImageService imageService;
@@ -40,7 +44,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			throws IOException, URISyntaxException {
 		VectorDataList vectorDataList = vectorDataService.parseVectorData(vectorData);
 		logger.info("Got vector data for camera " + camera);
-		Image image = imageService.readImage(camera);
+		Image image = mjpegStreamService.getLatestImage(camera);
 		logger.info("Got image from camera: " + camera);
 		PersonDetections personDetection = personDetectionService.detectPersons(image);
 		logger.info("Finished getting vector data and person detection data for camera: " + camera);
