@@ -2,6 +2,7 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -42,7 +43,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@Override
 	public PersonDetections detectPersons(Image image) {
-		return detectPersons(image, new PersonDetectionParameters(0d, 4, 4, 8, 8, 1.05d));
+		return detectPersons(image, new PersonDetectionParameters(0.1d, 4, 4, 8, 8, 1.05d));
 	}
 
 	@Override
@@ -89,6 +90,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 			personDetection.setWeights(weights);
 			personDetections.add(personDetection);
 		}
+		personDetections.sort(Comparator.comparing(PersonDetection::getWeight).reversed());
 		logger.info("Number of person detections: " + personDetections.size());
 		foundLocations.release();
 		foundWeights.release();
