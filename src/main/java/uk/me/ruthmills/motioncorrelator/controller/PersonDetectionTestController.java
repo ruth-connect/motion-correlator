@@ -60,6 +60,13 @@ public class PersonDetectionTestController {
 		return "redirect:/test/upload";
 	}
 
+	@GetMapping("/")
+	public String showDetectForm(Model model) {
+		model.addAttribute("uploaded", testImageService.hasOriginalImage());
+		model.addAttribute("stamped", testImageService.hasStampedImage());
+		return "detect";
+	}
+
 	@PostMapping("/detect")
 	public String detect(RedirectAttributes redirectAttributes) throws IOException {
 		Image originalImage = testImageService.getOriginalImage();
