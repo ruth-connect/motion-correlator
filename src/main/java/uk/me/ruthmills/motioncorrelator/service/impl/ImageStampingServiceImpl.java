@@ -57,7 +57,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 
 	private void drawPersonDetection(Graphics2D graphics2D, PersonDetection personDetection, Color color) {
 		if (personDetection.getWeight() + 1d > 0) {
-			int thickness = (int) Math.ceil(personDetection.getWeight() + 1d);
+			int thickness = (int) Math.ceil(personDetection.getWeight());
 			graphics2D.setStroke(new BasicStroke(thickness));
 			graphics2D.setColor(color);
 			graphics2D.drawRect(personDetection.getLeft(), personDetection.getTop(), personDetection.getWidth(),
