@@ -45,7 +45,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@Override
 	public PersonDetections detectPersons(Image image) {
-		return detectPersons(image, new PersonDetectionParameters(0d, 4, 4, 8, 8, 1.1d, 0d));
+		return detectPersons(image, new PersonDetectionParameters(0d, 4, 4, 8, 8, 1.1d));
 	}
 
 	@Override
@@ -78,11 +78,9 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		Size winStride = new Size(personDetectionParameters.getWinStrideX(), personDetectionParameters.getWinStrideY());
 		Size padding = new Size(personDetectionParameters.getPaddingX(), personDetectionParameters.getPaddingY());
 		double scale = personDetectionParameters.getScale();
-		double finalThreshold = personDetectionParameters.getFinalThreshold();
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		hogDescriptor.detectMultiScale(frame, foundLocations, foundWeights, hitThreshold, winStride, padding, scale,
-				finalThreshold);
+		hogDescriptor.detectMultiScale(frame, foundLocations, foundWeights, hitThreshold, winStride, padding, scale);
 		stopWatch.stop();
 		List<Rect> locations = foundLocations.toList();
 		List<PersonDetection> personDetections = new ArrayList<>();
