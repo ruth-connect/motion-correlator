@@ -301,9 +301,8 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 		String streamName = "?";
 		if (inputStream != null)
 			streamName = inputStream.getClass().getSimpleName();
-		String timeMsg = streamName + " at frame " + framesReadCount + "->" + framesRenderedCount + "/"
-				+ viewer.getViewerSetting().pictureCount + msg + " total=" + this.elapsedTimeMillisecs() + " msecs "
-				+ this;
+		String timeMsg = streamName + " at frame " + framesReadCount + "->" + framesRenderedCount + msg + " total="
+				+ this.elapsedTimeMillisecs() + " msecs " + this;
 		return timeMsg;
 	}
 
@@ -381,12 +380,7 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 		} catch (Throwable th) {
 			handle("Error acquiring the frame: ", th);
 		}
-		ViewerSetting viewerSetting = viewer.getViewerSetting();
-		boolean done = framesRenderedCount >= viewerSetting.pictureCount;
-		if (!done) {
-			done = stopWatch.getTime() >= viewerSetting.timeLimitSecs * 1000;
-		}
-		return !done;
+		return true;
 	}
 
 	/**

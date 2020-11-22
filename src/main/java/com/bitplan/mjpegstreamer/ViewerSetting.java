@@ -34,7 +34,6 @@ public class ViewerSetting {
 
 	String title = "preview";
 	int rotation = 0; // 0,90,180 or 270 degrees rotated
-	int pictureCount = Integer.MAX_VALUE; // when to stop - pictureCount*fpsLimit gives the number of seconds to run
 	int fpsLimit = 50; // maximum number of Frames per seconds
 	int timeLimitSecs;
 	int readTimeOut = 1000;
@@ -68,20 +67,6 @@ public class ViewerSetting {
 	 */
 	public void setRotation(int rotation) {
 		this.rotation = rotation;
-	}
-
-	/**
-	 * @return the pictureCount
-	 */
-	public int getPictureCount() {
-		return pictureCount;
-	}
-
-	/**
-	 * @param pictureCount the pictureCount to set
-	 */
-	public void setPictureCount(int pictureCount) {
-		this.pictureCount = pictureCount;
 	}
 
 	/**
