@@ -36,10 +36,12 @@ public class PersonDetectionTestController {
 	@PostMapping("/upload")
 	public String handleFileUpload(@RequestParam("image") MultipartFile file, RedirectAttributes redirectAttributes)
 			throws IOException {
+		logger.info("Handling file upload. Filename: " + file.getName());
 		Image image = new Image();
 		image.setTimestamp(LocalDateTime.now());
 		image.setBytes(file.getBytes());
 		testImageService.setImage(image);
+		logger.info("Uploaded image.");
 
 		redirectAttributes.addFlashAttribute("message",
 				"You successfully uploaded " + file.getOriginalFilename() + "!");
@@ -51,8 +53,10 @@ public class PersonDetectionTestController {
 	@ResponseBody
 	public byte[] getOriginalImage() {
 		if (testImageService.hasImage()) {
+			logger.info("Image uploaded. Returning image bytes.");
 			return testImageService.getImage().getBytes();
 		} else {
+			logger.info("Image not uploaded.");
 			return null;
 		}
 	}
