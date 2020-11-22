@@ -87,10 +87,10 @@ public class PersonDetectionTestController {
 	@ResponseBody
 	public byte[] getOriginalImage() {
 		if (testImageService.hasOriginalImage()) {
-			logger.info("Image uploaded. Returning image bytes.");
+			logger.info("Original image uploaded. Returning image bytes.");
 			return testImageService.getOriginalImage().getBytes();
 		} else {
-			logger.info("Image not uploaded.");
+			logger.info("Original image not uploaded.");
 			return null;
 		}
 	}
@@ -98,11 +98,11 @@ public class PersonDetectionTestController {
 	@GetMapping("/stampedImage")
 	@ResponseBody
 	public byte[] getStampedImage() {
-		if (testImageService.hasOriginalImage()) {
-			logger.info("Image uploaded. Returning image bytes.");
-			return testImageService.getOriginalImage().getBytes();
+		if (testImageService.hasStampedImage()) {
+			logger.info("Stamped image uploaded. Returning image bytes.");
+			return testImageService.getStampedImage().getBytes();
 		} else {
-			logger.info("Image not uploaded.");
+			logger.info("Stamped image not uploaded.");
 			return null;
 		}
 	}
