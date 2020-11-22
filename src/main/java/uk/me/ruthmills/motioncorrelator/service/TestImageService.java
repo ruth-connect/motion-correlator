@@ -4,9 +4,15 @@ import uk.me.ruthmills.motioncorrelator.model.image.Image;
 
 public interface TestImageService {
 
-	public void setImage(Image image);
+	public void setOriginalImage(Image image);
 
-	public Image getImage();
+	public void setStampedImage(Image image);
 
-	public boolean hasImage();
+	public Image getOriginalImage();
+
+	public Image getStampedImage();
+
+	public boolean hasOriginalImage();
+
+	public boolean hasStampedImage();
 }

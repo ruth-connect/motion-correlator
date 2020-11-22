@@ -84,32 +84,34 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 	}
 
 	private void drawFrameVector(Graphics2D graphics2D, VectorDataList vectorData) {
-		Vector frameVector = vectorData.getFrameVector();
-		if (frameVector != null) {
-			int x = frameVector.getStartX();
-			int y = frameVector.getStartY();
-			int endX = frameVector.getEndX();
-			int endY = frameVector.getEndY();
+		if (vectorData != null) {
+			Vector frameVector = vectorData.getFrameVector();
+			if (frameVector != null) {
+				int x = frameVector.getStartX();
+				int y = frameVector.getStartY();
+				int endX = frameVector.getEndX();
+				int endY = frameVector.getEndY();
 
-			graphics2D.setColor(Color.MAGENTA);
+				graphics2D.setColor(Color.MAGENTA);
 
-			double angle = Math.atan2(endY - y, endX - x);
+				double angle = Math.atan2(endY - y, endX - x);
 
-			graphics2D.setStroke(new BasicStroke(2));
+				graphics2D.setStroke(new BasicStroke(2));
 
-			graphics2D.drawLine(x, y, (int) (endX - 10 * Math.cos(angle)), (int) (endY - 10 * Math.sin(angle)));
+				graphics2D.drawLine(x, y, (int) (endX - 10 * Math.cos(angle)), (int) (endY - 10 * Math.sin(angle)));
 
-			AffineTransform tx1 = graphics2D.getTransform();
+				AffineTransform tx1 = graphics2D.getTransform();
 
-			AffineTransform tx2 = (AffineTransform) tx1.clone();
+				AffineTransform tx2 = (AffineTransform) tx1.clone();
 
-			tx2.translate(endX, endY);
-			tx2.rotate(angle - Math.PI / 2);
+				tx2.translate(endX, endY);
+				tx2.rotate(angle - Math.PI / 2);
 
-			graphics2D.setTransform(tx2);
-			graphics2D.fill(ARROW_HEAD);
+				graphics2D.setTransform(tx2);
+				graphics2D.fill(ARROW_HEAD);
 
-			graphics2D.setTransform(tx1);
+				graphics2D.setTransform(tx1);
+			}
 		}
 	}
 }

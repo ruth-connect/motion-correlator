@@ -1,0 +1,31 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<body>
+
+	<div th:if="${message}">
+		<h2 th:text="${message}"/>
+	</div>
+
+	<div>
+		<th:if="${uploaded}">
+			<form method="POST" action="detect">
+				<table>
+					<tr><td></td><td><input type="submit" value="Detect" /></td></tr>
+				</table>
+			</form>
+		</th:if>
+		<a href="/test/upload">Upload new image</a>
+	</div>
+
+	<div th:if="${uploaded && !stamped}">
+		<ul>
+			<img src="originalImage" width="640" height="480"/>
+		</ul>
+	</div>
+	<div th:if="${stamped}">
+		<ul>
+			<img src="stampedImage" width="640" height="480"/>
+		</ul>
+	</div>
+
+</body>
+</html>

@@ -16,7 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
+import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
+import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
 import uk.me.ruthmills.motioncorrelator.service.TestImageService;
 
 @Controller
@@ -26,11 +30,17 @@ public class PersonDetectionTestController {
 	@Autowired
 	private TestImageService testImageService;
 
+	@Autowired
+	private PersonDetectionService personDetectionService;
+
+	@Autowired
+	private ImageStampingService imageStampingService;
+
 	private final Logger logger = LoggerFactory.getLogger(PersonDetectionTestController.class);
 
 	@GetMapping("/upload")
 	public String showUploadForm(Model model) throws IOException {
-		model.addAttribute("uploaded", testImageService.hasImage());
+		model.addAttribute("uploaded", testImageService.hasOriginalImage());
 		return "upload";
 	}
 
@@ -41,7 +51,7 @@ public class PersonDetectionTestController {
 		Image image = new Image();
 		image.setTimestamp(LocalDateTime.now());
 		image.setBytes(file.getBytes());
-		testImageService.setImage(image);
+		testImageService.setOriginalImage(image);
 		logger.info("Uploaded image.");
 
 		redirectAttributes.addFlashAttribute("message",
@@ -50,12 +60,40 @@ public class PersonDetectionTestController {
 		return "redirect:/test/upload";
 	}
 
+	@PostMapping("/detect")
+	public String detect(RedirectAttributes redirectAttributes) throws IOException {
+		Image originalImage = testImageService.getOriginalImage();
+		PersonDetections personDetections = personDetectionService.detectPersons(originalImage);
+		MotionCorrelation motionCorrelation = new MotionCorrelation();
+		motionCorrelation.setImage(originalImage);
+		motionCorrelation.setPersonDetections(personDetections);
+		imageStampingService.stampImage(motionCorrelation);
+		Image stampedImage = motionCorrelation.getStampedImage();
+		testImageService.setStampedImage(stampedImage);
+
+		redirectAttributes.addFlashAttribute("message", "You successfully ran person detection on the image!");
+
+		return "redirect:/test/";
+	}
+
 	@GetMapping("/originalImage")
 	@ResponseBody
 	public byte[] getOriginalImage() {
-		if (testImageService.hasImage()) {
+		if (testImageService.hasOriginalImage()) {
 			logger.info("Image uploaded. Returning image bytes.");
-			return testImageService.getImage().getBytes();
+			return testImageService.getOriginalImage().getBytes();
+		} else {
+			logger.info("Image not uploaded.");
+			return null;
+		}
+	}
+
+	@GetMapping("/stampedImage")
+	@ResponseBody
+	public byte[] getStampedImage() {
+		if (testImageService.hasOriginalImage()) {
+			logger.info("Image uploaded. Returning image bytes.");
+			return testImageService.getOriginalImage().getBytes();
 		} else {
 			logger.info("Image not uploaded.");
 			return null;

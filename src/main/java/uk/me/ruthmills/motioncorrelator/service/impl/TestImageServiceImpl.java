@@ -7,23 +7,42 @@ import uk.me.ruthmills.motioncorrelator.service.TestImageService;
 
 @Service
 public class TestImageServiceImpl implements TestImageService {
-	private Image image;
+	private Image originalImage;
+	private Image stampedImage;
 
 	@Override
-	public void setImage(Image image) {
-		this.image = image;
+	public void setOriginalImage(Image image) {
+		this.originalImage = image;
 	}
 
 	@Override
-	public Image getImage() {
-		if (image == null) {
-			throw new IllegalStateException("Image is null");
+	public void setStampedImage(Image image) {
+		this.stampedImage = image;
+	}
+
+	@Override
+	public Image getOriginalImage() {
+		if (originalImage == null) {
+			throw new IllegalStateException("Original image is null");
 		}
-		return image;
+		return originalImage;
 	}
 
 	@Override
-	public boolean hasImage() {
-		return image != null;
+	public Image getStampedImage() {
+		if (stampedImage == null) {
+			throw new IllegalStateException("Stamped image is null");
+		}
+		return stampedImage;
+	}
+
+	@Override
+	public boolean hasOriginalImage() {
+		return originalImage != null;
+	}
+
+	@Override
+	public boolean hasStampedImage() {
+		return stampedImage != null;
 	}
 }
