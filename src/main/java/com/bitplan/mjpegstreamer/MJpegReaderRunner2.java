@@ -119,6 +119,7 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 						connected = read();
 						// LOGGER.log(Level.INFO,this.getTimeMsg());
 						if (!connected) {
+							debugTrace("not connected any more!", this);
 							break readloop;
 						}
 					}
