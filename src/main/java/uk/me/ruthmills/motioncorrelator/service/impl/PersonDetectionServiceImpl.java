@@ -57,7 +57,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		fullBodyClassifier = createClassifier(currentWorkingDirectory + "/src/main/resources/haarcascade_fullbody.xml");
 
 		hogDescriptor = new HOGDescriptor();
-		hogDescriptor.setSVMDetector(HOGDescriptor.getDefaultPeopleDetector());
+//		hogDescriptor.setSVMDetector(HOGDescriptor.getDefaultPeopleDetector());
 	}
 
 	@Override
