@@ -9,6 +9,10 @@
 		<form method="POST" action="detect">
 			<table>
 				<tr>
+					<td>Image Width (Pixels)</td>
+					<td colspan="2"><input type="text" th:field="${personDetectionParameters.imageWidthPixels}"/></td>
+				</tr>
+				<tr>
 					<td>Hit Threshold</td>
 					<td colspan="2"><input type="text" th:field="${personDetectionParameters.hitThreshold}"/></td>
 				</tr>

@@ -8,6 +8,11 @@ public class PersonDetection {
 
 	private Rect location;
 	private List<Double> weights;
+	private int imageWidthPixels;
+
+	public PersonDetection(int imageWidthPixels) {
+		this.imageWidthPixels = imageWidthPixels;
+	}
 
 	public void setLocation(Rect object) {
 		this.location = object;
@@ -76,6 +81,6 @@ public class PersonDetection {
 	}
 
 	private double convert(double value) {
-		return value * 640d / 400d;
+		return value * 640d / (double) imageWidthPixels;
 	}
 }

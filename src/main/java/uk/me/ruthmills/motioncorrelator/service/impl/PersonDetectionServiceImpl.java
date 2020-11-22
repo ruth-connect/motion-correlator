@@ -45,12 +45,12 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@Override
 	public PersonDetections detectPersons(Image image) {
-		return detectPersons(image, new PersonDetectionParameters(0d, 4, 4, 8, 8, 1.1d));
+		return detectPersons(image, new PersonDetectionParameters(400, 0.03d, 4, 4, 8, 8, 1.1d));
 	}
 
 	@Override
 	public PersonDetections detectPersons(Image image, PersonDetectionParameters personDetectionParameters) {
-		Mat frame = decodeImage(image);
+		Mat frame = decodeImage(image, personDetectionParameters.getImageWidthPixels());
 		logger.info("Frame size: " + frame.size());
 		PersonDetections personDetections = detect(frame, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
@@ -58,14 +58,14 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		return personDetections;
 	}
 
-	private Mat decodeImage(Image image) {
+	private Mat decodeImage(Image image, int imageWidthPixels) {
 		logger.info("Image length in bytes: " + image.getBytes().length);
 		Mat encoded = new Mat(1, image.getBytes().length, CvType.CV_8U);
 		encoded.put(0, 0, image.getBytes());
 		Mat decoded = Imgcodecs.imdecode(encoded, Imgcodecs.IMREAD_COLOR);
 		encoded.release();
 		Mat resized = new Mat();
-		Size size = new Size(400, 300);
+		Size size = new Size(imageWidthPixels, (imageWidthPixels * 3) / 4);
 		Imgproc.resize(decoded, resized, size);
 		decoded.release();
 		return resized;
@@ -85,7 +85,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		List<Rect> locations = foundLocations.toList();
 		List<PersonDetection> personDetections = new ArrayList<>();
 		for (int detectionIndex = 0; detectionIndex < locations.size(); detectionIndex++) {
-			PersonDetection personDetection = new PersonDetection();
+			PersonDetection personDetection = new PersonDetection(personDetectionParameters.getImageWidthPixels());
 			personDetection.setLocation(locations.get(detectionIndex));
 			List<Double> weights = new ArrayList<>();
 			for (int weightIndex = 0; weightIndex < foundWeights.cols(); weightIndex++) {

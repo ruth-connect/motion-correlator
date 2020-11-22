@@ -2,6 +2,7 @@ package uk.me.ruthmills.motioncorrelator.model.persondetection;
 
 public class PersonDetectionParameters {
 
+	private int imageWidthPixels;
 	private double hitThreshold;
 	private int winStrideX;
 	private int winStrideY;
@@ -12,14 +13,22 @@ public class PersonDetectionParameters {
 	public PersonDetectionParameters() {
 	}
 
-	public PersonDetectionParameters(double hitThreshold, int winStrideX, int winStrideY, int paddingX, int paddingY,
-			double scale) {
+	public PersonDetectionParameters(int imageWidthPixels, double hitThreshold, int winStrideX, int winStrideY,
+			int paddingX, int paddingY, double scale) {
 		this.hitThreshold = hitThreshold;
 		this.winStrideX = winStrideX;
 		this.winStrideY = winStrideY;
 		this.paddingX = paddingX;
 		this.paddingY = paddingY;
 		this.scale = scale;
+	}
+
+	public int getImageWidthPixels() {
+		return imageWidthPixels;
+	}
+
+	public void setImageWidthPixels(int imageWidthPixels) {
+		this.imageWidthPixels = imageWidthPixels;
 	}
 
 	public double getHitThreshold() {
@@ -72,7 +81,8 @@ public class PersonDetectionParameters {
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("hitThreshold: " + hitThreshold);
+		stringBuilder.append(", imageWidthPixels: " + imageWidthPixels);
+		stringBuilder.append(", hitThreshold: " + hitThreshold);
 		stringBuilder.append(", winStrideX: " + winStrideX);
 		stringBuilder.append(", winStrideY: " + winStrideY);
 		stringBuilder.append(", paddingX: " + paddingX);
