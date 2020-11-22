@@ -1,14 +1,12 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
-
-import com.bitplan.mjpegstreamer.MJpegReaderRunner2;
-import com.bitplan.mjpegstreamer.ViewerSetting;
-import com.bitplan.mjpegstreamer.ViewerSetting.DebugMode;
 
 import uk.me.ruthmills.motioncorrelator.mjpeg.Renderer;
 import uk.me.ruthmills.motioncorrelator.service.MjpegStreamService;
@@ -16,20 +14,16 @@ import uk.me.ruthmills.motioncorrelator.service.MjpegStreamService;
 @Service
 public class MjpegStreamServiceImpl implements MjpegStreamService {
 
-	private ViewerSetting viewerSetting;
-	private Renderer renderer;
-	private MJpegReaderRunner2 mjpegReader;
+	private Map<String, Renderer> streams = new HashMap<>();
 
 	@PostConstruct
 	public void initialise() throws IOException {
-		viewerSetting = new ViewerSetting();
-		viewerSetting.setDebugMode(DebugMode.Verbose);
-		viewerSetting.setReadTimeOut(5000);
-		renderer = new Renderer();
-		renderer.setViewerSetting(viewerSetting);
-		mjpegReader = new MJpegReaderRunner2();
-		mjpegReader.setViewer(renderer);
-		mjpegReader.init("http://hal9000/mjpeg_stream.php", null, null);
-		mjpegReader.start();
+		addCamera("hal9000");
+		addCamera("themekon");
+		addCamera("bigbrother");
+	}
+
+	private void addCamera(String camera) throws IOException {
+		streams.put(camera, new Renderer(camera));
 	}
 }
