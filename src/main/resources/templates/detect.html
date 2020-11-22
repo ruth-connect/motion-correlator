@@ -28,7 +28,7 @@
 	</div>
 	<div th:if="${personDetections}">
 		<h3>Person Detections</h3>
-		<p th:each="personDetection: ${personDetections.personDetections}">(<span th:text"${personDetection.left}"/>, <span th:text="${personDetection.top}"/>) - (<span th:text="${personDetection.right}"/>, <span th:text="${personDetection.bottom}"/>) = <span th:text="${weight}"/></p>
+		<p th:each="personDetection: ${personDetections.personDetections}">(<span th:text"${personDetection.left}"/>, <span th:text="${personDetection.top}"/>) - (<span th:text="${personDetection.right}"/>, <span th:text="${personDetection.bottom}"/>) = <span th:text="${personDetection.weight}"/></p>
 	</div>
 
 </body>
