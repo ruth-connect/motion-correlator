@@ -27,14 +27,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.StopWatch;
-
-import com.bitplan.mjpegstreamer.ViewerSetting.DebugMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 
@@ -45,7 +42,7 @@ import uk.me.ruthmills.motioncorrelator.model.image.Image;
  * 
  */
 public abstract class MJpegRunnerBase implements MJpegReaderRunner {
-	protected static Logger LOGGER = Logger.getLogger("com.bitplan.mjpegstreamer");
+	private final Logger logger = LoggerFactory.getLogger(MJpegReaderRunner.class);
 
 	protected MJpegRenderer viewer;
 	private String urlString, user, pass;
@@ -60,8 +57,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 
 	protected int framesRenderedCount;
 	// count frames in last second for frame per second calculation
-	private int fpscountIn;
-	private int fpscountOut;
 	// nano time of last frame
 	private long fpsFrameNanoTime;
 	// nano time of the first frame
@@ -71,12 +66,8 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 	private Thread streamReader;
 	protected URLConnection conn;
 
-	// current frame per second
-	private int fpsIn;
-
 	// how many milliseconds to wait for next frame to limit fps
 	private int fpsLimitMillis = 0;
-	private int fpsOut;
 	protected boolean connected = false;
 
 	private long now;
@@ -170,10 +161,7 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 	public BufferedInputStream openConnection() {
 		BufferedInputStream result = null;
 		try {
-			ViewerSetting s = viewer.getViewerSetting();
 			url = new URL(urlString);
-			if (s.debugMode != DebugMode.None)
-				LOGGER.log(Level.INFO, "url: " + urlString + " readTimeOut: " + s.readTimeOut + " msecs");
 			conn = url.openConnection();
 			if (user != null) {
 				String credentials = user + ":" + pass;
@@ -184,13 +172,13 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 				conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
 			}
 			// change the timeout to taste, I like 1 second
-			conn.setReadTimeout(s.readTimeOut);
+			conn.setReadTimeout(5000); // 5 seconds
 			conn.connect();
 			result = new BufferedInputStream(conn.getInputStream(), INPUT_BUFFER_SIZE);
 		} catch (MalformedURLException e) {
-			handle("Invalid URL", e);
+			logger.error("Invalid URL", e);
 		} catch (IOException ioe) {
-			handle("Unable to connect: ", ioe);
+			logger.error("Unable to connect: ", ioe);
 		}
 		return result;
 	}
@@ -215,8 +203,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 	public synchronized void start() {
 		framesReadCount = 0;
 		framesRenderedCount = 0;
-		fpscountIn = 0;
-		fpscountOut = 0;
 		viewer.init();
 		this.streamReader = new Thread(this, "Stream reader");
 		stopWatch = new StopWatch();
@@ -240,26 +226,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 	 */
 	public boolean isAvailable() {
 		return frameAvailable;
-	}
-
-	/**
-	 * handle the given exception with the given title
-	 * 
-	 * @param title
-	 * @param th
-	 */
-	public void handle(String title, Throwable th) {
-		String msg = title + th.getMessage();
-		DebugMode debugMode = viewer.getViewerSetting().debugMode;
-		switch (debugMode) {
-		case FPS:
-		case Verbose:
-			LOGGER.log(Level.WARNING, msg);
-			LOGGER.log(Level.WARNING, ExceptionUtils.getStackTrace(th));
-			break;
-		default:
-		}
-		viewer.showMessage(msg);
 	}
 
 	/**
@@ -314,7 +280,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 			bytesRead += curFrame.length;
 			viewer.renderNextImage(image);
 
-			fpscountIn++;
 			frameAvailable = false;
 
 			// uncomment next line for debug image
@@ -330,10 +295,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 			long secmillisecs = TimeUnit.MILLISECONDS.convert(elapsedSecondTime, TimeUnit.NANOSECONDS);
 			// is a second over?
 			if (secmillisecs > 1000) {
-				fpsIn = fpscountIn;
-				fpsOut = fpscountOut;
-				fpscountOut = 0;
-				fpscountIn = 0;
 				fpssecond = now;
 			}
 			// do not render images that are "too quick/too early"
@@ -341,23 +302,9 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 				// how many frames we actually displayed
 				framesRenderedCount++;
 				fpsFrameNanoTime = now;
-				fpscountOut++;
-			}
-
-			switch (viewer.getViewerSetting().debugMode) {
-			case Verbose:
-				LOGGER.log(Level.INFO, this.getTimeMsg(" after " + framemillisecs + " msecs"));
-				break;
-			case FPS:
-				if (fpssecond == now)
-					LOGGER.log(Level.INFO, this.getTimeMsg(" after " + framemillisecs + " msecs " + fpsIn + "/" + fpsOut
-							+ " Frames per second in/out "));
-				break;
-			case None:
-				break;
 			}
 		} catch (Throwable th) {
-			handle("Error acquiring the frame: ", th);
+			logger.error("Error acquiring the frame: ", th);
 		}
 	}
 

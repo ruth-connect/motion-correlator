@@ -48,21 +48,4 @@ public interface MJpegRenderer {
 	 * @param msg
 	 */
 	public void stop(String msg);
-
-	/**
-	 * show a Message e.g. if something failed
-	 * 
-	 * @param msg
-	 */
-	void showMessage(String msg);
-
-	/**
-	 * @return the viewerSetting
-	 */
-	public ViewerSetting getViewerSetting();
-
-	/**
-	 * @param viewerSetting the viewerSetting to set
-	 */
-	public void setViewerSetting(ViewerSetting viewerSetting);
 }

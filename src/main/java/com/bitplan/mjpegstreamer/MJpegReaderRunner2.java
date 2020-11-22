@@ -25,9 +25,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.util.logging.Level;
 
-import com.bitplan.mjpegstreamer.ViewerSetting.DebugMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Alternative MJpegRunner implementation
@@ -41,6 +41,8 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 	private ByteArrayOutputStream jpgOut;
 
 	public final static String VERSION = "0.1.1";
+
+	private final Logger logger = LoggerFactory.getLogger(MJpegReaderRunner2.class);
 
 	/**
 	 * no args default constructor
@@ -69,17 +71,10 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 				inputStream.close();
 			}
 		} catch (IOException e) {
-			handle("Error closing streams: ", e);
+			logger.error("Error closing streams: ", e);
 		}
-		DebugMode debugMode = DebugMode.None;
-		if (viewer != null)
-			debugMode = viewer.getViewerSetting().debugMode;
-		if ((debugMode == DebugMode.Verbose) && (conn != null))
-			LOGGER.log(Level.INFO, "stopping connection " + conn.getClass().getName());
 		if (conn instanceof HttpURLConnection) {
 			HttpURLConnection httpcon = (HttpURLConnection) conn;
-			if (debugMode == DebugMode.Verbose)
-				LOGGER.log(Level.INFO, "disconnecting " + this.getUrlString());
 			httpcon.disconnect();
 		}
 		super.stop(msg);
@@ -118,11 +113,9 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 			}
 			// end of input stream reached
 			String msg = "end of inputstream " + this.getTimeMsg();
-			if (viewer != null)
-				msg += " read time out is set at " + viewer.getViewerSetting().readTimeOut + " msecs";
 			stop(msg);
 		} catch (IOException e) {
-			handle("I/O Error " + this.getTimeMsg() + ":", e);
+			logger.error("I/O Error " + this.getTimeMsg() + ":", e);
 		}
 	}
 
