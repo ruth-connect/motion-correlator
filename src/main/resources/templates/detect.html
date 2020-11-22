@@ -26,7 +26,7 @@
 			<img src="stampedImage" width="640" height="480"/>
 		</ul>
 	</div>
-	<div th:if="${personDetections}">
+	<div th:if="${stamped}">
 		<h3>Person Detections</h3>
 		<p th:each="personDetection: ${personDetections.personDetections}">(<span th:text="${personDetection.left}"/>, <span th:text="${personDetection.top}"/>) - (<span th:text="${personDetection.right}"/>, <span th:text="${personDetection.bottom}"/>) = <span th:text="${personDetection.weight}"/></p>
 	</div>

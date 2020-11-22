@@ -13,6 +13,7 @@ public class TestImageServiceImpl implements TestImageService {
 	@Override
 	public void setOriginalImage(Image image) {
 		this.originalImage = image;
+		stampedImage = null;
 	}
 
 	@Override
