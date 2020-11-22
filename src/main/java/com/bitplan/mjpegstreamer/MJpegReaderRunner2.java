@@ -84,39 +84,45 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 	 * run me
 	 */
 	public void run() {
-		connect();
-		if (!connected)
-			throw new IllegalStateException("connection lost immediately after connect");
-		int prev = 0;
-		int cur = 0;
+		while (true) {
+			connect();
+			if (connected) {
+				int prev = 0;
+				int cur = 0;
 
-		try {
-			// EOF is -1
-			while (connected && (inputStream != null) && ((cur = inputStream.read()) >= 0)) {
-				if (prev == 0xFF && cur == 0xD8) {
-					jpgOut = new ByteArrayOutputStream(INPUT_BUFFER_SIZE);
-					jpgOut.write((byte) prev);
-				}
-				if (jpgOut != null) {
-					jpgOut.write((byte) cur);
-					if (prev == 0xFF && cur == 0xD9) {
-						synchronized (curFrame) {
-							curFrame = jpgOut.toByteArray();
+				try {
+					// EOF is -1
+					while (connected && (inputStream != null) && ((cur = inputStream.read()) >= 0)) {
+						if (prev == 0xFF && cur == 0xD8) {
+							jpgOut = new ByteArrayOutputStream(INPUT_BUFFER_SIZE);
+							jpgOut.write((byte) prev);
 						}
-						frameAvailable = true;
-						jpgOut.close();
-						// the image is now available - read it
-						read();
+						if (jpgOut != null) {
+							jpgOut.write((byte) cur);
+							if (prev == 0xFF && cur == 0xD9) {
+								synchronized (curFrame) {
+									curFrame = jpgOut.toByteArray();
+								}
+								frameAvailable = true;
+								jpgOut.close();
+								// the image is now available - read it
+								read();
+							}
+						}
+						prev = cur;
 					}
+					// end of input stream reached
+					String msg = "end of inputstream " + this.getTimeMsg();
+					stop(msg);
+				} catch (Exception e) {
+					logger.error("Exception", e);
 				}
-				prev = cur;
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					logger.error("Interrupted Exception", e);
+				}
 			}
-			// end of input stream reached
-			String msg = "end of inputstream " + this.getTimeMsg();
-			stop(msg);
-		} catch (IOException e) {
-			logger.error("I/O Error " + this.getTimeMsg() + ":", e);
 		}
 	}
-
 }
