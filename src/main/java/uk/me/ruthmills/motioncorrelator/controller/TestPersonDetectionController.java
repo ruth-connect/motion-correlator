@@ -22,10 +22,11 @@ import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
 import uk.me.ruthmills.motioncorrelator.service.TestImageService;
+import uk.me.ruthmills.motioncorrelator.service.TestPersonDetectionService;
 
 @Controller
 @RequestMapping("/test")
-public class PersonDetectionTestController {
+public class TestPersonDetectionController {
 
 	@Autowired
 	private TestImageService testImageService;
@@ -36,7 +37,10 @@ public class PersonDetectionTestController {
 	@Autowired
 	private ImageStampingService imageStampingService;
 
-	private final Logger logger = LoggerFactory.getLogger(PersonDetectionTestController.class);
+	@Autowired
+	private TestPersonDetectionService testPersonDetectionService;
+
+	private final Logger logger = LoggerFactory.getLogger(TestPersonDetectionController.class);
 
 	@GetMapping("/upload")
 	public String showUploadForm(Model model) throws IOException {
@@ -64,6 +68,7 @@ public class PersonDetectionTestController {
 	public String showDetectForm(Model model) {
 		model.addAttribute("uploaded", testImageService.hasOriginalImage());
 		model.addAttribute("stamped", testImageService.hasStampedImage());
+		model.addAttribute("personDetections", testPersonDetectionService.getPersonDetections());
 		return "detect";
 	}
 
@@ -77,6 +82,7 @@ public class PersonDetectionTestController {
 		imageStampingService.stampImage(motionCorrelation);
 		Image stampedImage = motionCorrelation.getStampedImage();
 		testImageService.setStampedImage(stampedImage);
+		testPersonDetectionService.setPersonDetections(personDetections);
 
 		redirectAttributes.addFlashAttribute("message", "You successfully ran person detection on the image!");
 
