@@ -11,6 +11,7 @@ public class PersonDetections {
 
 	public PersonDetections(List<PersonDetection> personDetections, long detectionTimeMilliseconds) {
 		this.personDetections = personDetections;
+		this.detectionTimeMilliseconds = detectionTimeMilliseconds;
 	}
 
 	public void setTimestamp(LocalDateTime timestamp) {
