@@ -66,7 +66,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 	private List<PersonDetection> detect(Mat frame) {
 		MatOfRect foundLocations = new MatOfRect();
 		MatOfDouble foundWeights = new MatOfDouble();
-		double hitThreshold = -1.0d;
+		double hitThreshold = 0d;
 		Size winStride = new Size(4, 4);
 		Size padding = new Size(8, 8);
 		double scale = 1.05d;
