@@ -46,11 +46,11 @@ public class ImageServiceImpl implements ImageService {
 		return image;
 	}
 
-	public void writeImage(String camera, Image image) throws IOException {
+	public void writeImage(String camera, Image image, boolean stamped) throws IOException {
 		String path = "/mnt/media/motioncorrelator/" + camera;
 		File file = new File(path);
 		file.mkdir();
-		String filename = image.getTimestamp() + ".jpg";
+		String filename = image.getTimestamp() + (stamped ? "-stamped" : "") + ".jpg";
 		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
 	}
 
