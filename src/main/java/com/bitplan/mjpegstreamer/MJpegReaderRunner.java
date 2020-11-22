@@ -103,10 +103,8 @@ public interface MJpegReaderRunner extends Runnable {
 
 	/**
 	 * read image from current frame buffer
-	 * 
-	 * @return true if reading may continue
 	 */
-	public boolean read();
+	public void read();
 
 	/**
 	 * retrieve the number of milliseconds the reader has run so far

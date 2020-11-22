@@ -56,7 +56,6 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 		if (inputStream != null) {
 			this.inputStream = new BufferedInputStream(inputStream);
 		}
-		debugTrace("init called with input stream: " + inputStream, this);
 	}
 
 	/**
@@ -83,8 +82,6 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 				LOGGER.log(Level.INFO, "disconnecting " + this.getUrlString());
 			httpcon.disconnect();
 		}
-		if (debugMode == DebugMode.Verbose)
-			debugTrace("stop with msg: " + msg, this);
 		super.stop(msg);
 	}
 
@@ -100,7 +97,7 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 
 		try {
 			// EOF is -1
-			readloop: while (connected && (inputStream != null) && ((cur = inputStream.read()) >= 0)) {
+			while (connected && (inputStream != null) && ((cur = inputStream.read()) >= 0)) {
 				if (prev == 0xFF && cur == 0xD8) {
 					jpgOut = new ByteArrayOutputStream(INPUT_BUFFER_SIZE);
 					jpgOut.write((byte) prev);
@@ -113,15 +110,8 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 						}
 						frameAvailable = true;
 						jpgOut.close();
-						// the image is now available - read it and check if we reached the
-						// limit
-						// e.g. maxFrameCount
-						connected = read();
-						// LOGGER.log(Level.INFO,this.getTimeMsg());
-						if (!connected) {
-							debugTrace("not connected any more!", this);
-							break readloop;
-						}
+						// the image is now available - read it
+						read();
 					}
 				}
 				prev = cur;

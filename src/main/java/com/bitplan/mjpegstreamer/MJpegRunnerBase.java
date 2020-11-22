@@ -141,21 +141,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 	public static int INPUT_BUFFER_SIZE = 8192 * 2;
 
 	/**
-	 * show a debug Trace
-	 * 
-	 * @param msg
-	 * @param source -the source Object
-	 */
-	public static void debugTrace(String msg, Object source) {
-		try {
-			throw new Exception("force stack trace");
-		} catch (Exception e) {
-			System.err.println("debug trace for " + source + ":" + msg);
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * limit the number of frames per second
 	 * 
 	 * @param fpsLimit e.g. 10 for one frame each 100 millisecs, 0.5 for one frame
@@ -272,8 +257,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 		case Verbose:
 			LOGGER.log(Level.WARNING, msg);
 			LOGGER.log(Level.WARNING, ExceptionUtils.getStackTrace(th));
-			if (debugMode == DebugMode.Verbose)
-				debugTrace(msg, this);
 			break;
 		default:
 		}
@@ -317,10 +300,8 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 
 	/**
 	 * read
-	 * 
-	 * @return true if we can continue
 	 */
-	public boolean read() {
+	public void read() {
 		try {
 			if (framesReadCount == 0) {
 				this.firstFrameNanoTime = System.nanoTime();
@@ -380,7 +361,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 		} catch (Throwable th) {
 			handle("Error acquiring the frame: ", th);
 		}
-		return true;
 	}
 
 	/**
