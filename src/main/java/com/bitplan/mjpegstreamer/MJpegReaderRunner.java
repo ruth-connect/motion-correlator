@@ -64,7 +64,7 @@ public interface MJpegReaderRunner extends Runnable {
 	public void setViewer(MJpegRenderer viewer);
 
 	/**
-	 * get teh viewer
+	 * get the viewer
 	 * 
 	 * @return the viewer
 	 */
