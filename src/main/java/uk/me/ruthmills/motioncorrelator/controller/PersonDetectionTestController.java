@@ -30,6 +30,7 @@ public class PersonDetectionTestController {
 
 	@GetMapping("/upload")
 	public String showUploadForm(Model model) throws IOException {
+		model.addAttribute("uploaded", testImageService.hasImage());
 		return "upload";
 	}
 
