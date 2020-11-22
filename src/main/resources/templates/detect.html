@@ -10,31 +10,25 @@
 			<table>
 				<tr>
 					<td>Hit Threshold</td>
-					<td><input type="text" th:field="${personDetectionParameters.hitThreshold}"/></td>
+					<td colspan="2"><input type="text" th:field="${personDetectionParameters.hitThreshold}"/></td>
 				</tr>
 				<tr>
-					<td>Win Stride X</td>
+					<td>Win Stride</td>
 					<td><input type="text" th:field="${personDetectionParameters.winStrideX}"/></td>
-				</tr>
-				<tr>
-					<td>Win Stride Y</td>
 					<td><input type="text" th:field="${personDetectionParameters.winStrideY}"/></td>
 				</tr>
 				<tr>
-					<td>Padding X</td>
+					<td>Padding</td>
 					<td><input type="text" th:field="${personDetectionParameters.paddingX}"/></td>
-				</tr>
-				<tr>
-					<td>Padding Y</td>
 					<td><input type="text" th:field="${personDetectionParameters.paddingY}"/></td>
 				</tr>
 				<tr>
-					<td>Scale</td>
+					<td colspan="2">Scale</td>
 					<td><input type="text" th:field="${personDetectionParameters.scale}"/></td>
 				</tr>
 				<tr>
-					<td></td>
-					<td><input type="submit" value="Detect"/></td>
+					<td colspan="2"></td>
+					<td align="right"><input type="submit" value="Detect"/></td>
 				</tr>
 			</table>
 		</form>
