@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetectionParameters;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
@@ -68,14 +69,19 @@ public class TestPersonDetectionController {
 	public String showDetectForm(Model model) {
 		model.addAttribute("uploaded", testImageService.hasOriginalImage());
 		model.addAttribute("stamped", testImageService.hasStampedImage());
+		model.addAttribute("personDetectionParameters", testPersonDetectionService.getPersonDetectionParameters());
 		model.addAttribute("personDetections", testPersonDetectionService.getPersonDetections());
 		return "detect";
 	}
 
 	@PostMapping("/detect")
-	public String detect(RedirectAttributes redirectAttributes) throws IOException {
+	public String detect(PersonDetectionParameters personDetectionParameters, RedirectAttributes redirectAttributes)
+			throws IOException {
+		logger.info("Received person detection parameters: " + personDetectionParameters);
+		testPersonDetectionService.setPersonDetectionParameters(personDetectionParameters);
 		Image originalImage = testImageService.getOriginalImage();
-		PersonDetections personDetections = personDetectionService.detectPersons(originalImage);
+		PersonDetections personDetections = personDetectionService.detectPersons(originalImage,
+				testPersonDetectionService.getPersonDetectionParameters());
 		MotionCorrelation motionCorrelation = new MotionCorrelation();
 		motionCorrelation.setImage(originalImage);
 		motionCorrelation.setPersonDetections(personDetections);

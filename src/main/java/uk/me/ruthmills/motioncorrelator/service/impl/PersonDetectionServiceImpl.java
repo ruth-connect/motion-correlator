@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetectionParameters;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
 
@@ -41,11 +42,16 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@Override
 	public PersonDetections detectPersons(Image image) {
+		return detectPersons(image, new PersonDetectionParameters(0d, 4, 4, 8, 8, 1.05d));
+	}
+
+	@Override
+	public PersonDetections detectPersons(Image image, PersonDetectionParameters personDetectionParameters) {
 		Mat frame = decodeImage(image);
 		logger.info("Frame size: " + frame.size());
 		PersonDetections personDetections = new PersonDetections();
 		personDetections.setTimestamp(image.getTimestamp());
-		personDetections.setPersonDetections(detect(frame));
+		personDetections.setPersonDetections(detect(frame, personDetectionParameters));
 		frame.release();
 		return personDetections;
 	}
@@ -63,13 +69,13 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		return resized;
 	}
 
-	private List<PersonDetection> detect(Mat frame) {
+	private List<PersonDetection> detect(Mat frame, PersonDetectionParameters personDetectionParameters) {
 		MatOfRect foundLocations = new MatOfRect();
 		MatOfDouble foundWeights = new MatOfDouble();
-		double hitThreshold = 0d;
-		Size winStride = new Size(4, 4);
-		Size padding = new Size(8, 8);
-		double scale = 1.05d;
+		double hitThreshold = personDetectionParameters.getHitThreshold();
+		Size winStride = new Size(personDetectionParameters.getWinStrideX(), personDetectionParameters.getWinStrideY());
+		Size padding = new Size(personDetectionParameters.getPaddingX(), personDetectionParameters.getPaddingY());
+		double scale = personDetectionParameters.getScale();
 		hogDescriptor.detectMultiScale(frame, foundLocations, foundWeights, hitThreshold, winStride, padding, scale);
 		List<Rect> locations = foundLocations.toList();
 		List<PersonDetection> personDetections = new ArrayList<>();
