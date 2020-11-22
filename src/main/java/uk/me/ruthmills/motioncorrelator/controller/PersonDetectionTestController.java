@@ -36,23 +36,15 @@ public class PersonDetectionTestController {
 	@PostMapping("/upload")
 	public String handleFileUpload(@RequestParam("image") MultipartFile file, RedirectAttributes redirectAttributes)
 			throws IOException {
-		try {
-			Image image = new Image();
-			image.setTimestamp(LocalDateTime.now());
-			image.setBytes(file.getBytes());
-			testImageService.setImage(image);
+		Image image = new Image();
+		image.setTimestamp(LocalDateTime.now());
+		image.setBytes(file.getBytes());
+		testImageService.setImage(image);
 
-			redirectAttributes.addFlashAttribute("message",
-					"You successfully uploaded " + file.getOriginalFilename() + "!");
+		redirectAttributes.addFlashAttribute("message",
+				"You successfully uploaded " + file.getOriginalFilename() + "!");
 
-			return "redirect:/";
-		} catch (IOException ex) {
-			logger.error("IOException", ex);
-			throw ex;
-		} catch (RuntimeException ex) {
-			logger.error("RuntimeException", ex);
-			throw ex;
-		}
+		return "redirect:/test/upload";
 	}
 
 	@GetMapping("/originalImage")
