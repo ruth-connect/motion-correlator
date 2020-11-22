@@ -50,8 +50,26 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 	}
 
 	private void drawPersonDetections(Graphics2D graphics2D, PersonDetections personDetections) {
-		for (PersonDetection personDetection : personDetections.getPersonDetections()) {
-			drawPersonDetection(graphics2D, personDetection, Color.CYAN);
+		for (int i = 0; i < personDetections.getPersonDetections().size(); i++) {
+			Color color = getPersonDetectionColor(i);
+			drawPersonDetection(graphics2D, personDetections.getPersonDetections().get(i), color);
+		}
+	}
+
+	private Color getPersonDetectionColor(int i) {
+		switch (i % 6) {
+		case 0:
+			return Color.RED;
+		case 1:
+			return Color.ORANGE;
+		case 2:
+			return Color.YELLOW;
+		case 3:
+			return Color.GREEN;
+		case 4:
+			return Color.CYAN;
+		default:
+			return Color.BLUE;
 		}
 	}
 
