@@ -8,18 +8,20 @@ public class PersonDetectionParameters {
 	private int paddingX;
 	private int paddingY;
 	private double scale;
+	private double finalThreshold;
 
 	public PersonDetectionParameters() {
 	}
 
 	public PersonDetectionParameters(double hitThreshold, int winStrideX, int winStrideY, int paddingX, int paddingY,
-			double scale) {
+			double scale, double finalThreshold) {
 		this.hitThreshold = hitThreshold;
 		this.winStrideX = winStrideX;
 		this.winStrideY = winStrideY;
 		this.paddingX = paddingX;
 		this.paddingY = paddingY;
 		this.scale = scale;
+		this.finalThreshold = finalThreshold;
 	}
 
 	public double getHitThreshold() {
@@ -78,6 +80,15 @@ public class PersonDetectionParameters {
 		stringBuilder.append(", paddingX: " + paddingX);
 		stringBuilder.append(", paddingY: " + paddingY);
 		stringBuilder.append(", scale: " + scale);
+		stringBuilder.append(", finalThreshold: " + finalThreshold);
 		return stringBuilder.toString();
+	}
+
+	public double getFinalThreshold() {
+		return finalThreshold;
+	}
+
+	public void setFinalThreshold(double finalThreshold) {
+		this.finalThreshold = finalThreshold;
 	}
 }

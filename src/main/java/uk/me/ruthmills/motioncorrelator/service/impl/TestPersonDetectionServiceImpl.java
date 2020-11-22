@@ -15,7 +15,7 @@ public class TestPersonDetectionServiceImpl implements TestPersonDetectionServic
 
 	@PostConstruct
 	public void initialise() {
-		personDetectionParameters = new PersonDetectionParameters(0d, 4, 4, 8, 8, 1.1d);
+		personDetectionParameters = new PersonDetectionParameters(0d, 4, 4, 8, 8, 1.1d, 0d);
 	}
 
 	public void setPersonDetectionParameters(PersonDetectionParameters personDetectionParameters) {
