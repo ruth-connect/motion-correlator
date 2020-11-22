@@ -43,7 +43,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@Override
 	public PersonDetections detectPersons(Image image) {
-		return detectPersons(image, new PersonDetectionParameters(0.1d, 4, 4, 8, 8, 1.05d));
+		return detectPersons(image, new PersonDetectionParameters(0.2d, 4, 4, 8, 8, 1.05d));
 	}
 
 	@Override
