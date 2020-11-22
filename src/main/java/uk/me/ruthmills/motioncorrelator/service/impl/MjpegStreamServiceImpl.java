@@ -29,7 +29,7 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 		renderer.setViewerSetting(viewerSetting);
 		mjpegReader = new MJpegReaderRunner2();
 		mjpegReader.setViewer(renderer);
-		mjpegReader.init("http://192.168.1.115/mjpeg_stream.php", null, null);
-		mjpegReader.start();
+//		mjpegReader.init("http://hal9000/mjpeg_stream.php", null, null);
+//		mjpegReader.start();
 	}
 }
