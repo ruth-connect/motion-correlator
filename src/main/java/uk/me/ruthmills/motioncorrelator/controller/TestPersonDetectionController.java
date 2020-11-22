@@ -61,7 +61,7 @@ public class TestPersonDetectionController {
 		redirectAttributes.addFlashAttribute("message",
 				"You successfully uploaded " + file.getOriginalFilename() + "!");
 
-		return "redirect:/test/upload";
+		return "redirect:/test/";
 	}
 
 	@GetMapping("/")
