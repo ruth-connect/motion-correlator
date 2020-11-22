@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +35,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import com.bitplan.mjpegstreamer.ViewerSetting.DebugMode;
+
+import uk.me.ruthmills.motioncorrelator.model.image.Image;
 
 /**
  * base class for MJPegRunners
@@ -80,11 +83,7 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 
 	private StopWatch stopWatch;
 
-	private MJPeg mjpeg;
-
 	public MJpegRunnerBase() {
-		// FIXME - should be constructor parameter
-		this.mjpeg = new MJPegImpl();
 	}
 
 	/**
@@ -309,11 +308,11 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 				this.fpssecond = fpsFrameNanoTime;
 				this.bytesRead = 0;
 			}
-			JPegImpl jpeg = new JPegImpl(mjpeg, framesReadCount++, bytesRead, curFrame);
+			Image image = new Image();
+			image.setTimestamp(LocalDateTime.now());
+			image.setBytes(curFrame);
 			bytesRead += curFrame.length;
-			// add afert having bytesRead increased so that add will calculate length
-			// correctly
-			mjpeg.add(jpeg, bytesRead);
+			viewer.renderNextImage(image);
 
 			fpscountIn++;
 			frameAvailable = false;
@@ -331,7 +330,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 			long secmillisecs = TimeUnit.MILLISECONDS.convert(elapsedSecondTime, TimeUnit.NANOSECONDS);
 			// is a second over?
 			if (secmillisecs > 1000) {
-				showProgress(mjpeg);
 				fpsIn = fpscountIn;
 				fpsOut = fpscountOut;
 				fpscountOut = 0;
@@ -361,15 +359,6 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 		} catch (Throwable th) {
 			handle("Error acquiring the frame: ", th);
 		}
-	}
-
-	/**
-	 * show the Progress to be overridden in implementation as you see fit
-	 * 
-	 * @param mjpeg - the video to show the progress for
-	 */
-	public void showProgress(MJPeg mjpeg) {
-		viewer.showProgress(mjpeg);
 	}
 
 	/**

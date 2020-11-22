@@ -1,15 +1,12 @@
 package uk.me.ruthmills.motioncorrelator.mjpeg;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bitplan.mjpegstreamer.JPeg;
-import com.bitplan.mjpegstreamer.MJPeg;
 import com.bitplan.mjpegstreamer.MJpegReaderRunner2;
 import com.bitplan.mjpegstreamer.MJpegRenderer;
 import com.bitplan.mjpegstreamer.ViewerSetting;
@@ -44,10 +41,7 @@ public class Renderer implements MJpegRenderer {
 	}
 
 	@Override
-	public void renderNextImage(JPeg jpeg) {
-		Image image = new Image();
-		image.setTimestamp(LocalDateTime.now());
-		image.setBytes(jpeg.getImage());
+	public void renderNextImage(Image image) {
 		images.addLast(image);
 		if (size >= MAX_QUEUE_SIZE) {
 			images.removeFirst();
@@ -73,9 +67,5 @@ public class Renderer implements MJpegRenderer {
 	@Override
 	public void setViewerSetting(ViewerSetting viewerSetting) {
 		this.viewerSetting = viewerSetting;
-	}
-
-	@Override
-	public void showProgress(MJPeg mjpeg) {
 	}
 }

@@ -20,6 +20,8 @@
  */
 package com.bitplan.mjpegstreamer;
 
+import uk.me.ruthmills.motioncorrelator.model.image.Image;
+
 /**
  * generic MJpegRendering interface
  * 
@@ -36,9 +38,9 @@ public interface MJpegRenderer {
 	/**
 	 * render the next image
 	 * 
-	 * @param jpeg
+	 * @param image
 	 */
-	public void renderNextImage(JPeg jpeg);
+	public void renderNextImage(Image image);
 
 	/**
 	 * stop rendering
@@ -63,12 +65,4 @@ public interface MJpegRenderer {
 	 * @param viewerSetting the viewerSetting to set
 	 */
 	public void setViewerSetting(ViewerSetting viewerSetting);
-
-	/**
-	 * show the Progress
-	 * 
-	 * @param MJPeg mjpeg
-	 */
-	public void showProgress(MJPeg mjpeg);
-
 }
