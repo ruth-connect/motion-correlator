@@ -17,7 +17,7 @@ public class PersonDetectionParameters {
 		winStrideY = 4;
 		paddingX = 8;
 		paddingY = 8;
-		scale = 1.1d;
+		scale = 1.09d;
 	}
 
 	public PersonDetectionParameters(int imageWidthPixels, double hitThreshold, int winStrideX, int winStrideY,
