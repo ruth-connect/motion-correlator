@@ -40,7 +40,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 	public void initialise() throws IOException {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		hogDescriptor = new HOGDescriptor();
-		hogDescriptor.setSVMDetector(HOGDescriptor.getDefaultPeopleDetector());
+		hogDescriptor.setSVMDetector(HOGDescriptor.getDaimlerPeopleDetector());
 	}
 
 	@Override
