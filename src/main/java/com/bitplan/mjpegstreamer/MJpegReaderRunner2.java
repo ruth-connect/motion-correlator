@@ -53,10 +53,10 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 	public void init(InputStream inputStream) throws IOException {
 		this.curFrame = new byte[0];
 		this.frameAvailable = false;
-		if (inputStream != null)
+		if (inputStream != null) {
 			this.inputStream = new BufferedInputStream(inputStream);
-		// if (debug)
-		// debugTrace("init called");
+		}
+		debugTrace("init called with input stream: " + inputStream, this);
 	}
 
 	/**
