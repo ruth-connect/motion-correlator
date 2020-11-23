@@ -148,8 +148,8 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 			drawTimestamp(graphics2D, vectorData.getTimestamp(), 1, Color.MAGENTA);
 			Vector frameVector = vectorData.getFrameVector();
 			if (frameVector != null) {
-				drawText(graphics2D, "Mag: " + frameVector.getMagnitude(), 570, 410, Color.MAGENTA);
-				drawText(graphics2D, "Cnt: " + frameVector.getCount(), 570, 410, Color.MAGENTA);
+				drawText(graphics2D, "Mag: " + frameVector.getMagnitude(), 530, 410, Color.MAGENTA);
+				drawText(graphics2D, "Cnt: " + frameVector.getCount(), 530, 450, Color.MAGENTA);
 			}
 		}
 	}
