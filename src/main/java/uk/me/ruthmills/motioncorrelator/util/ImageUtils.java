@@ -8,17 +8,12 @@ import org.opencv.core.MatOfByte;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 
 public class ImageUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(ImageUtils.class);
-
 	public static Mat decodeImage(Image image) {
-		logger.info("Image length in bytes: " + image.getBytes().length);
 		Mat encoded = new Mat(1, image.getBytes().length, CvType.CV_8U);
 		encoded.put(0, 0, image.getBytes());
 		Mat decoded = Imgcodecs.imdecode(encoded, Imgcodecs.IMREAD_GRAYSCALE);
