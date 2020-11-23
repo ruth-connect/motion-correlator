@@ -3,6 +3,7 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -25,7 +26,7 @@ public class AverageFrameServiceImpl implements AverageFrameService {
 	@Override
 	public void addCurrentFrame(String camera) {
 		Image image = mjpegStreamService.getLatestImage(camera);
-		Mat frame = ImageUtils.decodeImage(image);
+		Mat frame = ImageUtils.decodeImage(image, CvType.CV_32F);
 		Mat blurredFrame = new Mat();
 		Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 		frame.release();
