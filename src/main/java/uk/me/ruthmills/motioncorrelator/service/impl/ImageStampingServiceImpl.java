@@ -94,6 +94,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 			return Color.GREEN;
 		default:
 			return Color.CYAN;
+		}
 	}
 
 	private void drawPersonDetection(Graphics2D graphics2D, PersonDetection personDetection, Color color) {
