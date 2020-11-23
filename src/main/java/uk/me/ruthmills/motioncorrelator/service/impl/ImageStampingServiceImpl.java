@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
@@ -71,7 +72,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		for (int i = 0; i < personDetections.getPersonDetections().size(); i++) {
 			Color color = getPersonDetectionColor(i);
 			BigDecimal weight = new BigDecimal(personDetections.getPersonDetections().get(i).getWeight());
-			drawText(graphics2D, weight.setScale(3, BigDecimal.ROUND_HALF_UP).toString(), 10, 30 + (i * 40), color);
+			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 10, 30 + (i * 40), color);
 		}
 	}
 
