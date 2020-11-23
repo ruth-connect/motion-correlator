@@ -79,7 +79,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		Core.absdiff(blurredFrame, absAverageFrame, frameDelta);
 		blurredFrame.release();
 		absAverageFrame.release();
-		PersonDetections personDetections = detect(absAverageFrame, personDetectionParameters);
+		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
 		Image delta = ImageUtils.encodeImage(frameDelta);
 		frameDelta.release();
