@@ -74,7 +74,6 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		Mat frameDelta = new Mat();
 		Core.absdiff(frame, absAverageFrame, frameDelta);
 		frame.release();
-		absAverageFrame.release();
 		PersonDetections personDetections = detect(absAverageFrame, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
 		absAverageFrame.release();
