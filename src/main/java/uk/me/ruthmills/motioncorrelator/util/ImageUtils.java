@@ -21,9 +21,9 @@ public class ImageUtils {
 		return decodeImage(image, CvType.CV_8U);
 	}
 
-	public static Mat decodeImage(Image image, CvType cvType) {
+	public static Mat decodeImageWithCvType(Image image, int cvType) {
 		logger.info("Image length in bytes: " + image.getBytes().length);
-		Mat encoded = new Mat(1, image.getBytes().length, CvType.CV_8U);
+		Mat encoded = new Mat(1, image.getBytes().length, cvType);
 		encoded.put(0, 0, image.getBytes());
 		Mat decoded = Imgcodecs.imdecode(encoded, Imgcodecs.IMREAD_GRAYSCALE);
 		encoded.release();
