@@ -2,6 +2,7 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,19 +41,26 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 	public Image getImage(String camera, LocalDateTime timestamp) {
 		Deque<Image> images = streams.get(camera).getImages();
 		Iterator<Image> iterator = images.descendingIterator();
-		Image image = null;
+		Image previousImage = null;
 		while (iterator.hasNext()) {
 			Image currentImage = iterator.next();
-			if (currentImage.getTimestamp().isAfter(timestamp)) {
-				image = currentImage;
-			} else {
-				if (image != null) {
-					return image;
-				} else {
+			if (currentImage.getTimestamp().isBefore(timestamp)) {
+				if (previousImage == null) {
 					return currentImage;
 				}
+				long timestampMillis = timestamp.toInstant(ZoneOffset.UTC).toEpochMilli();
+				long currentMillis = currentImage.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli();
+				long previousMillis = currentImage.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli();
+				long timeDifferenceCurrent = Math.abs(timestampMillis - currentMillis);
+				long timeDifferencePrevious = Math.abs(timestampMillis - previousMillis);
+				if (timeDifferenceCurrent <= timeDifferencePrevious) {
+					return currentImage;
+				} else {
+					return previousImage;
+				}
 			}
+			previousImage = currentImage;
 		}
-		return image;
+		return previousImage;
 	}
 }
