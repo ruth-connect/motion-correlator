@@ -85,20 +85,15 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 	}
 
 	private Color getPersonDetectionColor(int i) {
-		switch (i % 6) {
+		switch (i % 4) {
 		case 0:
-			return Color.RED;
+			return Color.PINK;
 		case 1:
-			return Color.ORANGE;
-		case 2:
 			return Color.YELLOW;
-		case 3:
+		case 2:
 			return Color.GREEN;
-		case 4:
-			return Color.CYAN;
 		default:
-			return Color.BLUE;
-		}
+			return Color.CYAN;
 	}
 
 	private void drawPersonDetection(Graphics2D graphics2D, PersonDetection personDetection, Color color) {
