@@ -2,6 +2,7 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
@@ -10,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 
 import org.springframework.stereotype.Service;
@@ -33,6 +35,13 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		ARROW_HEAD.addPoint(5, -10);
 	}
 
+	private Font font;
+
+	@PostConstruct
+	public void initialise() {
+		font = new Font("Arial", Font.BOLD, 12);
+	}
+
 	@Override
 	public void stampImage(MotionCorrelation motionCorrelation) throws IOException {
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(motionCorrelation.getImage().getBytes());
@@ -40,6 +49,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		Graphics2D graphics2D = bufferedImage.createGraphics();
 		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
 		drawFrameVector(graphics2D, motionCorrelation.getVectorData());
+		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
 		graphics2D.dispose();
 		Image stampedImage = new Image();
 		stampedImage.setTimestamp(motionCorrelation.getImage().getTimestamp());
@@ -53,6 +63,14 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		for (int i = 0; i < personDetections.getPersonDetections().size(); i++) {
 			Color color = getPersonDetectionColor(i);
 			drawPersonDetection(graphics2D, personDetections.getPersonDetections().get(i), color);
+		}
+	}
+
+	private void drawPersonDetectionWeights(Graphics2D graphics2D, PersonDetections personDetections) {
+		for (int i = 0; i < personDetections.getPersonDetections().size(); i++) {
+			Color color = getPersonDetectionColor(i);
+			drawText(graphics2D, Double.toString(personDetections.getPersonDetections().get(i).getWeight()), 10,
+					10 + (i * 40), color);
 		}
 	}
 
@@ -113,5 +131,11 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 				graphics2D.setTransform(tx1);
 			}
 		}
+	}
+
+	private void drawText(Graphics2D graphics2D, String text, int x, int y, Color color) {
+		graphics2D.setFont(font);
+		graphics2D.setColor(color);
+		graphics2D.drawString(text, x, y);
 	}
 }
