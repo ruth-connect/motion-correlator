@@ -76,6 +76,9 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		frame.release();
 		PersonDetections personDetections = detect(absAverageFrame, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
+		Image delta = ImageUtils.encodeImage(frameDelta);
+		delta.setTimestamp(image.getTimestamp());
+		personDetections.setDelta(delta);
 		absAverageFrame.release();
 		return personDetections;
 	}

@@ -3,11 +3,14 @@ package uk.me.ruthmills.motioncorrelator.model.persondetection;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import uk.me.ruthmills.motioncorrelator.model.image.Image;
+
 public class PersonDetections {
 
 	private LocalDateTime timestamp;
 	private List<PersonDetection> personDetections;
 	private long detectionTimeMilliseconds;
+	private Image delta;
 
 	public PersonDetections(List<PersonDetection> personDetections, long detectionTimeMilliseconds) {
 		this.personDetections = personDetections;
@@ -32,6 +35,14 @@ public class PersonDetections {
 
 	public long getDetectionTimeMilliseconds() {
 		return detectionTimeMilliseconds;
+	}
+
+	public void setDelta(Image delta) {
+		this.delta = delta;
+	}
+
+	public Image getDelta() {
+		return delta;
 	}
 
 	public String toString() {

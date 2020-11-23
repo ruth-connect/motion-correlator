@@ -54,6 +54,7 @@ public class ImageServiceImpl implements ImageService {
 		return image;
 	}
 
+	@Override
 	public void writeImage(String camera, Image image, PersonDetections personDetections, boolean stamped)
 			throws IOException {
 		LocalDateTime timestamp = image.getTimestamp();
@@ -65,6 +66,18 @@ public class ImageServiceImpl implements ImageService {
 				+ new BigDecimal(detectionsList.get(0).getWeight()).setScale(3, RoundingMode.HALF_UP) : "";
 		String filename = timestamp + (stamped ? ("-stamped" + detections) : "") + ".jpg";
 		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
+	}
+
+	@Override
+	public void writeDeltaImage(String camera, Image delta) throws IOException {
+		if (delta != null) {
+			LocalDateTime timestamp = delta.getTimestamp();
+			String path = "/mnt/media/motioncorrelator/" + camera + timestamp.format(DATE_TIME_FORMAT);
+			File file = new File(path);
+			file.mkdirs();
+			String filename = timestamp + "-delta" + ".jpg";
+			Files.write(FileSystems.getDefault().getPath(path, filename), delta.getBytes(), StandardOpenOption.CREATE);
+		}
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {
