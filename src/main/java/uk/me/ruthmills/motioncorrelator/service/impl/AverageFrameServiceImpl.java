@@ -38,6 +38,7 @@ public class AverageFrameServiceImpl implements AverageFrameService {
 			averageFrames.put(camera, blurredFrame);
 		} else {
 			Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.5d);
+			blurredFrame.release();
 		}
 	}
 
