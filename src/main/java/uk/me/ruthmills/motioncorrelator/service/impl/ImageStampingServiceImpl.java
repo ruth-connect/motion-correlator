@@ -12,6 +12,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
@@ -29,6 +31,7 @@ import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 @Service
 public class ImageStampingServiceImpl implements ImageStampingService {
 
+	private static DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 	private static final Color RED = new Color(255, 48, 48);
 	private static final Color ORANGE = new Color(255, 137, 54);
 	private static final Color BLUE = new Color(92, 87, 255);
@@ -55,6 +58,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
 		drawFrameVector(graphics2D, motionCorrelation.getVectorData());
 		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
+		drawTimestamp(graphics2D, motionCorrelation.getImage().getTimestamp(), 0, Color.WHITE);
 		graphics2D.dispose();
 		Image stampedImage = new Image();
 		stampedImage.setTimestamp(motionCorrelation.getImage().getTimestamp());
@@ -75,14 +79,6 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		for (int i = 0; i < personDetections.getPersonDetections().size(); i++) {
 			Color color = getPersonDetectionColor(i);
 			BigDecimal weight = new BigDecimal(personDetections.getPersonDetections().get(i).getWeight());
-			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 9, 29 + (i * 40), Color.BLACK);
-			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 9, 30 + (i * 40), Color.BLACK);
-			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 9, 31 + (i * 40), Color.BLACK);
-			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 10, 29 + (i * 40), Color.BLACK);
-			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 10, 31 + (i * 40), Color.BLACK);
-			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 11, 29 + (i * 40), Color.BLACK);
-			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 11, 30 + (i * 40), Color.BLACK);
-			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 11, 31 + (i * 40), Color.BLACK);
 			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 10, 30 + (i * 40), color);
 		}
 	}
@@ -146,8 +142,21 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		}
 	}
 
+	private void drawTimestamp(Graphics2D graphics2D, LocalDateTime timestamp, int index, Color color) {
+		drawText(graphics2D, timestamp.format(TIME_FORMAT), 500, 30 + (index * 40), color);
+	}
+
 	private void drawText(Graphics2D graphics2D, String text, int x, int y, Color color) {
 		graphics2D.setFont(font);
+		graphics2D.setColor(Color.BLACK);
+		graphics2D.drawString(text, x - 1, y - 1);
+		graphics2D.drawString(text, x, y - 1);
+		graphics2D.drawString(text, x + 1, y - 1);
+		graphics2D.drawString(text, x - 1, y);
+		graphics2D.drawString(text, x + 1, y);
+		graphics2D.drawString(text, x - 1, y + 1);
+		graphics2D.drawString(text, x, y + 1);
+		graphics2D.drawString(text, x + 1, y + 1);
 		graphics2D.setColor(color);
 		graphics2D.drawString(text, x, y);
 	}
