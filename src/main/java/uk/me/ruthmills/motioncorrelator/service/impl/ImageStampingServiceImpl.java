@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
@@ -39,7 +40,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 
 	@PostConstruct
 	public void initialise() {
-		font = new Font("Arial", Font.BOLD, 12);
+		font = new Font("Arial", Font.BOLD, 13);
 	}
 
 	@Override
@@ -69,8 +70,8 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 	private void drawPersonDetectionWeights(Graphics2D graphics2D, PersonDetections personDetections) {
 		for (int i = 0; i < personDetections.getPersonDetections().size(); i++) {
 			Color color = getPersonDetectionColor(i);
-			drawText(graphics2D, Double.toString(personDetections.getPersonDetections().get(i).getWeight()), 10,
-					10 + (i * 40), color);
+			BigDecimal weight = new BigDecimal(personDetections.getPersonDetections().get(i).getWeight());
+			drawText(graphics2D, weight.setScale(3).toString(), 10, 30 + (i * 40), color);
 		}
 	}
 
