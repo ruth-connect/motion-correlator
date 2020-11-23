@@ -19,10 +19,10 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 @Service
 public class AverageFrameServiceImpl implements AverageFrameService {
 
-	private Map<String, Mat> averageFrames = new ConcurrentHashMap<>();
-
 	@Autowired
 	private MjpegStreamService mjpegStreamService;
+
+	private Map<String, Mat> averageFrames = new ConcurrentHashMap<>();
 
 	@Override
 	public void addCurrentFrame(String camera) {
@@ -50,5 +50,10 @@ public class AverageFrameServiceImpl implements AverageFrameService {
 			return null;
 		}
 		return ImageUtils.encodeImage(averageFrame);
+	}
+
+	@Override
+	public Mat getAverageFrameMat(String camera) {
+		return averageFrames.get(camera);
 	}
 }

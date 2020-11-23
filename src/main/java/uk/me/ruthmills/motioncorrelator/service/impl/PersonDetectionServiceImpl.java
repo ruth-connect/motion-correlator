@@ -18,17 +18,22 @@ import org.opencv.core.Size;
 import org.opencv.objdetect.HOGDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetectionParameters;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
+import uk.me.ruthmills.motioncorrelator.service.AverageFrameService;
 import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 @Service
 public class PersonDetectionServiceImpl implements PersonDetectionService {
+
+	@Autowired
+	private AverageFrameService averageFrameService;
 
 	private HOGDescriptor hogDescriptor;
 
@@ -53,6 +58,26 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		PersonDetections personDetections = detect(frame, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
 		frame.release();
+		return personDetections;
+	}
+
+	@Override
+	public PersonDetections detectPersonsFromDelta(String camera, Image image) {
+		Mat averageFrame = averageFrameService.getAverageFrameMat(camera);
+		if (averageFrame == null) {
+			return detectPersons(image); // fall back to just detecting from image.
+		}
+		PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
+		Mat frame = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
+		Mat absAverageFrame = new Mat();
+		Core.convertScaleAbs(averageFrame, absAverageFrame);
+		Mat frameDelta = new Mat();
+		Core.absdiff(frame, absAverageFrame, frameDelta);
+		frame.release();
+		absAverageFrame.release();
+		PersonDetections personDetections = detect(absAverageFrame, personDetectionParameters);
+		personDetections.setTimestamp(image.getTimestamp());
+		absAverageFrame.release();
 		return personDetections;
 	}
 

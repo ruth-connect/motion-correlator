@@ -9,4 +9,6 @@ public interface PersonDetectionService {
 	public PersonDetections detectPersons(Image image);
 
 	public PersonDetections detectPersons(Image image, PersonDetectionParameters personDetectionParameters);
+
+	public PersonDetections detectPersonsFromDelta(String camera, Image image);
 }

@@ -46,7 +46,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		logger.info("Got vector data for camera " + camera);
 		Image image = mjpegStreamService.getImage(camera, vectorDataList.getTimestamp());
 		logger.info("Got image from camera: " + camera);
-		PersonDetections personDetection = personDetectionService.detectPersons(image);
+		PersonDetections personDetection = personDetectionService.detectPersonsFromDelta(camera, image);
 		logger.info("Finished getting vector data and person detection data for camera: " + camera);
 
 		MotionCorrelation motionCorrelation = new MotionCorrelation();
