@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfRect;
@@ -70,21 +69,15 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 			return detectPersons(image); // fall back to just detecting from image.
 		}
 		PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
-		Mat decoded = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
-		Mat frame = new Mat();
-		decoded.convertTo(frame, CvType.CV_32F);
-		decoded.release();
+		Mat frame = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
 		Mat blurredFrame = new Mat();
 		Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 		frame.release();
-		Mat absBlurredFrame = new Mat();
-		Core.convertScaleAbs(blurredFrame, absBlurredFrame);
-		blurredFrame.release();
 		Mat absAverageFrame = new Mat();
 		Core.convertScaleAbs(averageFrame, absAverageFrame);
 		Mat frameDelta = new Mat();
-		Core.absdiff(absBlurredFrame, absAverageFrame, frameDelta);
-		absBlurredFrame.release();
+		Core.absdiff(blurredFrame, absAverageFrame, frameDelta);
+		blurredFrame.release();
 		absAverageFrame.release();
 		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
