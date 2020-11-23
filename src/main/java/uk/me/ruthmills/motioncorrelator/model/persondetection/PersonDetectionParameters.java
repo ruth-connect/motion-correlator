@@ -12,7 +12,7 @@ public class PersonDetectionParameters {
 
 	public PersonDetectionParameters() {
 		imageWidthPixels = 320;
-		hitThreshold = 0.03d;
+		hitThreshold = 0d;
 		winStrideX = 4;
 		winStrideY = 4;
 		paddingX = 8;
