@@ -11,6 +11,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -33,6 +34,8 @@ import uk.me.ruthmills.motioncorrelator.service.ImageService;
 @Service
 public class ImageServiceImpl implements ImageService {
 
+	private static DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("/yyyy/MM/dd/HH");
+
 	@Override
 	public Image readImage(String camera) throws IOException, URISyntaxException {
 		URI uri = new URI("http://" + camera + "/mjpeg_read.php");
@@ -53,13 +56,14 @@ public class ImageServiceImpl implements ImageService {
 
 	public void writeImage(String camera, Image image, PersonDetections personDetections, boolean stamped)
 			throws IOException {
-		String path = "/mnt/media/motioncorrelator/" + camera;
+		LocalDateTime timestamp = image.getTimestamp();
+		String path = "/mnt/media/motioncorrelator/" + camera + timestamp.format(DATE_TIME_FORMAT);
 		File file = new File(path);
 		file.mkdir();
 		List<PersonDetection> detectionsList = personDetections.getPersonDetections();
 		String detections = detectionsList.size() > 0 ? "-" + detectionsList.size() + "-"
 				+ new BigDecimal(detectionsList.get(0).getWeight()).setScale(3, RoundingMode.HALF_UP) : "";
-		String filename = image.getTimestamp() + (stamped ? ("-stamped" + detections) : "") + ".jpg";
+		String filename = timestamp + (stamped ? ("-stamped" + detections) : "") + ".jpg";
 		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
 	}
 
