@@ -72,6 +72,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		for (int i = 0; i < personDetections.getPersonDetections().size(); i++) {
 			Color color = getPersonDetectionColor(i);
 			BigDecimal weight = new BigDecimal(personDetections.getPersonDetections().get(i).getWeight());
+			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 11, 31 + (i * 40), Color.WHITE);
 			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 10, 30 + (i * 40), color);
 		}
 	}
