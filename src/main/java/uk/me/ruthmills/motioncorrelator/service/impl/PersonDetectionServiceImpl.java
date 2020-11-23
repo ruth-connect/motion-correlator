@@ -77,11 +77,14 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		Mat blurredFrame = new Mat();
 		Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 		frame.release();
+		Mat absBlurredFrame = new Mat();
+		Core.convertScaleAbs(blurredFrame, absBlurredFrame);
+		blurredFrame.release();
 		Mat absAverageFrame = new Mat();
 		Core.convertScaleAbs(averageFrame, absAverageFrame);
 		Mat frameDelta = new Mat();
-		Core.absdiff(blurredFrame, absAverageFrame, frameDelta);
-		blurredFrame.release();
+		Core.absdiff(absBlurredFrame, absAverageFrame, frameDelta);
+		absBlurredFrame.release();
 		absAverageFrame.release();
 		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
