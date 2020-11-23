@@ -1,6 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,7 @@ public class AverageFrameController {
 	@Autowired
 	private AverageFrameService averageFrameService;
 
-	@GetMapping("/{camera}")
+	@GetMapping(value = "/{camera}", produces = MediaType.IMAGE_JPEG_VALUE)
 	@ResponseBody
 	public byte[] getAverageFrame(@PathVariable String camera) {
 		Image image = averageFrameService.getAverageFrame(camera);
