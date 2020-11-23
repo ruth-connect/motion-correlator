@@ -41,7 +41,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 
 	@PostConstruct
 	public void initialise() {
-		font = new Font("Arial", Font.BOLD, 16);
+		font = new Font("Arial", Font.BOLD, 18);
 	}
 
 	@Override
