@@ -29,6 +29,9 @@ import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 @Service
 public class ImageStampingServiceImpl implements ImageStampingService {
 
+	private static final Color RED = new Color(255, 48, 48);
+	private static final Color ORANGE = new Color(255, 137, 54);
+	private static final Color BLUE = new Color(92, 87, 255);
 	private static final Polygon ARROW_HEAD = new Polygon();
 
 	static {
@@ -85,15 +88,19 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 	}
 
 	private Color getPersonDetectionColor(int i) {
-		switch (i % 4) {
+		switch (i % 6) {
 		case 0:
-			return Color.PINK;
+			return RED;
 		case 1:
-			return Color.YELLOW;
+			return ORANGE;
 		case 2:
+			return Color.YELLOW;
+		case 3:
 			return Color.GREEN;
-		default:
+		case 4:
 			return Color.CYAN;
+		default:
+			return BLUE;
 		}
 	}
 
