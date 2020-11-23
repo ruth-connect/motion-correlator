@@ -15,6 +15,7 @@ import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.HOGDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,17 +70,21 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		}
 		PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
 		Mat frame = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
+		Mat blurredFrame = new Mat();
+		Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
+		frame.release();
 		Mat absAverageFrame = new Mat();
 		Core.convertScaleAbs(averageFrame, absAverageFrame);
 		Mat frameDelta = new Mat();
-		Core.absdiff(frame, absAverageFrame, frameDelta);
-		frame.release();
+		Core.absdiff(blurredFrame, absAverageFrame, frameDelta);
+		blurredFrame.release();
+		absAverageFrame.release();
 		PersonDetections personDetections = detect(absAverageFrame, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
 		Image delta = ImageUtils.encodeImage(frameDelta);
+		frameDelta.release();
 		delta.setTimestamp(image.getTimestamp());
 		personDetections.setDelta(delta);
-		absAverageFrame.release();
 		return personDetections;
 	}
 
