@@ -37,7 +37,7 @@ public class ImageUtils {
 
 	public static Image encodeImage(Mat decoded) {
 		MatOfByte encoded = new MatOfByte();
-		Imgcodecs.imencode("jpg", decoded, encoded);
+		Imgcodecs.imencode(".jpg", decoded, encoded);
 		byte[] bytes = encoded.toArray();
 		encoded.release();
 		Image image = new Image();
