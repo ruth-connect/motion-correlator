@@ -143,7 +143,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 	}
 
 	private void drawTimestamp(Graphics2D graphics2D, LocalDateTime timestamp, int index, Color color) {
-		drawText(graphics2D, timestamp.format(TIME_FORMAT), 500, 30 + (index * 40), color);
+		drawText(graphics2D, timestamp.format(TIME_FORMAT), 490, 30 + (index * 40), color);
 	}
 
 	private void drawText(Graphics2D graphics2D, String text, int x, int y, Color color) {
