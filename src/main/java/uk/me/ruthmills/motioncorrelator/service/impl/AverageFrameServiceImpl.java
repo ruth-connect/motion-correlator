@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetectionParameters;
 import uk.me.ruthmills.motioncorrelator.service.AverageFrameService;
 import uk.me.ruthmills.motioncorrelator.service.MjpegStreamService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
@@ -26,7 +27,7 @@ public class AverageFrameServiceImpl implements AverageFrameService {
 	@Override
 	public void addCurrentFrame(String camera) {
 		Image image = mjpegStreamService.getLatestImage(camera);
-		Mat decoded = ImageUtils.decodeImage(image);
+		Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
 		Mat frame = new Mat();
 		decoded.convertTo(frame, CvType.CV_32F);
 		decoded.release();
