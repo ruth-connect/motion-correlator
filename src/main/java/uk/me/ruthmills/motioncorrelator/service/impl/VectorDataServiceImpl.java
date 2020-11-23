@@ -20,7 +20,7 @@ import uk.me.ruthmills.motioncorrelator.service.VectorDataService;
 @Service
 public class VectorDataServiceImpl implements VectorDataService {
 
-	private final Logger logger = LoggerFactory.getLogger(VectorDataServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(VectorDataServiceImpl.class);
 
 	public VectorDataList decodeVectorData(String camera, String vectorData) {
 		VectorDataList vectorDataList = parseVectorData(vectorData);

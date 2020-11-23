@@ -37,7 +37,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 	@Autowired
 	private ImageStampingService imageStampingService;
 
-	private final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
 
 	@Override
 	public void correlateMotionAndPersonDetections(String camera, String vectorData)
