@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfRect;
@@ -69,7 +70,10 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 			return detectPersons(image); // fall back to just detecting from image.
 		}
 		PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
-		Mat frame = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
+		Mat decoded = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
+		Mat frame = new Mat();
+		decoded.convertTo(frame, CvType.CV_32F);
+		decoded.release();
 		Mat blurredFrame = new Mat();
 		Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 		frame.release();
