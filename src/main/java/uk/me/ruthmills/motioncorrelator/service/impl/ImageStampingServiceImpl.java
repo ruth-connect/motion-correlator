@@ -59,6 +59,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		drawFrameVector(graphics2D, motionCorrelation.getVectorData());
 		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
 		drawTimestamp(graphics2D, motionCorrelation.getImage().getTimestamp(), 0, Color.WHITE);
+		drawVectorText(graphics2D, motionCorrelation.getVectorData());
 		graphics2D.dispose();
 		Image stampedImage = new Image();
 		stampedImage.setTimestamp(motionCorrelation.getImage().getTimestamp());
@@ -138,6 +139,17 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 				graphics2D.fill(ARROW_HEAD);
 
 				graphics2D.setTransform(tx1);
+			}
+		}
+	}
+
+	private void drawVectorText(Graphics2D graphics2D, VectorDataList vectorData) {
+		if (vectorData != null) {
+			drawTimestamp(graphics2D, vectorData.getTimestamp(), 1, Color.MAGENTA);
+			Vector frameVector = vectorData.getFrameVector();
+			if (frameVector != null) {
+				drawText(graphics2D, "Mag: " + frameVector.getMagnitude(), 490, 400, Color.MAGENTA);
+				drawText(graphics2D, "Cnt: " + frameVector.getCount(), 490, 440, Color.MAGENTA);
 			}
 		}
 	}
