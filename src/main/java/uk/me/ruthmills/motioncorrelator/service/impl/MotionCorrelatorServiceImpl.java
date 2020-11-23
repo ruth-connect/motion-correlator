@@ -44,7 +44,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			throws IOException, URISyntaxException {
 		VectorDataList vectorDataList = vectorDataService.parseVectorData(vectorData);
 		logger.info("Got vector data for camera " + camera);
-		Image image = mjpegStreamService.getLatestImage(camera);
+		Image image = mjpegStreamService.getImage(camera, vectorDataList.getTimestamp());
 		logger.info("Got image from camera: " + camera);
 		PersonDetections personDetection = personDetectionService.detectPersons(image);
 		logger.info("Finished getting vector data and person detection data for camera: " + camera);

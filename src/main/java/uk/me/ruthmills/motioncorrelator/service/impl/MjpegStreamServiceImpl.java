@@ -1,7 +1,10 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -31,5 +34,25 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 	@Override
 	public Image getLatestImage(String camera) {
 		return streams.get(camera).getImages().getLast();
+	}
+
+	@Override
+	public Image getImage(String camera, LocalDateTime timestamp) {
+		Deque<Image> images = streams.get(camera).getImages();
+		Iterator<Image> iterator = images.descendingIterator();
+		Image image = null;
+		while (iterator.hasNext()) {
+			Image currentImage = iterator.next();
+			if (currentImage.getTimestamp().isAfter(timestamp)) {
+				image = currentImage;
+			} else {
+				if (image != null) {
+					return image;
+				} else {
+					return currentImage;
+				}
+			}
+		}
+		return image;
 	}
 }
