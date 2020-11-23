@@ -59,7 +59,7 @@ public class ImageServiceImpl implements ImageService {
 		LocalDateTime timestamp = image.getTimestamp();
 		String path = "/mnt/media/motioncorrelator/" + camera + timestamp.format(DATE_TIME_FORMAT);
 		File file = new File(path);
-		file.mkdir();
+		file.mkdirs();
 		List<PersonDetection> detectionsList = personDetections.getPersonDetections();
 		String detections = detectionsList.size() > 0 ? "-" + detectionsList.size() + "-"
 				+ new BigDecimal(detectionsList.get(0).getWeight()).setScale(3, RoundingMode.HALF_UP) : "";
