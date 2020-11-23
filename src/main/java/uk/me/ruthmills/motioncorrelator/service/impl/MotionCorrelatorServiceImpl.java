@@ -56,7 +56,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		logger.info("Motion correlation data for camera " + camera + ": " + motionCorrelation);
 
 		imageStampingService.stampImage(motionCorrelation);
-		imageService.writeImage(camera, motionCorrelation.getImage(), false);
-		imageService.writeImage(camera, motionCorrelation.getStampedImage(), true);
+		imageService.writeImage(camera, motionCorrelation.getImage(), motionCorrelation.getPersonDetections(), false);
+		imageService.writeImage(camera, motionCorrelation.getStampedImage(), motionCorrelation.getPersonDetections(),
+				true);
 	}
 }
