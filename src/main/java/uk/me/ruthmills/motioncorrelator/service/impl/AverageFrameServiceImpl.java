@@ -26,7 +26,10 @@ public class AverageFrameServiceImpl implements AverageFrameService {
 	@Override
 	public void addCurrentFrame(String camera) {
 		Image image = mjpegStreamService.getLatestImage(camera);
-		Mat frame = ImageUtils.decodeImageWithCvType(image, CvType.CV_32F);
+		Mat decoded = ImageUtils.decodeImage(image);
+		Mat frame = new Mat();
+		decoded.convertTo(frame, CvType.CV_32F);
+		decoded.release();
 		Mat blurredFrame = new Mat();
 		Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 		frame.release();

@@ -18,12 +18,8 @@ public class ImageUtils {
 	private static final Logger logger = LoggerFactory.getLogger(ImageUtils.class);
 
 	public static Mat decodeImage(Image image) {
-		return decodeImage(image, CvType.CV_8U);
-	}
-
-	public static Mat decodeImageWithCvType(Image image, int cvType) {
 		logger.info("Image length in bytes: " + image.getBytes().length);
-		Mat encoded = new Mat(1, image.getBytes().length, cvType);
+		Mat encoded = new Mat(1, image.getBytes().length, CvType.CV_8U);
 		encoded.put(0, 0, image.getBytes());
 		Mat decoded = Imgcodecs.imdecode(encoded, Imgcodecs.IMREAD_GRAYSCALE);
 		encoded.release();
