@@ -19,7 +19,7 @@ public class PersonDetectionParameters {
 		paddingX = 8;
 		paddingY = 8;
 		scale = 1.09d;
-		frameDeltaThreshold = 16d;
+		frameDeltaThreshold = 4d;
 	}
 
 	public PersonDetectionParameters(int imageWidthPixels, double hitThreshold, int winStrideX, int winStrideY,
