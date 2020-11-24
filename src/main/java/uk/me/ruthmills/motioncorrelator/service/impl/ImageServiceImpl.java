@@ -75,7 +75,7 @@ public class ImageServiceImpl implements ImageService {
 			String path = "/mnt/media/motioncorrelator/" + camera + timestamp.format(DATE_TIME_FORMAT);
 			File file = new File(path);
 			file.mkdirs();
-			String filename = timestamp + "-delta" + ".jpg";
+			String filename = timestamp + suffix + ".jpg";
 			Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
 		}
 	}
