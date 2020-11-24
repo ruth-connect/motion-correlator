@@ -84,7 +84,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 		Mat frameDeltaThreshold = new Mat();
 		Imgproc.threshold(frameDelta, frameDeltaThreshold, personDetectionParameters.getFrameDeltaThreshold(), 255d,
-				Imgproc.THRESH_BINARY);
+				Imgproc.THRESH_TOZERO);
 		frameDelta.release();
 
 		PersonDetections personDetections = detect(frameDeltaThreshold, personDetectionParameters);
