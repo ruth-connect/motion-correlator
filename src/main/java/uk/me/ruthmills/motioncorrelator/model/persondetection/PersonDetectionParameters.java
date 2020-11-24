@@ -9,6 +9,7 @@ public class PersonDetectionParameters {
 	private int paddingX;
 	private int paddingY;
 	private double scale;
+	private double frameDeltaThreshold;
 
 	public PersonDetectionParameters() {
 		imageWidthPixels = 320;
@@ -18,6 +19,7 @@ public class PersonDetectionParameters {
 		paddingX = 8;
 		paddingY = 8;
 		scale = 1.09d;
+		frameDeltaThreshold = 32d;
 	}
 
 	public PersonDetectionParameters(int imageWidthPixels, double hitThreshold, int winStrideX, int winStrideY,
@@ -85,6 +87,14 @@ public class PersonDetectionParameters {
 
 	public void setScale(double scale) {
 		this.scale = scale;
+	}
+
+	public double getFrameDeltaThreshold() {
+		return frameDeltaThreshold;
+	}
+
+	public void setFrameDeltaThreshold(double frameDeltaThreshold) {
+		this.frameDeltaThreshold = frameDeltaThreshold;
 	}
 
 	public String toString() {
