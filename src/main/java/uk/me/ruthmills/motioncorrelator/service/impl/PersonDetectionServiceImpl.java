@@ -68,26 +68,34 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		if (averageFrame == null) {
 			return detectPersons(image); // fall back to just detecting from image.
 		}
-		Image averageFrameImage = ImageUtils.encodeImage(averageFrame);
-		averageFrameImage.setTimestamp(image.getTimestamp());
 		PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
 		Mat frame = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
+
 		Mat blurredFrame = new Mat();
 		Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 		frame.release();
+
 		Mat absAverageFrame = new Mat();
 		Core.convertScaleAbs(averageFrame, absAverageFrame);
 		Mat frameDelta = new Mat();
 		Core.absdiff(blurredFrame, absAverageFrame, frameDelta);
 		blurredFrame.release();
 		absAverageFrame.release();
+
 		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
+
+		Image averageFrameImage = ImageUtils.encodeImage(averageFrame);
+		averageFrame.release();
+		averageFrameImage.setTimestamp(image.getTimestamp());
+
 		Image delta = ImageUtils.encodeImage(frameDelta);
 		frameDelta.release();
 		delta.setTimestamp(image.getTimestamp());
+
 		personDetections.setAverageFrame(averageFrameImage);
 		personDetections.setDelta(delta);
+
 		return personDetections;
 	}
 
