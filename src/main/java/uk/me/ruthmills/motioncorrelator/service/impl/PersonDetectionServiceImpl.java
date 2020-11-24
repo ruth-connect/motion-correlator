@@ -82,19 +82,15 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		blurredFrame.release();
 		absAverageFrame.release();
 
-		Mat normalizedFrameDelta = new Mat();
-		Core.normalize(frameDelta, normalizedFrameDelta, 0, 255, Core.NORM_RELATIVE);
-		frameDelta.release();
-
-		PersonDetections personDetections = detect(normalizedFrameDelta, personDetectionParameters);
+		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
 
 		Image averageFrameImage = ImageUtils.encodeImage(averageFrame);
 		averageFrame.release();
 		averageFrameImage.setTimestamp(image.getTimestamp());
 
-		Image delta = ImageUtils.encodeImage(normalizedFrameDelta);
-		normalizedFrameDelta.release();
+		Image delta = ImageUtils.encodeImage(frameDelta);
+		frameDelta.release();
 		delta.setTimestamp(image.getTimestamp());
 
 		personDetections.setAverageFrame(averageFrameImage);
