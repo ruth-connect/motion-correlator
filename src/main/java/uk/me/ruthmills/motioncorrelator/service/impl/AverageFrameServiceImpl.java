@@ -49,11 +49,18 @@ public class AverageFrameServiceImpl implements AverageFrameService {
 		if (averageFrame == null) {
 			return null;
 		}
-		return ImageUtils.encodeImage(averageFrame);
+		synchronized (averageFrame) {
+			return ImageUtils.encodeImage(averageFrame);
+		}
 	}
 
 	@Override
 	public Mat getAverageFrameMat(String camera) {
-		return averageFrames.get(camera);
+		Mat averageFrame = averageFrames.get(camera);
+		synchronized (averageFrame) {
+			Mat averageFrameCopy = new Mat();
+			averageFrame.copyTo(averageFrameCopy);
+			return averageFrameCopy;
+		}
 	}
 }
