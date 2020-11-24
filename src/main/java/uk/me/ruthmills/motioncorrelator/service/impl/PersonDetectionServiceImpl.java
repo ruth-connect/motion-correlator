@@ -83,7 +83,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		absAverageFrame.release();
 
 		Mat normalizedFrameDelta = new Mat();
-		Core.normalize(frameDelta, normalizedFrameDelta, 0, 255, Core.NORM_HAMMING);
+		Core.normalize(frameDelta, normalizedFrameDelta, 0, 255, Core.NORM_RELATIVE);
 		frameDelta.release();
 
 		PersonDetections personDetections = detect(normalizedFrameDelta, personDetectionParameters);
