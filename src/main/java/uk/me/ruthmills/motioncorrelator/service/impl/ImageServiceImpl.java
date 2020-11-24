@@ -69,14 +69,14 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public void writeDeltaImage(String camera, Image delta) throws IOException {
-		if (delta != null) {
-			LocalDateTime timestamp = delta.getTimestamp();
+	public void writeImage(String camera, Image image, String suffix) throws IOException {
+		if (image != null) {
+			LocalDateTime timestamp = image.getTimestamp();
 			String path = "/mnt/media/motioncorrelator/" + camera + timestamp.format(DATE_TIME_FORMAT);
 			File file = new File(path);
 			file.mkdirs();
 			String filename = timestamp + "-delta" + ".jpg";
-			Files.write(FileSystems.getDefault().getPath(path, filename), delta.getBytes(), StandardOpenOption.CREATE);
+			Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
 		}
 	}
 

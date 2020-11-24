@@ -59,6 +59,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		imageService.writeImage(camera, motionCorrelation.getImage(), motionCorrelation.getPersonDetections(), false);
 		imageService.writeImage(camera, motionCorrelation.getStampedImage(), motionCorrelation.getPersonDetections(),
 				true);
-		imageService.writeDeltaImage(camera, personDetections.getDelta());
+		imageService.writeImage(camera, personDetections.getAverageFrame(), "-average");
+		imageService.writeImage(camera, personDetections.getDelta(), "-delta");
 	}
 }

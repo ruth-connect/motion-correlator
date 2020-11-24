@@ -13,5 +13,5 @@ public interface ImageService {
 	public void writeImage(String camera, Image image, PersonDetections personDetections, boolean stamped)
 			throws IOException;
 
-	public void writeDeltaImage(String camera, Image delta) throws IOException;
+	public void writeImage(String camera, Image image, String suffix) throws IOException;
 }
