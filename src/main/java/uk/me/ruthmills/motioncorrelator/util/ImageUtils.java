@@ -1,7 +1,5 @@
 package uk.me.ruthmills.motioncorrelator.util;
 
-import java.time.LocalDateTime;
-
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -30,14 +28,11 @@ public class ImageUtils {
 		return resized;
 	}
 
-	public static Image encodeImage(Mat decoded) {
+	public static byte[] encodeImage(Mat decoded) {
 		MatOfByte encoded = new MatOfByte();
 		Imgcodecs.imencode(".jpg", decoded, encoded);
 		byte[] bytes = encoded.toArray();
 		encoded.release();
-		Image image = new Image();
-		image.setTimestamp(LocalDateTime.now());
-		image.setBytes(bytes);
-		return image;
+		return bytes;
 	}
 }

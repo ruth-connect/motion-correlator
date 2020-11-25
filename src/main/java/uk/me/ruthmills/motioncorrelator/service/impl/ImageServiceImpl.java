@@ -48,10 +48,7 @@ public class ImageServiceImpl implements ImageService {
 		InputStream body = response.getBody();
 		byte[] bytes = IOUtils.toByteArray(body);
 		response.close();
-		Image image = new Image();
-		image.setTimestamp(timestamp);
-		image.setBytes(bytes);
-		return image;
+		return new Image(timestamp, bytes);
 	}
 
 	@Override

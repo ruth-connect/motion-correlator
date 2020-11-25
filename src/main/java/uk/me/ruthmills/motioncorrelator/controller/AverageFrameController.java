@@ -21,7 +21,7 @@ public class AverageFrameController {
 	@GetMapping(value = "/{camera}", produces = MediaType.IMAGE_JPEG_VALUE)
 	@ResponseBody
 	public byte[] getAverageFrame(@PathVariable String camera) {
-		Image image = averageFrameService.getAverageFrame(camera);
+		Image image = averageFrameService.getAverageFrameImage(camera);
 		if (image != null) {
 			return image.getBytes();
 		} else {

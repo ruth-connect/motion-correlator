@@ -118,12 +118,10 @@ public class MjpegStream implements Runnable {
 	}
 
 	private void handleNewFrame() {
-		Image image = new Image();
-		image.setTimestamp(LocalDateTime.now());
-		image.setBytes(currentFrame);
+		Image image = new Image(LocalDateTime.now(), currentFrame);
 		averageFrameService.addCurrentFrame(camera.getName(), image);
 		images.addLast(image);
-		if (size >= MAX_QUEUE_SIZE) {
+		if (size > MAX_QUEUE_SIZE) {
 			images.removeFirst();
 		} else {
 			size++;

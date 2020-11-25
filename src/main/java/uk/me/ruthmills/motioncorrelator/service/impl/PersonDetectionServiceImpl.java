@@ -64,7 +64,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	@Override
 	public PersonDetections detectPersonsFromDelta(String camera, Image image) {
-		Mat averageFrame = averageFrameService.getAverageFrameMat(camera);
+		Mat averageFrame = averageFrameService.getAverageFrameMatBefore(camera, image.getTimestamp());
 		if (averageFrame == null) {
 			return detectPersons(image); // fall back to just detecting from image.
 		}
@@ -85,15 +85,10 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
 		personDetections.setTimestamp(image.getTimestamp());
 
-		Image averageFrameImage = ImageUtils.encodeImage(averageFrame);
-		averageFrame.release();
-		averageFrameImage.setTimestamp(image.getTimestamp());
-
-		Image delta = ImageUtils.encodeImage(frameDelta);
+		Image delta = new Image(image.getTimestamp(), ImageUtils.encodeImage(frameDelta));
 		frameDelta.release();
-		delta.setTimestamp(image.getTimestamp());
 
-		personDetections.setAverageFrame(averageFrameImage);
+		personDetections.setAverageFrame(new Image(image.getTimestamp(), ImageUtils.encodeImage(averageFrame)));
 		personDetections.setDelta(delta);
 
 		return personDetections;

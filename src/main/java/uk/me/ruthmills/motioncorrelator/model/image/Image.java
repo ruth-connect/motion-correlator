@@ -7,6 +7,11 @@ public class Image {
 	private LocalDateTime timestamp;
 	private byte[] bytes;
 
+	public Image(LocalDateTime timestamp, byte[] bytes) {
+		this.timestamp = timestamp;
+		this.bytes = bytes;
+	}
+
 	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}

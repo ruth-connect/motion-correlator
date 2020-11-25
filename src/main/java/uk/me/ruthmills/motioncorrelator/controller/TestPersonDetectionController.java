@@ -53,9 +53,7 @@ public class TestPersonDetectionController {
 	public String handleFileUpload(@RequestParam("image") MultipartFile file, RedirectAttributes redirectAttributes)
 			throws IOException {
 		logger.info("Handling file upload. Filename: " + file.getName());
-		Image image = new Image();
-		image.setTimestamp(LocalDateTime.now());
-		image.setBytes(file.getBytes());
+		Image image = new Image(LocalDateTime.now(), file.getBytes());
 		testImageService.setOriginalImage(image);
 		logger.info("Uploaded image.");
 
