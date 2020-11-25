@@ -31,6 +31,7 @@ public class AverageFrame implements Runnable {
 	public void initialise() {
 		this.averageFrameProcessor = new Thread(this, camera.getName() + " average frame processor");
 		averageFrameProcessor.start();
+		logger.info("Started average frame processor thread for camera: " + camera.getName());
 	}
 
 	public void addCurrentFrame(Image image) {
