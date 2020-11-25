@@ -44,7 +44,7 @@ public class Camera {
 		stringBuilder.append("name: " + name);
 		stringBuilder.append(", url: " + url);
 		stringBuilder.append(", location: " + location);
-		stringBuilder.append(", locationDescription: " + locationDescription);
+		stringBuilder.append(", locationDescription: " + locationDescription + "\n");
 		return stringBuilder.toString();
 	}
 }
