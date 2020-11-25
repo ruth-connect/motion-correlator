@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
-import java.util.Deque;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,21 +25,18 @@ import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 public class MjpegStream implements Runnable {
 
 	private static final int INPUT_BUFFER_SIZE = 16384;
-	private static final int MAX_QUEUE_SIZE = 100;
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
 
 	@Autowired
-	private FrameService averageFrameService;
+	private FrameService frameService;
 
 	private Camera camera;
 	private URLConnection conn;
 	private ByteArrayOutputStream outputStream;
 	private boolean connected;
 	protected byte[] currentFrame = new byte[0];
-	private Deque<Image> images = new ConcurrentLinkedDeque<>();
-	private int size;
 	private Thread streamReader;
 
 	private static final Logger logger = LoggerFactory.getLogger(MjpegStream.class);
@@ -53,10 +48,6 @@ public class MjpegStream implements Runnable {
 	public void initialise() {
 		this.streamReader = new Thread(this, camera.getName() + " stream reader");
 		streamReader.start();
-	}
-
-	public Deque<Image> getImages() {
-		return images;
 	}
 
 	public void run() {
@@ -119,12 +110,6 @@ public class MjpegStream implements Runnable {
 
 	private void handleNewFrame() {
 		Image image = new Image(LocalDateTime.now(), currentFrame);
-		averageFrameService.addCurrentFrame(camera.getName(), image);
-		images.addLast(image);
-		if (size > MAX_QUEUE_SIZE) {
-			images.removeFirst();
-		} else {
-			size++;
-		}
+		frameService.addCurrentFrame(camera.getName(), image);
 	}
 }

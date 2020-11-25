@@ -72,9 +72,9 @@ public class Frames implements Runnable {
 				} else {
 					previousAverageFrame.copyTo(currentAverageFrame);
 					Imgproc.accumulateWeighted(blurredFrame, currentAverageFrame, 0.1d);
-					frames.addLast(new Frame(image, blurredFrame, currentAverageFrame, previousFrame));
-					blurredFrame.release();
 				}
+				frames.addLast(new Frame(image, blurredFrame, currentAverageFrame, previousFrame));
+
 				if (size > MAX_QUEUE_SIZE) {
 					Frame expiredFrame = frames.removeFirst();
 					expiredFrame.getBlurredFrame().release();
