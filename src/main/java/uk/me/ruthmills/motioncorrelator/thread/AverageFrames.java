@@ -50,12 +50,13 @@ public class AverageFrames implements Runnable {
 
 	@Override
 	public void run() {
-		Mat averageFrame = null;
 		while (true) {
 			try {
+				Mat averageFrameOld = null;
+				Mat averageFrameNew = new Mat();
 				Image image = unprocessedImages.take();
 				if (size > 0) {
-					averageFrame = averageFrames.getLast().getMat();
+					averageFrameOld = averageFrames.getLast().getMat();
 				}
 				Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
 				Mat frame = new Mat();
@@ -64,22 +65,23 @@ public class AverageFrames implements Runnable {
 				Mat blurredFrame = new Mat();
 				Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 				frame.release();
-				if (averageFrame == null) {
-					averageFrame = blurredFrame;
+				if (averageFrameOld == null) {
+					averageFrameNew = blurredFrame;
 				} else {
-					Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
+					averageFrameOld.copyTo(averageFrameNew);
+					Imgproc.accumulateWeighted(blurredFrame, averageFrameNew, 0.1d);
 					blurredFrame.release();
 				}
-				averageFrames.addLast(new AverageFrame(image.getTimestamp(), averageFrame));
+				averageFrames.addLast(new AverageFrame(image.getTimestamp(), averageFrameNew));
 				if (size > MAX_QUEUE_SIZE) {
-					logger.info("Removing oldest average frame from queue");
+					logger.info("Removing oldest average frame from queue for camera: " + camera.getName());
 					Mat expiredAverageFrame = averageFrames.removeFirst().getMat();
 					expiredAverageFrame.release();
 				} else {
 					size++;
 				}
 			} catch (Exception ex) {
-				logger.error("Failed to process average image", ex);
+				logger.error("Failed to process average image for camera: " + camera.getName(), ex);
 			}
 		}
 	}
