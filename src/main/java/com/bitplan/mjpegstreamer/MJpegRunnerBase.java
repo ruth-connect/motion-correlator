@@ -161,6 +161,7 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 	public BufferedInputStream openConnection() {
 		BufferedInputStream result = null;
 		try {
+			logger.info("Connecting to: " + urlString);
 			url = new URL(urlString);
 			conn = url.openConnection();
 			if (user != null) {
