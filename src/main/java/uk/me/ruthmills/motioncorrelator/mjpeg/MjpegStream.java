@@ -59,29 +59,31 @@ public class MjpegStream implements Runnable {
 		while (true) {
 			try {
 				connect();
-				if (connected) {
-					int prev = 0;
-					int cur = 0;
+				int prev = 0;
+				int cur = 0;
 
-					// EOF is -1
-					while (connected && (inputStream != null) && ((cur = inputStream.read()) >= 0)) {
-						if (prev == 0xFF && cur == 0xD8) {
-							outputStream = new ByteArrayOutputStream(INPUT_BUFFER_SIZE);
-							outputStream.write((byte) prev);
-						}
-						if (outputStream != null) {
-							outputStream.write((byte) cur);
-							if (prev == 0xFF && cur == 0xD9) {
-								synchronized (currentFrame) {
-									currentFrame = outputStream.toByteArray();
-								}
-								outputStream.close();
-								// the image is now available - read it
-								read();
+				// EOF is -1
+				while ((inputStream != null) && ((cur = inputStream.read()) >= 0)) {
+					if (prev == 0xFF && cur == 0xD8) {
+						outputStream = new ByteArrayOutputStream(INPUT_BUFFER_SIZE);
+						outputStream.write((byte) prev);
+					}
+					if (outputStream != null) {
+						outputStream.write((byte) cur);
+						if (prev == 0xFF && cur == 0xD9) {
+							synchronized (currentFrame) {
+								currentFrame = outputStream.toByteArray();
+							}
+							outputStream.close();
+							// the image is now available - read it
+							read();
+							if (connected == false) {
+								homeAssistantService.notifyCameraConnected(camera);
+								connected = true;
 							}
 						}
-						prev = cur;
 					}
+					prev = cur;
 				}
 			} catch (Exception ex) {
 				logger.error("Failed to read stream", ex);
@@ -119,7 +121,6 @@ public class MjpegStream implements Runnable {
 		conn.connect();
 		bufferedInputStream = new BufferedInputStream(conn.getInputStream(), INPUT_BUFFER_SIZE);
 		logger.info("Connected to: " + camera.getUrl() + " successfully!");
-		homeAssistantService.notifyCameraConnected(camera);
 		return bufferedInputStream;
 	}
 
