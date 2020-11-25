@@ -16,10 +16,10 @@ public class Renderer implements MJpegRenderer {
 	private Deque<Image> images = new ConcurrentLinkedDeque<>();
 	private int size;
 
-	public Renderer(String camera) throws IOException {
+	public Renderer(String url) throws IOException {
 		mjpegReader = new MJpegReaderRunner2();
 		mjpegReader.setViewer(this);
-		mjpegReader.init("http://" + camera + "/mjpeg_stream.php", null, null);
+		mjpegReader.init(url, null, null);
 		mjpegReader.start();
 	}
 

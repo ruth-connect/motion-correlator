@@ -6,30 +6,38 @@ import java.time.ZoneOffset;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.mjpeg.Renderer;
+import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
+import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.MjpegStreamService;
 
 @Service
 public class MjpegStreamServiceImpl implements MjpegStreamService {
 
+	@Autowired
+	private CameraService cameraService;
+
 	private Map<String, Renderer> streams = new HashMap<>();
 
 	@PostConstruct
 	public void initialise() throws IOException {
-		addCamera("hal9000");
-		addCamera("themekon");
-		addCamera("bigbrother");
+		List<Camera> cameras = cameraService.getCameras();
+		for (Camera camera : cameras) {
+			addCamera(camera);
+		}
 	}
 
-	private void addCamera(String camera) throws IOException {
-		streams.put(camera, new Renderer(camera));
+	private void addCamera(Camera camera) throws IOException {
+		streams.put(camera.getName(), new Renderer(camera.getUrl()));
 	}
 
 	@Override
