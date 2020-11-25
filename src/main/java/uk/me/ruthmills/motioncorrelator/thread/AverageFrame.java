@@ -57,24 +57,26 @@ public class AverageFrame implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			Image image = unprocessedImageQueue.take();
-			logger.info("Queue size for camera: " + camera + ": " + unprocessedImageQueue.size());
-			Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
-			Mat frame = new Mat();
-			decoded.convertTo(frame, CvType.CV_32F);
-			decoded.release();
-			Mat blurredFrame = new Mat();
-			Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
-			frame.release();
-			if (averageFrame == null) {
-				averageFrame = blurredFrame;
-			} else {
-				Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
-				blurredFrame.release();
+		while (true) {
+			try {
+				Image image = unprocessedImageQueue.take();
+				logger.info("Queue size for camera: " + camera + ": " + unprocessedImageQueue.size());
+				Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
+				Mat frame = new Mat();
+				decoded.convertTo(frame, CvType.CV_32F);
+				decoded.release();
+				Mat blurredFrame = new Mat();
+				Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
+				frame.release();
+				if (averageFrame == null) {
+					averageFrame = blurredFrame;
+				} else {
+					Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
+					blurredFrame.release();
+				}
+			} catch (Exception ex) {
+				logger.error("Failed to process average image", ex);
 			}
-		} catch (Exception ex) {
-			logger.error("Failed to process average image", ex);
 		}
 	}
 }
