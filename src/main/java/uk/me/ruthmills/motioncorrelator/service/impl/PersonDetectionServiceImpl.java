@@ -67,10 +67,13 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
 		Mat blurredFrame = frame.getBlurredFrame();
 
+		Mat absBlurredFrame = new Mat();
 		Mat absAverageFrame = new Mat();
+		Core.convertScaleAbs(blurredFrame, absBlurredFrame);
 		Core.convertScaleAbs(averageFrame, absAverageFrame);
 		Mat frameDelta = new Mat();
-		Core.absdiff(blurredFrame, absAverageFrame, frameDelta);
+		Core.absdiff(absBlurredFrame, absAverageFrame, frameDelta);
+		absBlurredFrame.release();
 		absAverageFrame.release();
 
 		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
