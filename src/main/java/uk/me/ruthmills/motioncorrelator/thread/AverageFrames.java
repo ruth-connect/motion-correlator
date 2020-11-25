@@ -74,7 +74,6 @@ public class AverageFrames implements Runnable {
 				}
 				averageFrames.addLast(new AverageFrame(image.getTimestamp(), averageFrameNew));
 				if (size > MAX_QUEUE_SIZE) {
-					logger.info("Removing oldest average frame from queue for camera: " + camera.getName());
 					Mat expiredAverageFrame = averageFrames.removeFirst().getMat();
 					expiredAverageFrame.release();
 				} else {
