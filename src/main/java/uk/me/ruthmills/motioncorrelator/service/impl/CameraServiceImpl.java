@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 
@@ -32,7 +34,13 @@ public class CameraServiceImpl implements CameraService {
 		byte[] bytes = Files.readAllBytes(path);
 		String json = new String(bytes);
 		logger.info("Cameras JSON: " + json);
-		logger.info("Cameras: " + getCameras().toString());
+		ObjectMapper mapper = new ObjectMapper();
+		List<Camera> cameraList = mapper.readValue(json,
+				mapper.getTypeFactory().constructCollectionType(List.class, Camera.class));
+		for (Camera camera : cameraList) {
+			cameras.put(camera.getName(), camera);
+		}
+		logger.info("Cameras: " + cameras);
 	}
 
 	@Override
