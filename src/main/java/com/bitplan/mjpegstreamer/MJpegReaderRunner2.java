@@ -122,6 +122,15 @@ public class MJpegReaderRunner2 extends MJpegRunnerBase {
 				} catch (InterruptedException e) {
 					logger.error("Interrupted Exception", e);
 				}
+				if (inputStream != null) {
+					try {
+						inputStream.close();
+					} catch (Exception ex) {
+						// do nothing
+					} finally {
+						inputStream = null;
+					}
+				}
 			}
 		}
 	}
