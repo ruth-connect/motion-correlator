@@ -128,9 +128,9 @@ public class MjpegStream implements Runnable {
 	}
 
 	public void connect() {
-		connected = true;
 		if (inputStream == null) {
 			inputStream = openConnection();
+			connected = true;
 		}
 	}
 
