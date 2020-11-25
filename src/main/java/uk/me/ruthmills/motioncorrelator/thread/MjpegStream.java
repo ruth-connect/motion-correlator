@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
-import uk.me.ruthmills.motioncorrelator.service.AverageFrameService;
+import uk.me.ruthmills.motioncorrelator.service.FrameService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 
 @Component
@@ -33,7 +33,7 @@ public class MjpegStream implements Runnable {
 	private HomeAssistantService homeAssistantService;
 
 	@Autowired
-	private AverageFrameService averageFrameService;
+	private FrameService averageFrameService;
 
 	private Camera camera;
 	private URLConnection conn;

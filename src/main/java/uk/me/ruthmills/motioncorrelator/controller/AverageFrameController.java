@@ -8,22 +8,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.me.ruthmills.motioncorrelator.model.image.Image;
-import uk.me.ruthmills.motioncorrelator.service.AverageFrameService;
+import uk.me.ruthmills.motioncorrelator.model.image.Frame;
+import uk.me.ruthmills.motioncorrelator.service.FrameService;
+import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 @Controller
 @RequestMapping("averageFrame")
 public class AverageFrameController {
 
 	@Autowired
-	private AverageFrameService averageFrameService;
+	private FrameService frameService;
 
 	@GetMapping(value = "/{camera}", produces = MediaType.IMAGE_JPEG_VALUE)
 	@ResponseBody
 	public byte[] getAverageFrame(@PathVariable String camera) {
-		Image image = averageFrameService.getAverageFrameImage(camera);
-		if (image != null) {
-			return image.getBytes();
+		Frame frame = frameService.getLatestFrame(camera);
+		if (frame != null) {
+			return ImageUtils.encodeImage(frame.getAverageFrame());
 		} else {
 			return null;
 		}

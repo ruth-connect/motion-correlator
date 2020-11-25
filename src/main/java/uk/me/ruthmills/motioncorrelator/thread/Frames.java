@@ -13,39 +13,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
-import uk.me.ruthmills.motioncorrelator.model.image.AverageFrame;
+import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetectionParameters;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
-public class AverageFrames implements Runnable {
+public class Frames implements Runnable {
 
 	private static final int MAX_QUEUE_SIZE = 100;
 
 	private Camera camera;
 	private BlockingQueue<Image> unprocessedImages = new LinkedBlockingDeque<>();
-	private Deque<AverageFrame> averageFrames = new ConcurrentLinkedDeque<>();
+	private Deque<Frame> frames = new ConcurrentLinkedDeque<>();
 	private int size;
-	private Thread averageFrameProcessor;
+	private Thread frameProcessor;
 
-	private static final Logger logger = LoggerFactory.getLogger(AverageFrames.class);
+	private static final Logger logger = LoggerFactory.getLogger(Frames.class);
 
-	public AverageFrames(Camera camera) {
+	public Frames(Camera camera) {
 		this.camera = camera;
 	}
 
 	public void initialise() {
-		this.averageFrameProcessor = new Thread(this, camera.getName() + " average frame processor");
-		averageFrameProcessor.start();
-		logger.info("Started average frame processor thread for camera: " + camera.getName());
+		this.frameProcessor = new Thread(this, camera.getName() + " frame processor");
+		frameProcessor.start();
+		logger.info("Started frame processor thread for camera: " + camera.getName());
 	}
 
 	public void addCurrentFrame(Image image) {
 		unprocessedImages.offer(image);
 	}
 
-	public Deque<AverageFrame> getAverageFrames() {
-		return averageFrames;
+	public Deque<Frame> getFrames() {
+		return frames;
 	}
 
 	@Override
@@ -53,10 +53,12 @@ public class AverageFrames implements Runnable {
 		while (true) {
 			try {
 				Image image = unprocessedImages.take();
-				Mat averageFrameOld = null;
-				Mat averageFrameNew = new Mat();
+				Frame previousFrame = null;
+				Mat previousAverageFrame = null;
+				Mat currentAverageFrame = new Mat();
 				if (size > 0) {
-					averageFrameOld = averageFrames.getLast().getMat();
+					previousFrame = frames.getLast();
+					previousAverageFrame = previousFrame.getAverageFrame();
 				}
 				Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
 				Mat frame = new Mat();
@@ -65,17 +67,19 @@ public class AverageFrames implements Runnable {
 				Mat blurredFrame = new Mat();
 				Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 				frame.release();
-				if (averageFrameOld == null) {
-					averageFrameNew = blurredFrame;
+				if (previousAverageFrame == null) {
+					blurredFrame.copyTo(currentAverageFrame);
 				} else {
-					averageFrameOld.copyTo(averageFrameNew);
-					Imgproc.accumulateWeighted(blurredFrame, averageFrameNew, 0.1d);
+					previousAverageFrame.copyTo(currentAverageFrame);
+					Imgproc.accumulateWeighted(blurredFrame, currentAverageFrame, 0.1d);
+					frames.addLast(new Frame(image, blurredFrame, currentAverageFrame, previousFrame));
 					blurredFrame.release();
 				}
-				averageFrames.addLast(new AverageFrame(image.getTimestamp(), averageFrameNew));
 				if (size > MAX_QUEUE_SIZE) {
-					Mat expiredAverageFrame = averageFrames.removeFirst().getMat();
-					expiredAverageFrame.release();
+					Frame expiredFrame = frames.removeFirst();
+					expiredFrame.getBlurredFrame().release();
+					expiredFrame.getAverageFrame().release();
+					frames.getFirst().setPreviousFrame(null);
 				} else {
 					size++;
 				}

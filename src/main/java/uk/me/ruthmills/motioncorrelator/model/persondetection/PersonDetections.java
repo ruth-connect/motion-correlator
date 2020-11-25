@@ -10,7 +10,6 @@ public class PersonDetections {
 	private LocalDateTime timestamp;
 	private List<PersonDetection> personDetections;
 	private long detectionTimeMilliseconds;
-	private Image averageFrame;
 	private Image delta;
 
 	public PersonDetections(List<PersonDetection> personDetections, long detectionTimeMilliseconds) {
@@ -36,14 +35,6 @@ public class PersonDetections {
 
 	public long getDetectionTimeMilliseconds() {
 		return detectionTimeMilliseconds;
-	}
-
-	public void setAverageFrame(Image averageFrame) {
-		this.averageFrame = averageFrame;
-	}
-
-	public Image getAverageFrame() {
-		return averageFrame;
 	}
 
 	public void setDelta(Image delta) {
