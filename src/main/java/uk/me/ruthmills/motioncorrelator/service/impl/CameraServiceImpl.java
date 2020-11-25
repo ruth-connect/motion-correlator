@@ -29,8 +29,9 @@ public class CameraServiceImpl implements CameraService {
 	public void initialise() throws IOException {
 		// Read cameras from JSON file.
 		Path path = FileSystems.getDefault().getPath("src/main/resources", "cameras.json");
-		String json = Files.readString(path);
-		logger.info("Cameras JSON: " + json);
+		byte[] bytes = Files.readAllBytes(path);
+//		String json = Files.readString(path);
+//		logger.info("Cameras JSON: " + json);
 		logger.info("Cameras: " + getCameras().toString());
 	}
 
