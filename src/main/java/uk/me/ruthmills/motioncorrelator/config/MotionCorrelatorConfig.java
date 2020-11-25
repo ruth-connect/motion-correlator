@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import uk.me.ruthmills.motioncorrelator.mjpeg.MjpegStream;
 import uk.me.ruthmills.motioncorrelator.model.Camera;
+import uk.me.ruthmills.motioncorrelator.thread.MjpegStream;
 
 @Configuration
 public class MotionCorrelatorConfig {

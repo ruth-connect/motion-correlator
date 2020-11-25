@@ -6,7 +6,7 @@ import uk.me.ruthmills.motioncorrelator.model.image.Image;
 
 public interface AverageFrameService {
 
-	public void addCurrentFrame(String camera);
+	public void addCurrentFrame(String camera, Image image);
 
 	public Image getAverageFrame(String camera);
 

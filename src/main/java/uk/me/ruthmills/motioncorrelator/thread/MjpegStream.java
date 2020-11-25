@@ -1,4 +1,4 @@
-package uk.me.ruthmills.motioncorrelator.mjpeg;
+package uk.me.ruthmills.motioncorrelator.thread;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
+import uk.me.ruthmills.motioncorrelator.service.AverageFrameService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 
 @Component
@@ -30,6 +31,9 @@ public class MjpegStream implements Runnable {
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
+
+	@Autowired
+	private AverageFrameService averageFrameService;
 
 	private Camera camera;
 	private URLConnection conn;
@@ -117,6 +121,7 @@ public class MjpegStream implements Runnable {
 		Image image = new Image();
 		image.setTimestamp(LocalDateTime.now());
 		image.setBytes(currentFrame);
+		averageFrameService.addCurrentFrame(camera.getName(), image);
 		images.addLast(image);
 		if (size >= MAX_QUEUE_SIZE) {
 			images.removeFirst();

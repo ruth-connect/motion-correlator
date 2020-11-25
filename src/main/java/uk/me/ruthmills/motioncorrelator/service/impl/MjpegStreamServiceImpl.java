@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 
@@ -15,11 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.config.MotionCorrelatorConfig;
-import uk.me.ruthmills.motioncorrelator.mjpeg.MjpegStream;
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.MjpegStreamService;
+import uk.me.ruthmills.motioncorrelator.thread.MjpegStream;
 
 @Service
 public class MjpegStreamServiceImpl implements MjpegStreamService {
@@ -30,7 +30,7 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 	@Autowired
 	private MotionCorrelatorConfig motionCorrelatorConfig;
 
-	private Map<String, MjpegStream> streams = new HashMap<>();
+	private Map<String, MjpegStream> streams = new ConcurrentHashMap<>();
 
 	@PostConstruct
 	public void initialise() throws IOException {
