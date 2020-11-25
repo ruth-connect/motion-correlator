@@ -176,6 +176,7 @@ public abstract class MJpegRunnerBase implements MJpegReaderRunner {
 			conn.setReadTimeout(5000); // 5 seconds
 			conn.connect();
 			result = new BufferedInputStream(conn.getInputStream(), INPUT_BUFFER_SIZE);
+			logger.info("Connected to: " + urlString + " successfully!");
 		} catch (MalformedURLException e) {
 			logger.error("Invalid URL", e);
 		} catch (IOException ioe) {
