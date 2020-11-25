@@ -52,9 +52,9 @@ public class AverageFrames implements Runnable {
 	public void run() {
 		while (true) {
 			try {
+				Image image = unprocessedImages.take();
 				Mat averageFrameOld = null;
 				Mat averageFrameNew = new Mat();
-				Image image = unprocessedImages.take();
 				if (size > 0) {
 					averageFrameOld = averageFrames.getLast().getMat();
 				}
