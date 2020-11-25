@@ -3,6 +3,7 @@ package uk.me.ruthmills.motioncorrelator.mjpeg;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
@@ -32,7 +33,6 @@ public class MjpegStream implements Runnable {
 
 	private Camera camera;
 	private URLConnection conn;
-	private BufferedInputStream inputStream;
 	private ByteArrayOutputStream outputStream;
 	private boolean connected;
 	protected byte[] currentFrame = new byte[0];
@@ -57,8 +57,7 @@ public class MjpegStream implements Runnable {
 
 	public void run() {
 		while (true) {
-			try {
-				connect();
+			try (InputStream inputStream = openConnection()) {
 				int prev = 0;
 				int cur = 0;
 
@@ -76,7 +75,7 @@ public class MjpegStream implements Runnable {
 							}
 							outputStream.close();
 							// the image is now available - read it
-							read();
+							handleNewFrame();
 							if (connected == false) {
 								homeAssistantService.notifyCameraConnected(camera);
 								connected = true;
@@ -99,16 +98,6 @@ public class MjpegStream implements Runnable {
 			} catch (InterruptedException e) {
 				logger.error("Interrupted Exception", e);
 			}
-
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (Exception ex) {
-					// do nothing
-				} finally {
-					inputStream = null;
-				}
-			}
 		}
 	}
 
@@ -124,14 +113,7 @@ public class MjpegStream implements Runnable {
 		return bufferedInputStream;
 	}
 
-	public void connect() throws IOException {
-		if (inputStream == null) {
-			inputStream = openConnection();
-			connected = true;
-		}
-	}
-
-	private void read() {
+	private void handleNewFrame() {
 		Image image = new Image();
 		image.setTimestamp(LocalDateTime.now());
 		image.setBytes(currentFrame);
