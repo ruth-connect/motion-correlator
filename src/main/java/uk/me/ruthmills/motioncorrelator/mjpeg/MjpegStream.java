@@ -36,7 +36,7 @@ public class MjpegStream implements Runnable {
 	private BufferedInputStream inputStream;
 	private ByteArrayOutputStream outputStream;
 	private boolean connected;
-	protected byte[] currentFrame;
+	protected byte[] currentFrame = new byte[0];
 	private Deque<Image> images = new ConcurrentLinkedDeque<>();
 	private int size;
 	private Thread streamReader;
