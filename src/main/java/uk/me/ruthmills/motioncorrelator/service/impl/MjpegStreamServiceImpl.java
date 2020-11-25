@@ -14,7 +14,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import uk.me.ruthmills.motioncorrelator.mjpeg.Renderer;
+import uk.me.ruthmills.motioncorrelator.config.MotionCorrelatorConfig;
+import uk.me.ruthmills.motioncorrelator.mjpeg.MjpegStream;
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
@@ -26,18 +27,19 @@ public class MjpegStreamServiceImpl implements MjpegStreamService {
 	@Autowired
 	private CameraService cameraService;
 
-	private Map<String, Renderer> streams = new HashMap<>();
+	@Autowired
+	private MotionCorrelatorConfig motionCorrelatorConfig;
+
+	private Map<String, MjpegStream> streams = new HashMap<>();
 
 	@PostConstruct
 	public void initialise() throws IOException {
 		List<Camera> cameras = cameraService.getCameras();
 		for (Camera camera : cameras) {
-			addCamera(camera);
+			MjpegStream mjpegStream = motionCorrelatorConfig.createMjpegStream(camera);
+			mjpegStream.initialise();
+			streams.put(camera.getName(), mjpegStream);
 		}
-	}
-
-	private void addCamera(Camera camera) throws IOException {
-		streams.put(camera.getName(), new Renderer(camera.getUrl()));
 	}
 
 	@Override
