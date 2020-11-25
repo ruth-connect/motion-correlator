@@ -36,7 +36,6 @@ public class AverageFrame implements Runnable {
 
 	public void addCurrentFrame(Image image) {
 		unprocessedImageQueue.offer(image);
-		logger.info("Queue size for camera: " + camera + ": " + unprocessedImageQueue.size());
 	}
 
 	public Image getAverageFrame() {
@@ -60,6 +59,7 @@ public class AverageFrame implements Runnable {
 	public void run() {
 		try {
 			Image image = unprocessedImageQueue.take();
+			logger.info("Queue size for camera: " + camera + ": " + unprocessedImageQueue.size());
 			Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
 			Mat frame = new Mat();
 			decoded.convertTo(frame, CvType.CV_32F);
