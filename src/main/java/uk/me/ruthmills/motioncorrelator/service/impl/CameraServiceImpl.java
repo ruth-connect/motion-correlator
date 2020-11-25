@@ -1,6 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class CameraServiceImpl implements CameraService {
 	@PostConstruct
 	public void initialise() throws IOException {
 		// Read cameras from JSON file.
-		Path path = Path.of("src/main/resources/cameras.json");
+		Path path = FileSystems.getDefault().getPath("src/main/resources", "cameras.json");
 		String json = Files.readString(path);
 		logger.info("Cameras JSON: " + json);
 		logger.info("Cameras: " + getCameras().toString());
