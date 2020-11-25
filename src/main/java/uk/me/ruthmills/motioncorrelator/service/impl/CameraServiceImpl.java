@@ -30,8 +30,8 @@ public class CameraServiceImpl implements CameraService {
 		// Read cameras from JSON file.
 		Path path = FileSystems.getDefault().getPath("src/main/resources", "cameras.json");
 		byte[] bytes = Files.readAllBytes(path);
-//		String json = Files.readString(path);
-//		logger.info("Cameras JSON: " + json);
+		String json = new String(bytes);
+		logger.info("Cameras JSON: " + json);
 		logger.info("Cameras: " + getCameras().toString());
 	}
 
