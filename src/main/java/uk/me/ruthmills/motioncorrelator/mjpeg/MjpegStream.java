@@ -3,7 +3,6 @@ package uk.me.ruthmills.motioncorrelator.mjpeg;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
@@ -58,12 +57,12 @@ public class MjpegStream implements Runnable {
 
 	public void run() {
 		while (true) {
-			connect();
-			if (connected) {
-				int prev = 0;
-				int cur = 0;
+			try {
+				connect();
+				if (connected) {
+					int prev = 0;
+					int cur = 0;
 
-				try {
 					// EOF is -1
 					while (connected && (inputStream != null) && ((cur = inputStream.read()) >= 0)) {
 						if (prev == 0xFF && cur == 0xD8) {
@@ -83,51 +82,48 @@ public class MjpegStream implements Runnable {
 						}
 						prev = cur;
 					}
-				} catch (Exception e) {
-					logger.error("Exception", e);
 				}
-				if (connected) {
-					homeAssistantService.notifyCameraConnectionFailed(camera);
-					connected = false;
-				}
+			} catch (Exception ex) {
+				logger.error("Failed to read stream", ex);
+			}
+
+			if (connected) {
+				homeAssistantService.notifyCameraConnectionFailed(camera);
+				connected = false;
+			}
+
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				logger.error("Interrupted Exception", e);
+			}
+
+			if (inputStream != null) {
 				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					logger.error("Interrupted Exception", e);
-				}
-				if (inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (Exception ex) {
-						// do nothing
-					} finally {
-						inputStream = null;
-					}
+					inputStream.close();
+				} catch (Exception ex) {
+					// do nothing
+				} finally {
+					inputStream = null;
 				}
 			}
 		}
 	}
 
-	private BufferedInputStream openConnection() {
+	private BufferedInputStream openConnection() throws IOException {
 		BufferedInputStream bufferedInputStream = null;
-		try {
-			logger.info("Connecting to: " + camera.getUrl());
-			URL url = new URL(camera.getUrl());
-			conn = url.openConnection();
-			conn.setReadTimeout(5000); // 5 seconds
-			conn.connect();
-			bufferedInputStream = new BufferedInputStream(conn.getInputStream(), INPUT_BUFFER_SIZE);
-			logger.info("Connected to: " + camera.getUrl() + " successfully!");
-			homeAssistantService.notifyCameraConnected(camera);
-		} catch (MalformedURLException ex) {
-			logger.error("Invalid URL", ex);
-		} catch (IOException ex) {
-			logger.error("Unable to connect: ", ex);
-		}
+		logger.info("Connecting to: " + camera.getUrl());
+		URL url = new URL(camera.getUrl());
+		conn = url.openConnection();
+		conn.setReadTimeout(5000); // 5 seconds
+		conn.connect();
+		bufferedInputStream = new BufferedInputStream(conn.getInputStream(), INPUT_BUFFER_SIZE);
+		logger.info("Connected to: " + camera.getUrl() + " successfully!");
+		homeAssistantService.notifyCameraConnected(camera);
 		return bufferedInputStream;
 	}
 
-	public void connect() {
+	public void connect() throws IOException {
 		if (inputStream == null) {
 			inputStream = openConnection();
 			connected = true;
