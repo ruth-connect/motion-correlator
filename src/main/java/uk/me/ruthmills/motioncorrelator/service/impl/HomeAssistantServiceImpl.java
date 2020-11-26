@@ -47,13 +47,13 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	@Override
 	public void notifyCameraConnected(Camera camera) {
 		logger.info(camera.getName() + " connected");
-		homeAssistantNotifier.notify(camera.getLocation(), "connected");
+		homeAssistantNotifier.notify(camera.getLocation(), "camera_connected");
 	}
 
 	@Override
 	public void notifyCameraConnectionFailed(Camera camera) {
 		logger.info(camera.getName() + " connection failed");
-		homeAssistantNotifier.notify(camera.getLocation(), "connection_failed");
+		homeAssistantNotifier.notify(camera.getLocation(), "camera_connection_failed");
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {
