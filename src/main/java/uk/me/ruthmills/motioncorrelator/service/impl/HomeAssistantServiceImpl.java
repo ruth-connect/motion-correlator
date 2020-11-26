@@ -102,13 +102,13 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("Authorization", "Bearer " + token);
 
-			logger.info("About to send POST to " + endpoint);
-			restTemplate.postForEntity(endpoint + "sensor." + message.getLocation() + "_" + message.getType(),
-					new HttpEntity<String>(requestJson.toString(), headers), String.class);
+			String url = endpoint + "sensor." + message.getLocation() + "_" + message.getType();
 
-			logger.info("About to send DELETE to " + endpoint);
-			restTemplate.exchange(endpoint + "sensor." + message.getLocation() + "_" + message.getType(),
-					HttpMethod.DELETE, new HttpEntity<String>("", headers), String.class);
+			logger.info("About to send POST to " + url);
+			restTemplate.postForEntity(url, new HttpEntity<String>(requestJson.toString(), headers), String.class);
+
+			logger.info("About to send DELETE to " + url);
+			restTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<String>("", headers), String.class);
 		}
 	}
 }
