@@ -48,7 +48,7 @@ public class ImageServiceImpl implements ImageService {
 	@Override
 	public void writeImage(String camera, Image image, PersonDetections personDetections, boolean stamped)
 			throws IOException {
-		String path = ImageUtils.getImagePath(camera, image);
+		String path = "/mnt/media/motioncorrelator/" + ImageUtils.getImagePath(camera, image);
 		File file = new File(path);
 		file.mkdirs();
 		String filename = personDetections.getDetectionsFilename();
@@ -59,7 +59,7 @@ public class ImageServiceImpl implements ImageService {
 	public void writeImage(String camera, Image image, String suffix) throws IOException {
 		if (image != null) {
 			LocalDateTime timestamp = image.getTimestamp();
-			String path = ImageUtils.getImagePath(camera, image);
+			String path = "/mnt/media/motioncorrelator/" + ImageUtils.getImagePath(camera, image);
 			File file = new File(path);
 			file.mkdirs();
 			String filename = timestamp + suffix + ".jpg";

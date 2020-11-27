@@ -41,6 +41,6 @@ public class ImageUtils {
 	}
 
 	public static String getImagePath(String camera, Image image) {
-		return "/mnt/media/motioncorrelator/" + camera + image.getTimestamp().format(DATE_TIME_FORMAT) + "/";
+		return camera + image.getTimestamp().format(DATE_TIME_FORMAT) + "/";
 	}
 }
