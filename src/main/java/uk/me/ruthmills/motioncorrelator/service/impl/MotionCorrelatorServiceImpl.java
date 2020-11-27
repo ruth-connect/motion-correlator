@@ -2,6 +2,10 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,34 +51,78 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 	@Autowired
 	private HomeAssistantService homeAssistantService;
 
+	private MotionCorrelator motionCorrelator;
+
 	private static final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
+
+	@PostConstruct
+	public void initialise() {
+		motionCorrelator = new MotionCorrelator();
+		motionCorrelator.initialise();
+	}
 
 	@Override
 	public void correlateMotionAndPersonDetections(String camera, String vectorData)
 			throws IOException, URISyntaxException {
-		VectorDataList vectorDataList = vectorDataService.parseVectorData(vectorData);
+		VectorDataList vectorDataList = vectorDataService.parseVectorData(camera, vectorData);
 		logger.info("Got vector data for camera " + camera);
-		Frame frame = frameService.getFrame(camera, vectorDataList.getTimestamp());
-		logger.info("Got image from camera: " + camera);
-		PersonDetections personDetections = personDetectionService.detectPersonsFromDelta(camera, frame);
-		logger.info("Finished getting vector data and person detection data for camera: " + camera);
+		motionCorrelator.addVectorData(vectorDataList);
+	}
 
-		MotionCorrelation motionCorrelation = new MotionCorrelation();
-		motionCorrelation.setVectorData(vectorDataList);
-		motionCorrelation.setImage(frame.getImage());
-		motionCorrelation.setPersonDetections(personDetections);
-		logger.info("Motion correlation data for camera " + camera + ": " + motionCorrelation);
+	private class MotionCorrelator implements Runnable {
 
-		imageStampingService.stampImage(motionCorrelation);
-		imageService.writeImage(camera, motionCorrelation.getImage(), motionCorrelation.getPersonDetections(), false);
-		imageService.writeImage(camera, motionCorrelation.getStampedImage(), motionCorrelation.getPersonDetections(),
-				true);
-		imageService.writeImage(camera,
-				new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())), "-average");
-		imageService.writeImage(camera, personDetections.getDelta(), "-delta");
+		private BlockingQueue<VectorDataList> vectorDataQueue = new LinkedBlockingDeque<>();
+		private Thread motionCorrelatorThread;
 
-		if (personDetections.getPersonDetections().size() > 0) {
-			homeAssistantService.notifyPersonDetected(cameraService.getCamera(camera), personDetections);
+		public void initialise() {
+			motionCorrelatorThread = new Thread(this, "Motion Correlator");
+			motionCorrelatorThread.start();
+			logger.info("Motion Correlator Thread started");
+		}
+
+		public void addVectorData(VectorDataList vectorData) {
+			vectorDataQueue.offer(vectorData);
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					VectorDataList vectorDataList = vectorDataQueue.take();
+					performMotionCorrelation(vectorDataList);
+				} catch (Exception ex) {
+					logger.error("Failed performing motion correlation", ex);
+				}
+			}
+		}
+
+		private void performMotionCorrelation(VectorDataList vectorDataList) throws IOException {
+			Frame frame = frameService.getFrame(vectorDataList.getCamera(), vectorDataList.getTimestamp());
+			logger.info("Got image from camera: " + vectorDataList.getCamera());
+			PersonDetections personDetections = personDetectionService
+					.detectPersonsFromDelta(vectorDataList.getCamera(), frame);
+			logger.info(
+					"Finished getting vector data and person detection data for camera: " + vectorDataList.getCamera());
+
+			MotionCorrelation motionCorrelation = new MotionCorrelation();
+			motionCorrelation.setVectorData(vectorDataList);
+			motionCorrelation.setImage(frame.getImage());
+			motionCorrelation.setPersonDetections(personDetections);
+			logger.info("Motion correlation data for camera " + vectorDataList.getCamera() + ": " + motionCorrelation);
+
+			imageStampingService.stampImage(motionCorrelation);
+			imageService.writeImage(vectorDataList.getCamera(), motionCorrelation.getImage(),
+					motionCorrelation.getPersonDetections(), false);
+			imageService.writeImage(vectorDataList.getCamera(), motionCorrelation.getStampedImage(),
+					motionCorrelation.getPersonDetections(), true);
+			imageService.writeImage(vectorDataList.getCamera(),
+					new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())), "-average");
+			imageService.writeImage(vectorDataList.getCamera(), personDetections.getDelta(), "-delta");
+
+			if (personDetections.getPersonDetections().size() > 0) {
+				homeAssistantService.notifyPersonDetected(cameraService.getCamera(vectorDataList.getCamera()),
+						personDetections);
+			}
 		}
 	}
 }

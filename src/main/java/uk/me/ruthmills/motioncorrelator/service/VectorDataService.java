@@ -4,5 +4,5 @@ import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 
 public interface VectorDataService {
 
-	public VectorDataList parseVectorData(String vectorData);
+	public VectorDataList parseVectorData(String camera, String vectorData);
 }

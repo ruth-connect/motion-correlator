@@ -22,13 +22,8 @@ public class VectorDataServiceImpl implements VectorDataService {
 
 	private static final Logger logger = LoggerFactory.getLogger(VectorDataServiceImpl.class);
 
-	public VectorDataList decodeVectorData(String camera, String vectorData) {
-		VectorDataList vectorDataList = parseVectorData(vectorData);
-		return vectorDataList;
-	}
-
 	@Override
-	public VectorDataList parseVectorData(String vectorDataString) {
+	public VectorDataList parseVectorData(String camera, String vectorDataString) {
 		String[] vectorDataArray = vectorDataString.split("\n");
 		List<VectorData> vectorDataLines = new ArrayList<>();
 		LocalDateTime timestamp = null;
@@ -45,9 +40,7 @@ public class VectorDataServiceImpl implements VectorDataService {
 				}
 			}
 		}
-		VectorDataList vectorDataList = new VectorDataList();
-		vectorDataList.setTimestamp(timestamp);
-		vectorDataList.addAll(vectorDataLines);
+		VectorDataList vectorDataList = new VectorDataList(camera, timestamp, vectorDataLines);
 		return vectorDataList;
 	}
 
