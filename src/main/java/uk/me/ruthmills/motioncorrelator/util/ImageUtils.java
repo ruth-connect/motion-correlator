@@ -1,5 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.util;
 
+import java.time.format.DateTimeFormatter;
+
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -10,6 +12,8 @@ import org.opencv.imgproc.Imgproc;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 
 public class ImageUtils {
+
+	private static DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("/yyyy/MM/dd/HH");
 
 	public static Mat decodeImage(Image image) {
 		Mat encoded = new Mat(1, image.getBytes().length, CvType.CV_8U);
@@ -34,5 +38,9 @@ public class ImageUtils {
 		byte[] bytes = encoded.toArray();
 		encoded.release();
 		return bytes;
+	}
+
+	public static String getImagePath(String camera, Image image) {
+		return "/mnt/media/motioncorrelator/" + camera + image.getTimestamp().format(DATE_TIME_FORMAT) + "/";
 	}
 }

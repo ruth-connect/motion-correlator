@@ -13,7 +13,9 @@ import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
+import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
+import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.service.ImageService;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 import uk.me.ruthmills.motioncorrelator.service.MotionCorrelatorService;
@@ -38,6 +40,12 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 	@Autowired
 	private ImageStampingService imageStampingService;
+
+	@Autowired
+	private CameraService cameraService;
+
+	@Autowired
+	private HomeAssistantService homeAssistantService;
 
 	private static final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
 
@@ -64,5 +72,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		imageService.writeImage(camera,
 				new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())), "-average");
 		imageService.writeImage(camera, personDetections.getDelta(), "-delta");
+
+		if (personDetections.getPersonDetections().size() > 0) {
+			homeAssistantService.notifyPersonDetected(cameraService.getCamera(camera), personDetections);
+		}
 	}
 }

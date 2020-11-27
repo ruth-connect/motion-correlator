@@ -52,7 +52,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		Mat frame = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
 		logger.info("Frame size: " + frame.size());
 		PersonDetections personDetections = detect(frame, personDetectionParameters);
-		personDetections.setTimestamp(image.getTimestamp());
+		personDetections.setImage(image);
 		frame.release();
 		return personDetections;
 	}
@@ -77,7 +77,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		absAverageFrame.release();
 
 		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
-		personDetections.setTimestamp(frame.getTimestamp());
+		personDetections.setImage(frame.getImage());
 
 		Image delta = new Image(frame.getTimestamp(), ImageUtils.encodeImage(frameDelta));
 		frameDelta.release();

@@ -3,16 +3,12 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.config.RequestConfig;
@@ -27,14 +23,12 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
-import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.service.ImageService;
+import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 @Service
 public class ImageServiceImpl implements ImageService {
-
-	private static DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("/yyyy/MM/dd/HH");
 
 	@Override
 	public Image readImage(String camera) throws IOException, URISyntaxException {
@@ -54,14 +48,10 @@ public class ImageServiceImpl implements ImageService {
 	@Override
 	public void writeImage(String camera, Image image, PersonDetections personDetections, boolean stamped)
 			throws IOException {
-		LocalDateTime timestamp = image.getTimestamp();
-		String path = "/mnt/media/motioncorrelator/" + camera + timestamp.format(DATE_TIME_FORMAT);
+		String path = ImageUtils.getImagePath(camera, image);
 		File file = new File(path);
 		file.mkdirs();
-		List<PersonDetection> detectionsList = personDetections.getPersonDetections();
-		String detections = detectionsList.size() > 0 ? "-" + detectionsList.size() + "-"
-				+ new BigDecimal(detectionsList.get(0).getWeight()).setScale(3, RoundingMode.HALF_UP) : "";
-		String filename = timestamp + (stamped ? ("-stamped" + detections) : "") + ".jpg";
+		String filename = personDetections.getDetectionsFilename();
 		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
 	}
 
@@ -69,7 +59,7 @@ public class ImageServiceImpl implements ImageService {
 	public void writeImage(String camera, Image image, String suffix) throws IOException {
 		if (image != null) {
 			LocalDateTime timestamp = image.getTimestamp();
-			String path = "/mnt/media/motioncorrelator/" + camera + timestamp.format(DATE_TIME_FORMAT);
+			String path = ImageUtils.getImagePath(camera, image);
 			File file = new File(path);
 			file.mkdirs();
 			String filename = timestamp + suffix + ".jpg";

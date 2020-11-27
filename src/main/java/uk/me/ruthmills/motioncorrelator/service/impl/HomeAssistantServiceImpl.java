@@ -22,7 +22,9 @@ import org.springframework.web.client.RestTemplate;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.HomeAssistantMessage;
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
+import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 @Service
 public class HomeAssistantServiceImpl implements HomeAssistantService {
@@ -61,6 +63,14 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 		logger.info(camera.getName() + " connection failed");
 		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_connection_failed",
 				LocalDateTime.now().toString());
+	}
+
+	@Override
+	public void notifyPersonDetected(Camera camera, PersonDetections personDetections) {
+		logger.info(camera.getName() + " person detected");
+		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_person_detected",
+				ImageUtils.getImagePath(camera.getName(), personDetections.getImage())
+						+ personDetections.getDetectionsFilename());
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {
