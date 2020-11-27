@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.opencv.core.Mat;
 
+import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
+
 public class Frame {
 
 	private Image image;
@@ -11,6 +13,7 @@ public class Frame {
 	private Mat averageFrame;
 	private Frame previousFrame;
 	private Frame nextFrame;
+	private MotionCorrelation motionCorrelation;
 	private boolean processed;
 
 	public Frame(Image image, Mat blurredFrame, Mat averageFrame, Frame previousFrame) {
@@ -62,6 +65,14 @@ public class Frame {
 
 	public void setNextFrame(Frame nextFrame) {
 		this.nextFrame = nextFrame;
+	}
+
+	public MotionCorrelation getMotionCorrelation() {
+		return motionCorrelation;
+	}
+
+	public void setMotionCorrelation(MotionCorrelation motionCorrelation) {
+		this.motionCorrelation = motionCorrelation;
 	}
 
 	public boolean isProcessed() {

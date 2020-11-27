@@ -1,7 +1,6 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +20,7 @@ import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
 import uk.me.ruthmills.motioncorrelator.thread.Frames;
 import uk.me.ruthmills.motioncorrelator.thread.MjpegStream;
+import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 
 @Service
 public class FrameServiceImpl implements FrameService {
@@ -70,9 +70,9 @@ public class FrameServiceImpl implements FrameService {
 				if (previousFrame == null) {
 					return currentFrame;
 				}
-				long timestampMillis = timestamp.toInstant(ZoneOffset.UTC).toEpochMilli();
-				long currentMillis = currentFrame.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli();
-				long previousMillis = currentFrame.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli();
+				long timestampMillis = TimeUtils.toMilliseconds(timestamp);
+				long currentMillis = TimeUtils.toMilliseconds(currentFrame.getTimestamp());
+				long previousMillis = TimeUtils.toMilliseconds(currentFrame.getTimestamp());
 				long timeDifferenceCurrent = Math.abs(timestampMillis - currentMillis);
 				long timeDifferencePrevious = Math.abs(timestampMillis - previousMillis);
 				if (timeDifferenceCurrent <= timeDifferencePrevious) {

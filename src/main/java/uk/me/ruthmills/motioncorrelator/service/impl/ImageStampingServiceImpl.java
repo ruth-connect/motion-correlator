@@ -51,18 +51,19 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 
 	@Override
 	public void stampImage(MotionCorrelation motionCorrelation) throws IOException {
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(motionCorrelation.getImage().getBytes());
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+				motionCorrelation.getFrame().getImage().getBytes());
 		BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 		Graphics2D graphics2D = bufferedImage.createGraphics();
 		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
 		drawFrameVector(graphics2D, motionCorrelation.getFrameVector());
 		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
-		drawTimestamp(graphics2D, motionCorrelation.getImage().getTimestamp(), 0, Color.WHITE);
+		drawTimestamp(graphics2D, motionCorrelation.getFrame().getTimestamp(), 0, Color.WHITE);
 		drawVectorText(graphics2D, motionCorrelation.getVectorTimestamp(), motionCorrelation.getFrameVector());
 		graphics2D.dispose();
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-		Image stampedImage = new Image(motionCorrelation.getImage().getTimestamp(),
+		Image stampedImage = new Image(motionCorrelation.getFrame().getTimestamp(),
 				byteArrayOutputStream.toByteArray());
 		motionCorrelation.setStampedImage(stampedImage);
 	}

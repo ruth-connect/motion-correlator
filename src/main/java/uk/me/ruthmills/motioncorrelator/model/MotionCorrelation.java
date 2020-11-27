@@ -2,6 +2,7 @@ package uk.me.ruthmills.motioncorrelator.model;
 
 import java.time.LocalDateTime;
 
+import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
@@ -11,7 +12,7 @@ public class MotionCorrelation {
 	private String camera;
 	private LocalDateTime vectorTimestamp;
 	private Vector frameVector;
-	private Image image;
+	private Frame frame;
 	private PersonDetections personDetections;
 	private Image stampedImage;
 
@@ -36,12 +37,12 @@ public class MotionCorrelation {
 		return frameVector;
 	}
 
-	public void setImage(Image image) {
-		this.image = image;
+	public void setFrame(Frame frame) {
+		this.frame = frame;
 	}
 
-	public Image getImage() {
-		return image;
+	public Frame getFrame() {
+		return frame;
 	}
 
 	public void setPersonDetections(PersonDetections personDetections) {
@@ -54,9 +55,15 @@ public class MotionCorrelation {
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Vector Timestamp: " + vectorTimestamp + "\n");
-		stringBuilder.append("Frame Vector: " + frameVector + "\n");
-		stringBuilder.append("Person Detection Data: " + personDetections + "\n");
+		if (vectorTimestamp != null) {
+			stringBuilder.append("Vector Timestamp: " + vectorTimestamp + "\n");
+		}
+		if (frameVector != null) {
+			stringBuilder.append("Frame Vector: " + frameVector + "\n");
+		}
+		if (personDetections != null) {
+			stringBuilder.append("Person Detection Data: " + personDetections + "\n");
+		}
 		return stringBuilder.toString();
 	}
 
