@@ -20,7 +20,7 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 public class Frames implements Runnable {
 
-	private static final int MAX_QUEUE_SIZE = 750; // 125 seconds at 6 frames per second
+	private static final int MAX_QUEUE_SIZE = 100; // 16.7 seconds at 6 frames per second.
 
 	private Camera camera;
 	private BlockingQueue<Image> unprocessedImages = new LinkedBlockingDeque<>();
