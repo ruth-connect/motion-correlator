@@ -74,7 +74,9 @@ public class Frames implements Runnable {
 					Imgproc.accumulateWeighted(blurredFrame, currentAverageFrame, 0.1d);
 				}
 				Frame newFrame = new Frame(image, blurredFrame, currentAverageFrame, previousFrame);
-				frames.getLast().setNextFrame(newFrame);
+				if (size > 0) {
+					frames.getLast().setNextFrame(newFrame);
+				}
 				frames.addLast(newFrame);
 
 				if (size > MAX_QUEUE_SIZE) {
