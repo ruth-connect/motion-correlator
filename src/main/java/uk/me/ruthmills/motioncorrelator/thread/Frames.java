@@ -23,7 +23,7 @@ public class Frames implements Runnable {
 	private static final int MAX_QUEUE_SIZE = 100; // 16.7 seconds at 6 frames per second.
 
 	private Camera camera;
-	private BlockingQueue<Image> unprocessedImages = new LinkedBlockingDeque<>(6); // 1 second.
+	private BlockingQueue<Image> unprocessedImages = new LinkedBlockingDeque<>(6); // 1 second at 6 frames per second.
 	private Deque<Frame> frames = new ConcurrentLinkedDeque<>();
 	private int size;
 	private Thread frameProcessor;
