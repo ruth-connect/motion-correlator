@@ -42,6 +42,12 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	public void initialise() {
 		restTemplate = new RestTemplate(getClientHttpRequestFactory());
 		homeAssistantNotifier.initialise();
+		notifyHeimdallrWatchdogPulse();
+	}
+
+	@Override
+	public void notifyHeimdallrWatchdogPulse() {
+		homeAssistantNotifier.notify("heimdallr_watchdog_pulse", LocalDateTime.now().toString());
 	}
 
 	@Override
