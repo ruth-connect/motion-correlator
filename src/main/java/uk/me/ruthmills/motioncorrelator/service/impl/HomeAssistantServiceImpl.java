@@ -1,5 +1,6 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -47,13 +47,14 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	@Override
 	public void notifyCameraConnected(Camera camera) {
 		logger.info(camera.getName() + " connected");
-		homeAssistantNotifier.notify(camera.getLocation(), "camera_connected");
+		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_connected", LocalDateTime.now().toString());
 	}
 
 	@Override
 	public void notifyCameraConnectionFailed(Camera camera) {
 		logger.info(camera.getName() + " connection failed");
-		homeAssistantNotifier.notify(camera.getLocation(), "camera_connection_failed");
+		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_connection_failed",
+				LocalDateTime.now().toString());
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {
@@ -94,7 +95,7 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 		private void sendMessage(HomeAssistantMessage message) {
 			StringBuilder requestJson = new StringBuilder();
 			requestJson.append("{\"state\": \"");
-			requestJson.append(message.getType());
+			requestJson.append(message.getSensorValue());
 			requestJson.append("\"}");
 			logger.info("JSON to send: " + requestJson);
 
@@ -102,13 +103,10 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("Authorization", "Bearer " + token);
 
-			String url = endpoint + "sensor." + message.getLocation() + "_" + message.getType();
+			String url = endpoint + "sensor." + message.getSensorName();
 
 			logger.info("About to send POST to " + url);
 			restTemplate.postForEntity(url, new HttpEntity<String>(requestJson.toString(), headers), String.class);
-
-			logger.info("About to send DELETE to " + url);
-			restTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<String>("", headers), String.class);
 		}
 	}
 }

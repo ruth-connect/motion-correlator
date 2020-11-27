@@ -2,19 +2,19 @@ package uk.me.ruthmills.motioncorrelator.model;
 
 public class HomeAssistantMessage {
 
-	private String location;
-	private String type;
+	private String sensorName;
+	private String sensorValue;
 
-	public HomeAssistantMessage(String location, String type) {
-		this.location = location;
-		this.type = type;
+	public HomeAssistantMessage(String sensorName, String sensorValue) {
+		this.sensorName = sensorName;
+		this.sensorValue = sensorValue;
 	}
 
-	public String getLocation() {
-		return location;
+	public String getSensorName() {
+		return sensorName;
 	}
 
-	public String getType() {
-		return type;
+	public String getSensorValue() {
+		return sensorValue;
 	}
 }
