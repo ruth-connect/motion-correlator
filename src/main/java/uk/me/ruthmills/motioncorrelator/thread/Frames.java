@@ -41,7 +41,9 @@ public class Frames implements Runnable {
 	}
 
 	public void addCurrentFrame(Image image) {
-		unprocessedImages.offer(image);
+		if (!unprocessedImages.offer(image)) {
+			logger.info("Frame dropped. Camera: " + camera.getName() + ", Timestamp: " + image.getTimestamp());
+		}
 	}
 
 	public Deque<Frame> getFrames() {
