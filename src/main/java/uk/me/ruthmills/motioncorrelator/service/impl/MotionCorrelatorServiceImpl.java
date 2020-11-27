@@ -102,18 +102,26 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							vectorDataList.getTimestamp(), vectorDataList.getFrameVector());
 					performMotionCorrelation(currentMotionDetection);
 
-					// if both detections have frame vectors, and previous motion detection was
-					// within 3 seconds, interpolate the vectors over time.
+					// Is there a previous motion detection for this camera?
 					MotionCorrelation previousMotionDetection = previousMotionDetectionMap.get(camera);
-					long vectorTimeDifferenceMilliseconds = TimeUtils
-							.toMilliseconds(currentMotionDetection.getVectorTimestamp())
-							- TimeUtils.toMilliseconds(previousMotionDetection.getVectorTimestamp());
-					if ((currentMotionDetection.getFrameVector() != null)
-							&& (previousMotionDetection.getFrameVector() != null)
-							&& (vectorTimeDifferenceMilliseconds > 0) && (vectorTimeDifferenceMilliseconds <= 3000)) {
-						interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection,
-								vectorTimeDifferenceMilliseconds);
+					if (previousMotionDetection != null) {
+						// if both detections have frame vectors, and previous motion detection was
+						// within 3 seconds, interpolate the vectors over time.
+						long vectorTimeDifferenceMilliseconds = TimeUtils
+								.toMilliseconds(currentMotionDetection.getVectorTimestamp())
+								- TimeUtils.toMilliseconds(previousMotionDetection.getVectorTimestamp());
+						if ((currentMotionDetection.getFrameVector() != null)
+								&& (previousMotionDetection.getFrameVector() != null)
+								&& (vectorTimeDifferenceMilliseconds > 0)
+								&& (vectorTimeDifferenceMilliseconds <= 3000)) {
+							interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection,
+									vectorTimeDifferenceMilliseconds);
+						}
 					}
+
+					// Set the current motion detection as the previous motion detection for next
+					// time round.
+					previousMotionDetectionMap.put(camera, currentMotionDetection);
 				} catch (Exception ex) {
 					logger.error("Failed performing motion correlation", ex);
 				}
