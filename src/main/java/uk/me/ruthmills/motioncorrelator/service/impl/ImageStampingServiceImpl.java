@@ -25,7 +25,6 @@ import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
-import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 
 @Service
@@ -56,10 +55,10 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 		Graphics2D graphics2D = bufferedImage.createGraphics();
 		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
-		drawFrameVector(graphics2D, motionCorrelation.getVectorData());
+		drawFrameVector(graphics2D, motionCorrelation.getFrameVector());
 		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
 		drawTimestamp(graphics2D, motionCorrelation.getImage().getTimestamp(), 0, Color.WHITE);
-		drawVectorText(graphics2D, motionCorrelation.getVectorData());
+		drawVectorText(graphics2D, motionCorrelation.getVectorTimestamp(), motionCorrelation.getFrameVector());
 		graphics2D.dispose();
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
@@ -110,46 +109,42 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		}
 	}
 
-	private void drawFrameVector(Graphics2D graphics2D, VectorDataList vectorData) {
-		if (vectorData != null) {
-			Vector frameVector = vectorData.getFrameVector();
-			if (frameVector != null) {
-				int x = frameVector.getStartX();
-				int y = frameVector.getStartY();
-				int endX = frameVector.getEndX();
-				int endY = frameVector.getEndY();
+	private void drawFrameVector(Graphics2D graphics2D, Vector frameVector) {
+		if (frameVector != null) {
+			int x = frameVector.getStartX();
+			int y = frameVector.getStartY();
+			int endX = frameVector.getEndX();
+			int endY = frameVector.getEndY();
 
-				graphics2D.setColor(Color.MAGENTA);
+			graphics2D.setColor(Color.MAGENTA);
 
-				double angle = Math.atan2(endY - y, endX - x);
+			double angle = Math.atan2(endY - y, endX - x);
 
-				graphics2D.setStroke(new BasicStroke(2));
+			graphics2D.setStroke(new BasicStroke(2));
 
-				graphics2D.drawLine(x, y, (int) (endX - 10 * Math.cos(angle)), (int) (endY - 10 * Math.sin(angle)));
+			graphics2D.drawLine(x, y, (int) (endX - 10 * Math.cos(angle)), (int) (endY - 10 * Math.sin(angle)));
 
-				AffineTransform tx1 = graphics2D.getTransform();
+			AffineTransform tx1 = graphics2D.getTransform();
 
-				AffineTransform tx2 = (AffineTransform) tx1.clone();
+			AffineTransform tx2 = (AffineTransform) tx1.clone();
 
-				tx2.translate(endX, endY);
-				tx2.rotate(angle - Math.PI / 2);
+			tx2.translate(endX, endY);
+			tx2.rotate(angle - Math.PI / 2);
 
-				graphics2D.setTransform(tx2);
-				graphics2D.fill(ARROW_HEAD);
+			graphics2D.setTransform(tx2);
+			graphics2D.fill(ARROW_HEAD);
 
-				graphics2D.setTransform(tx1);
-			}
+			graphics2D.setTransform(tx1);
 		}
 	}
 
-	private void drawVectorText(Graphics2D graphics2D, VectorDataList vectorData) {
-		if (vectorData != null) {
-			drawTimestamp(graphics2D, vectorData.getTimestamp(), 1, Color.MAGENTA);
-			Vector frameVector = vectorData.getFrameVector();
-			if (frameVector != null) {
-				drawText(graphics2D, "Mag: " + frameVector.getMagnitude(), 530, 410, Color.MAGENTA);
-				drawText(graphics2D, "Cnt: " + frameVector.getCount(), 530, 450, Color.MAGENTA);
-			}
+	private void drawVectorText(Graphics2D graphics2D, LocalDateTime vectorTimestamp, Vector frameVector) {
+		if (vectorTimestamp != null) {
+			drawTimestamp(graphics2D, vectorTimestamp, 1, Color.MAGENTA);
+		}
+		if (frameVector != null) {
+			drawText(graphics2D, "Mag: " + frameVector.getMagnitude(), 530, 410, Color.MAGENTA);
+			drawText(graphics2D, "Cnt: " + frameVector.getCount(), 530, 450, Color.MAGENTA);
 		}
 	}
 
