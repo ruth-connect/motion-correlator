@@ -47,6 +47,7 @@ public class MjpegStream implements Runnable {
 
 	public void initialise() {
 		this.streamReader = new Thread(this, camera.getName() + " stream reader");
+		streamReader.setPriority(6);
 		streamReader.start();
 	}
 

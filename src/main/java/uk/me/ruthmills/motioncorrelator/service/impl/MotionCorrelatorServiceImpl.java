@@ -81,6 +81,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 		public void initialise() {
 			motionCorrelatorThread = new Thread(this, "Motion Correlator");
+			motionCorrelatorThread.setPriority(4);
 			motionCorrelatorThread.start();
 			logger.info("Motion Correlator Thread started");
 		}
