@@ -16,6 +16,10 @@ public class Frame {
 	private MotionCorrelation motionCorrelation;
 	private boolean processed;
 
+	public Frame(Image image) {
+		this.image = image;
+	}
+
 	public Frame(Image image, Mat blurredFrame, Mat averageFrame, Frame previousFrame) {
 		this.image = image;
 		this.blurredFrame = blurredFrame;

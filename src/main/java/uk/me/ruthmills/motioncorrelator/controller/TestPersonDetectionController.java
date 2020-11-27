@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
+import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetectionParameters;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
@@ -81,7 +82,7 @@ public class TestPersonDetectionController {
 		PersonDetections personDetections = personDetectionService.detectPersons(originalImage,
 				testPersonDetectionService.getPersonDetectionParameters());
 		MotionCorrelation motionCorrelation = new MotionCorrelation();
-		motionCorrelation.setImage(originalImage);
+		motionCorrelation.setFrame(new Frame(originalImage));
 		motionCorrelation.setPersonDetections(personDetections);
 		imageStampingService.stampImage(motionCorrelation);
 		Image stampedImage = motionCorrelation.getStampedImage();
