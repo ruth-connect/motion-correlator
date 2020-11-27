@@ -10,6 +10,7 @@ public class Frame {
 	private Mat blurredFrame;
 	private Mat averageFrame;
 	private Frame previousFrame;
+	private Frame nextFrame;
 
 	public Frame(Image image, Mat blurredFrame, Mat averageFrame, Frame previousFrame) {
 		this.image = image;
@@ -52,5 +53,13 @@ public class Frame {
 
 	public void setPreviousFrame(Frame previousFrame) {
 		this.previousFrame = previousFrame;
+	}
+
+	public Frame getNextFrame() {
+		return nextFrame;
+	}
+
+	public void setNextFrame(Frame nextFrame) {
+		this.nextFrame = nextFrame;
 	}
 }

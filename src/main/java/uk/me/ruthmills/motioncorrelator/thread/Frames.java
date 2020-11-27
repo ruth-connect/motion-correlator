@@ -20,7 +20,7 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 public class Frames implements Runnable {
 
-	private static final int MAX_QUEUE_SIZE = 100;
+	private static final int MAX_QUEUE_SIZE = 750; // 125 seconds at 6 frames per second
 
 	private Camera camera;
 	private BlockingQueue<Image> unprocessedImages = new LinkedBlockingDeque<>();
@@ -73,12 +73,15 @@ public class Frames implements Runnable {
 					previousAverageFrame.copyTo(currentAverageFrame);
 					Imgproc.accumulateWeighted(blurredFrame, currentAverageFrame, 0.1d);
 				}
-				frames.addLast(new Frame(image, blurredFrame, currentAverageFrame, previousFrame));
+				Frame newFrame = new Frame(image, blurredFrame, currentAverageFrame, previousFrame);
+				frames.getLast().setNextFrame(newFrame);
+				frames.addLast(newFrame);
 
 				if (size > MAX_QUEUE_SIZE) {
 					Frame expiredFrame = frames.removeFirst();
 					expiredFrame.getBlurredFrame().release();
 					expiredFrame.getAverageFrame().release();
+					expiredFrame.setNextFrame(null);
 					frames.getFirst().setPreviousFrame(null);
 				} else {
 					size++;
