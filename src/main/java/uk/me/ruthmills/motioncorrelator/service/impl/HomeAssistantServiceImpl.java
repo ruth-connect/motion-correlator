@@ -69,7 +69,7 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	public void notifyPersonDetected(Camera camera, PersonDetections personDetections) {
 		logger.info(camera.getName() + " person detected");
 		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_person_detected",
-				ImageUtils.getImagePath("http://heimdallr/images/" + camera.getName(), personDetections.getImage())
+				ImageUtils.getImagePath(camera.getName(), personDetections.getImage())
 						+ personDetections.getDetectionsFilename());
 	}
 
