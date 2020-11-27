@@ -113,7 +113,6 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 			requestJson.append("{\"state\": \"");
 			requestJson.append(message.getSensorValue());
 			requestJson.append("\"}");
-			logger.info("JSON to send: " + requestJson);
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -121,7 +120,6 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 
 			String url = endpoint + "sensor." + message.getSensorName();
 
-			logger.info("About to send POST to " + url);
 			restTemplate.postForEntity(url, new HttpEntity<String>(requestJson.toString(), headers), String.class);
 		}
 	}
