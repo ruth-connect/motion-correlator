@@ -262,6 +262,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					frameVector.setCount(
 							interpolateIntValue(startVector.getCount(), endVector.getCount(), ratioTimeElapsed));
 
+					if (frame.getMotionCorrelation() != null) {
+						logger.info("OVERWRITING existing motion correlation for frame with timestamp: "
+								+ frame.getTimestamp() + " and camera: " + currentMotionDetection.getCamera());
+					}
+
 					// Create the motion correlation for this frame.
 					MotionCorrelation motionCorrelation = new MotionCorrelation(currentMotionDetection.getCamera(),
 							frameVectorTime, frameVector);
