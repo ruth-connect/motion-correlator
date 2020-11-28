@@ -138,7 +138,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							performMotionCorrelation(currentMotionDetection);
 
 							// Is there a person detection?
-							if (currentMotionDetection.getPersonDetections().getPersonDetections().size() > 0) {
+							if (currentMotionDetection.getPersonDetections() != null
+									&& currentMotionDetection.getPersonDetections().getPersonDetections().size() > 0) {
 								// add motion correlations with no frame vector for the last 3 seconds.
 								addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
 							}
