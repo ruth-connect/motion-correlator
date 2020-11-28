@@ -157,29 +157,30 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			}
 			if (frame.getMotionCorrelation() == null) {
 				frame.setMotionCorrelation(motionCorrelation);
-				logger.info("Got image from camera: " + motionCorrelation.getCamera());
 				PersonDetections personDetections = personDetectionService
 						.detectPersonsFromDelta(motionCorrelation.getCamera(), frame);
-				logger.info("Finished getting vector data and person detection data for camera: "
-						+ motionCorrelation.getCamera());
 
 				motionCorrelation.setFrame(frame);
 				motionCorrelation.setPersonDetections(personDetections);
-				logger.info("Motion correlation data for camera " + motionCorrelation.getCamera() + ": "
-						+ motionCorrelation);
+				if (motionCorrelation.getVectorTimestamp() != null
+						|| personDetections.getPersonDetections().size() > 0) {
+					logger.info("Motion correlation data for camera " + motionCorrelation.getCamera() + ": "
+							+ motionCorrelation);
 
-				imageStampingService.stampImage(motionCorrelation);
-				imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage(),
-						motionCorrelation.getPersonDetections(), false);
-				imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
-						motionCorrelation.getPersonDetections(), true);
-				imageService.writeImage(motionCorrelation.getCamera(),
-						new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())), "-average");
-				imageService.writeImage(motionCorrelation.getCamera(), personDetections.getDelta(), "-delta");
+					imageStampingService.stampImage(motionCorrelation);
+					imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage(),
+							motionCorrelation.getPersonDetections(), false);
+					imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
+							motionCorrelation.getPersonDetections(), true);
+					imageService.writeImage(motionCorrelation.getCamera(),
+							new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())),
+							"-average");
+					imageService.writeImage(motionCorrelation.getCamera(), personDetections.getDelta(), "-delta");
 
-				if (personDetections.getPersonDetections().size() > 0) {
-					homeAssistantService.notifyPersonDetected(cameraService.getCamera(motionCorrelation.getCamera()),
-							personDetections);
+					if (personDetections.getPersonDetections().size() > 0) {
+						homeAssistantService.notifyPersonDetected(
+								cameraService.getCamera(motionCorrelation.getCamera()), personDetections);
+					}
 				}
 			}
 		}
