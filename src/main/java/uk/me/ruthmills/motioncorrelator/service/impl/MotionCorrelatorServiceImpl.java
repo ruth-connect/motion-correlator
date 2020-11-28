@@ -322,7 +322,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 		private MotionCorrelation getLatestMotionDetection() {
 			List<MotionCorrelation> latestMotionDetections = previousMotionDetectionMap.entrySet().stream()
-					.map(entry -> entry.getValue()).filter(entry -> entry != null).collect(Collectors.toList());
+					.map(entry -> entry.getValue())
+					.filter(entry -> entry != null && entry.getFrame() != null && entry.getFrameTimestamp() != null)
+					.collect(Collectors.toList());
 			latestMotionDetections.sort(Comparator.comparing(MotionCorrelation::getFrameTimestamp).reversed());
 			for (MotionCorrelation motionDetection : latestMotionDetections) {
 				Frame frame = motionDetection.getFrame();
