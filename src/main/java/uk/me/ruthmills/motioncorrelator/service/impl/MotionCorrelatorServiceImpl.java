@@ -239,8 +239,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						+ endOffsetMilliseconds;
 
 				Frame frame = previousMotionDetection.getFrame().getNextFrame();
-				while (frame.getMotionCorrelation() == null
-						|| frame.getMotionCorrelation().getVectorTimestamp() == null) {
+
+				// Is there no motion correlation OR is there a motion correlation with no
+				// vector?
+				while (frame.getMotionCorrelation() == null || (frame.getMotionCorrelation() != null
+						&& frame.getMotionCorrelation().getVectorTimestamp() == null)) {
 					// Calculate the ratio of the current frame image time between the start and end
 					// image times.
 					long frameImageTimeMilliseconds = TimeUtils.toMilliseconds(frame.getTimestamp());
