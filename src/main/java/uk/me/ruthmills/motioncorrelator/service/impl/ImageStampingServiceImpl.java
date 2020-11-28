@@ -60,8 +60,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		drawFrameVector(graphics2D, motionCorrelation.getVectorMotionDetection());
 		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
 		drawTimestamp(graphics2D, motionCorrelation.getFrame().getTimestamp(), 0, Color.WHITE);
-		drawVectorText(graphics2D, motionCorrelation.getVectorMotionDetection().getTimestamp(),
-				motionCorrelation.getVectorMotionDetection().getFrameVector());
+		drawVectorText(graphics2D, motionCorrelation.getVectorMotionDetection());
 		graphics2D.dispose();
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
@@ -144,13 +143,17 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		}
 	}
 
-	private void drawVectorText(Graphics2D graphics2D, LocalDateTime vectorTimestamp, Vector frameVector) {
-		if (vectorTimestamp != null) {
-			drawTimestamp(graphics2D, vectorTimestamp, 1, Color.MAGENTA);
-		}
-		if (frameVector != null) {
-			drawText(graphics2D, "Mag: " + frameVector.getMagnitude(), 530, 410, Color.MAGENTA);
-			drawText(graphics2D, "Cnt: " + frameVector.getCount(), 530, 450, Color.MAGENTA);
+	private void drawVectorText(Graphics2D graphics2D, VectorMotionDetection vectorMotionDetection) {
+		if (vectorMotionDetection != null) {
+			LocalDateTime vectorTimestamp = vectorMotionDetection.getTimestamp();
+			Vector frameVector = vectorMotionDetection.getFrameVector();
+			if (vectorTimestamp != null) {
+				drawTimestamp(graphics2D, vectorTimestamp, 1, Color.MAGENTA);
+			}
+			if (frameVector != null) {
+				drawText(graphics2D, "Mag: " + frameVector.getMagnitude(), 530, 410, Color.MAGENTA);
+				drawText(graphics2D, "Cnt: " + frameVector.getCount(), 530, 450, Color.MAGENTA);
+			}
 		}
 	}
 
