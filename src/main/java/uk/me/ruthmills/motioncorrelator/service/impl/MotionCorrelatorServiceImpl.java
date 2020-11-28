@@ -24,6 +24,7 @@ import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
+import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
@@ -99,7 +100,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 								+ " with VECTOR timestamp: " + vectorDataList.getTimestamp());
 						String camera = vectorDataList.getCamera();
 						MotionCorrelation currentMotionDetection = new MotionCorrelation(camera,
-								vectorDataList.getTimestamp(), vectorDataList.getFrameVector());
+								new VectorMotionDetection(vectorDataList.getTimestamp(),
+										vectorDataList.getFrameVector()));
 						performMotionCorrelation(currentMotionDetection);
 
 						// Is there a previous motion detection for this camera?
@@ -136,8 +138,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
 			Frame frame = motionCorrelation.getFrame();
-			if (frame == null && motionCorrelation.getVectorTimestamp() != null) {
-				frame = frameService.getFrame(motionCorrelation.getCamera(), motionCorrelation.getVectorTimestamp());
+			if (frame == null && motionCorrelation.getVectorMotionDetection() != null) {
+				frame = frameService.getFrame(motionCorrelation.getCamera(),
+						motionCorrelation.getVectorMotionDetection().getTimestamp());
 			}
 			if (frame != null) {
 				if (frame.getMotionCorrelation() == null) {
@@ -153,7 +156,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 					motionCorrelation.setFrame(frame);
 					motionCorrelation.setPersonDetections(personDetections);
-					if (motionCorrelation.getVectorTimestamp() != null
+					if (motionCorrelation.getVectorMotionDetection() != null
 							|| personDetections.getPersonDetections().size() > 0) {
 						detectionAggregatorService.addDetection(motionCorrelation);
 					}
@@ -163,16 +166,16 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 		private void interpolateVectorsOverTime(MotionCorrelation currentMotionDetection,
 				MotionCorrelation previousMotionDetection) {
-			if (currentMotionDetection.getVectorTimestamp() != null
-					&& previousMotionDetection.getVectorTimestamp() != null) {
+			if (currentMotionDetection.getVectorMotionDetection() != null
+					&& previousMotionDetection.getVectorMotionDetection() != null) {
 				// if both detections have frame vectors, and previous motion detection was
 				// within 3 seconds, interpolate the vectors over time.
 				long vectorTimeDifferenceMilliseconds = TimeUtils
-						.toMilliseconds(currentMotionDetection.getVectorTimestamp())
-						- TimeUtils.toMilliseconds(previousMotionDetection.getVectorTimestamp());
-				if ((currentMotionDetection.getFrameVector() != null)
-						&& (previousMotionDetection.getFrameVector() != null) && (vectorTimeDifferenceMilliseconds > 0)
-						&& (vectorTimeDifferenceMilliseconds <= 3000)) {
+						.toMilliseconds(currentMotionDetection.getVectorMotionDetection().getTimestamp())
+						- TimeUtils.toMilliseconds(previousMotionDetection.getVectorMotionDetection().getTimestamp());
+				if ((currentMotionDetection.getVectorMotionDetection().getFrameVector() != null)
+						&& (previousMotionDetection.getVectorMotionDetection().getFrameVector() != null)
+						&& (vectorTimeDifferenceMilliseconds > 0) && (vectorTimeDifferenceMilliseconds <= 3000)) {
 					interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection,
 							vectorTimeDifferenceMilliseconds);
 				} else {
@@ -187,10 +190,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 		private void interpolateVectorsOverTime(MotionCorrelation currentMotionDetection,
 				MotionCorrelation previousMotionDetection, long vectorTimeDifferenceMilliseconds) {
-			Vector startVector = previousMotionDetection.getFrameVector();
-			Vector endVector = currentMotionDetection.getFrameVector();
+			Vector startVector = previousMotionDetection.getVectorMotionDetection().getFrameVector();
+			Vector endVector = currentMotionDetection.getVectorMotionDetection().getFrameVector();
 
-			long vectorStartTimeMilliseconds = TimeUtils.toMilliseconds(previousMotionDetection.getVectorTimestamp());
+			long vectorStartTimeMilliseconds = TimeUtils
+					.toMilliseconds(previousMotionDetection.getVectorMotionDetection().getTimestamp());
 			if (previousMotionDetection.getFrame() != null) {
 				long imageStartTimeMilliseconds = TimeUtils
 						.toMilliseconds(previousMotionDetection.getFrame().getTimestamp());
@@ -201,7 +205,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 				long imageEndTimeMilliseconds = TimeUtils
 						.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
-				long vectorEndTimeMilliseconds = TimeUtils.toMilliseconds(currentMotionDetection.getVectorTimestamp());
+				long vectorEndTimeMilliseconds = TimeUtils
+						.toMilliseconds(currentMotionDetection.getVectorMotionDetection().getTimestamp());
 
 				// extra time if image timestamp is after vector timestamp, less time otherwise.
 				long endOffsetMilliseconds = imageEndTimeMilliseconds - vectorEndTimeMilliseconds;
@@ -214,7 +219,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				// Is there no motion correlation OR is there a motion correlation with no
 				// vector?
 				while (frame.getMotionCorrelation() == null || (frame.getMotionCorrelation() != null
-						&& frame.getMotionCorrelation().getVectorTimestamp() == null)) {
+						&& frame.getMotionCorrelation().getVectorMotionDetection() == null)) {
 					// Calculate the ratio of the current frame image time between the start and end
 					// image times.
 					long frameImageTimeMilliseconds = TimeUtils.toMilliseconds(frame.getTimestamp());
@@ -245,7 +250,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 					// Create the motion correlation for this frame.
 					MotionCorrelation motionCorrelation = new MotionCorrelation(currentMotionDetection.getCamera(),
-							frameVectorTime, frameVector);
+							new VectorMotionDetection(frameVectorTime, frameVector, true));
 					frame.setMotionCorrelation(motionCorrelation);
 					logger.info("Interpolated data for image with timestamp: " + frame.getTimestamp() + " and camera: "
 							+ currentMotionDetection.getCamera() + "\n" + motionCorrelation);
@@ -395,7 +400,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					// Is there a previous detection?
 					if (previousFrame.getMotionCorrelation() != null) {
 						MotionCorrelation previousMotionCorrelation = previousFrame.getMotionCorrelation();
-						if (previousMotionCorrelation.getVectorTimestamp() != null
+						if (previousMotionCorrelation.getVectorMotionDetection() != null
 								|| (previousMotionCorrelation.getPersonDetections() != null && previousMotionCorrelation
 										.getPersonDetections().getPersonDetections().size() > 0)) {
 							return true;

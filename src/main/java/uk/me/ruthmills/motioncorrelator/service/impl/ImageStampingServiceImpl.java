@@ -56,10 +56,11 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 		Graphics2D graphics2D = bufferedImage.createGraphics();
 		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
-		drawFrameVector(graphics2D, motionCorrelation.getFrameVector());
+		drawFrameVector(graphics2D, motionCorrelation.getVectorMotionDetection().getFrameVector());
 		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
 		drawTimestamp(graphics2D, motionCorrelation.getFrame().getTimestamp(), 0, Color.WHITE);
-		drawVectorText(graphics2D, motionCorrelation.getVectorTimestamp(), motionCorrelation.getFrameVector());
+		drawVectorText(graphics2D, motionCorrelation.getVectorMotionDetection().getTimestamp(),
+				motionCorrelation.getVectorMotionDetection().getFrameVector());
 		graphics2D.dispose();
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);

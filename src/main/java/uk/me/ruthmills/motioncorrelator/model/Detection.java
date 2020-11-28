@@ -1,24 +1,17 @@
 package uk.me.ruthmills.motioncorrelator.model;
 
-import java.time.LocalDateTime;
-
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
-import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
+import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
 
 public class Detection {
 
 	private String camera;
-	private LocalDateTime frameTimestamp;
-	private LocalDateTime vectorTimestamp;
-	private Vector frameVector;
+	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
 
-	public Detection(String camera, LocalDateTime frameTimestamp, LocalDateTime vectorTimestamp, Vector frameVector,
-			PersonDetections personDetections) {
+	public Detection(String camera, VectorMotionDetection vectorMotionDetection, PersonDetections personDetections) {
 		this.camera = camera;
-		this.frameTimestamp = frameTimestamp;
-		this.vectorTimestamp = vectorTimestamp;
-		this.frameVector = frameVector;
+		this.vectorMotionDetection = vectorMotionDetection;
 		this.personDetections = personDetections;
 	}
 
@@ -30,28 +23,12 @@ public class Detection {
 		this.camera = camera;
 	}
 
-	public LocalDateTime getFrameTimestamp() {
-		return frameTimestamp;
+	public VectorMotionDetection getVectorMotionDetection() {
+		return vectorMotionDetection;
 	}
 
-	public void setFrameTimestamp(LocalDateTime frameTimestamp) {
-		this.frameTimestamp = frameTimestamp;
-	}
-
-	public LocalDateTime getVectorTimestamp() {
-		return vectorTimestamp;
-	}
-
-	public void setVectorTimestamp(LocalDateTime vectorTimestamp) {
-		this.vectorTimestamp = vectorTimestamp;
-	}
-
-	public Vector getFrameVector() {
-		return frameVector;
-	}
-
-	public void setFrameVector(Vector frameVector) {
-		this.frameVector = frameVector;
+	public void setVectorMotionDetection(VectorMotionDetection vectorMotionDetection) {
+		this.vectorMotionDetection = vectorMotionDetection;
 	}
 
 	public PersonDetections getPersonDetections() {

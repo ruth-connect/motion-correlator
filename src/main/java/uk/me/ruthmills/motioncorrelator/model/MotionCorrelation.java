@@ -5,14 +5,13 @@ import java.time.LocalDateTime;
 import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
-import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
+import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
 
 public class MotionCorrelation {
 
 	private String camera;
-	private LocalDateTime vectorTimestamp;
-	private Vector frameVector;
 	private Frame frame;
+	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
 	private Image stampedImage;
 
@@ -24,10 +23,9 @@ public class MotionCorrelation {
 		this.frame = frame;
 	}
 
-	public MotionCorrelation(String camera, LocalDateTime vectorTimestamp, Vector frameVector) {
+	public MotionCorrelation(String camera, VectorMotionDetection vectorMotionDetection) {
 		this.camera = camera;
-		this.vectorTimestamp = vectorTimestamp;
-		this.frameVector = frameVector;
+		this.vectorMotionDetection = vectorMotionDetection;
 	}
 
 	public String getCamera() {
@@ -38,12 +36,8 @@ public class MotionCorrelation {
 		return frame != null ? frame.getTimestamp() : null;
 	}
 
-	public LocalDateTime getVectorTimestamp() {
-		return vectorTimestamp;
-	}
-
-	public Vector getFrameVector() {
-		return frameVector;
+	public VectorMotionDetection getVectorMotionDetection() {
+		return vectorMotionDetection;
 	}
 
 	public void setFrame(Frame frame) {
@@ -64,14 +58,11 @@ public class MotionCorrelation {
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		if (vectorTimestamp != null) {
-			stringBuilder.append("Vector Timestamp: " + vectorTimestamp + "\n");
-		}
-		if (frameVector != null) {
-			stringBuilder.append("Frame Vector: " + frameVector + "\n");
+		if (vectorMotionDetection != null) {
+			stringBuilder.append("Vector Motion Detection: " + vectorMotionDetection + "\n");
 		}
 		if (personDetections != null) {
-			stringBuilder.append("Person Detection Data: " + personDetections + "\n");
+			stringBuilder.append("Person Detections: " + personDetections + "\n");
 		}
 		return stringBuilder.toString();
 	}
