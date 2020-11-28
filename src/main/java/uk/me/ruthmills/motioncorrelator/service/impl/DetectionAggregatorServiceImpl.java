@@ -1,5 +1,10 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -10,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
@@ -52,13 +58,14 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 	private class DetectionAggregator implements Runnable {
 
 		private BlockingDeque<MotionCorrelation> detectionQueue = new LinkedBlockingDeque<>();
+		private Map<String, List<Detection>> detectionsForCameraMap = new HashMap<>();
 		private Thread detectionAggregatorThread;
 
 		public void initialise() {
 			detectionAggregatorThread = new Thread(this, "Detection Aggregator");
 			detectionAggregatorThread.setPriority(4); // lower priority than normal (5).
 			detectionAggregatorThread.start();
-			logger.info("Motion Correlator Thread started");
+			logger.info("Detection Aggregator Thread started");
 		}
 
 		public void addDetection(MotionCorrelation motionCorrelation) {
@@ -71,19 +78,19 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 				try {
 					MotionCorrelation motionCorrelation = detectionQueue.takeFirst();
 
-					logger.info("Motion correlation data for camera " + motionCorrelation.getCamera() + ": "
-							+ motionCorrelation);
+					logger.info("DETECTION AGGREGATOR. Motion correlation data for camera "
+							+ motionCorrelation.getCamera() + ": " + motionCorrelation);
 
-					imageStampingService.stampImage(motionCorrelation);
-					imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
-					imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
-							motionCorrelation.getPersonDetections());
-					imageService.writeImage(motionCorrelation.getCamera(),
-							new Image(motionCorrelation.getFrame().getTimestamp(),
-									ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
-							"-average");
-					imageService.writeImage(motionCorrelation.getCamera(),
-							motionCorrelation.getPersonDetections().getDelta(), "-delta");
+					// Write the images.
+					writeImages(motionCorrelation);
+
+					// Create the detection object.
+					Detection detection = new Detection(motionCorrelation.getCamera(),
+							motionCorrelation.getFrame().getTimestamp(), motionCorrelation.getVectorTimestamp(),
+							motionCorrelation.getFrameVector(), motionCorrelation.getPersonDetections());
+
+					// Add the detection to the list.
+//					getDetectionListForCamera(detection.getCamera()).add(detection);
 
 					if (motionCorrelation.getPersonDetections().getPersonDetections().size() > 0) {
 						homeAssistantService.notifyPersonDetected(
@@ -94,6 +101,29 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 					logger.error("Failed performing detection aggregation", ex);
 				}
 			}
+		}
+
+		private void writeImages(MotionCorrelation motionCorrelation) throws IOException {
+			imageStampingService.stampImage(motionCorrelation);
+			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
+			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
+					motionCorrelation.getPersonDetections());
+			imageService
+					.writeImage(motionCorrelation.getCamera(),
+							new Image(motionCorrelation.getFrame().getTimestamp(),
+									ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
+							"-average");
+			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getPersonDetections().getDelta(),
+					"-delta");
+		}
+
+		private List<Detection> getDetectionListForCamera(String camera) {
+			List<Detection> detectionList = detectionsForCameraMap.get(camera);
+			if (detectionList == null) {
+				detectionList = new ArrayList<>();
+				detectionsForCameraMap.put(camera, detectionList);
+			}
+			return detectionList;
 		}
 	}
 }
