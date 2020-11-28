@@ -177,33 +177,34 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					frame.setMotionCorrelation(motionCorrelation);
 				}
 
-				PersonDetections personDetections = personDetectionService
-						.detectPersonsFromDelta(motionCorrelation.getCamera(), frame);
+				if (frame.getAverageFrame() == null) {
+					logger.warn("No average frame for frame: " + frame.getTimestamp() + " for camera: "
+							+ motionCorrelation.getCamera());
+				} else {
+					PersonDetections personDetections = personDetectionService
+							.detectPersonsFromDelta(motionCorrelation.getCamera(), frame);
 
-				motionCorrelation.setFrame(frame);
-				motionCorrelation.setPersonDetections(personDetections);
-				if (motionCorrelation.getVectorTimestamp() != null
-						|| personDetections.getPersonDetections().size() > 0) {
-					logger.info("Motion correlation data for camera " + motionCorrelation.getCamera() + ": "
-							+ motionCorrelation);
+					motionCorrelation.setFrame(frame);
+					motionCorrelation.setPersonDetections(personDetections);
+					if (motionCorrelation.getVectorTimestamp() != null
+							|| personDetections.getPersonDetections().size() > 0) {
+						logger.info("Motion correlation data for camera " + motionCorrelation.getCamera() + ": "
+								+ motionCorrelation);
 
-					imageStampingService.stampImage(motionCorrelation);
-					imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage(),
-							motionCorrelation.getPersonDetections(), false);
-					imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
-							motionCorrelation.getPersonDetections(), true);
-					if (frame.getAverageFrame() != null) {
+						imageStampingService.stampImage(motionCorrelation);
+						imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage(),
+								motionCorrelation.getPersonDetections(), false);
+						imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
+								motionCorrelation.getPersonDetections(), true);
 						imageService.writeImage(motionCorrelation.getCamera(),
 								new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())),
 								"-average");
-					}
-					if (personDetections.getDelta() != null) {
 						imageService.writeImage(motionCorrelation.getCamera(), personDetections.getDelta(), "-delta");
-					}
 
-					if (personDetections.getPersonDetections().size() > 0) {
-						homeAssistantService.notifyPersonDetected(
-								cameraService.getCamera(motionCorrelation.getCamera()), personDetections);
+						if (personDetections.getPersonDetections().size() > 0) {
+							homeAssistantService.notifyPersonDetected(
+									cameraService.getCamera(motionCorrelation.getCamera()), personDetections);
+						}
 					}
 				}
 			}
