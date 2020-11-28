@@ -84,7 +84,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 		private BlockingDeque<VectorDataList> vectorDataQueue = new LinkedBlockingDeque<>();
 		private Map<String, MotionCorrelation> previousMotionDetectionMap = new HashMap<>();
-		private Map<String, Frame> currentFrameMap = new HashMap<>();
 		private int cameraIndex = 0;
 		private Thread motionCorrelatorThread;
 
@@ -127,9 +126,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						// Set the current motion detection as the previous motion detection for next
 						// time round.
 						previousMotionDetectionMap.put(camera, currentMotionDetection);
-
-						// Set the current frame in the map for this camera.
-						currentFrameMap.put(camera, currentMotionDetection.getFrame());
 
 					} else {
 						// Do we have an existing motion detection we want to person detect previous
@@ -372,9 +368,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						// Set the current motion detection as the previous motion detection for next
 						// time round.
 						previousMotionDetectionMap.put(camera, currentMotionDetection);
-
-						// Set the current frame in the map for this camera.
-						currentFrameMap.put(camera, currentMotionDetection.getFrame());
 					} else if (isDetectionInLast3Seconds(currentMotionDetection)) {
 						logger.info("ROUND ROBIN - detection within last 3 seconds - adding empty motion correlations");
 
