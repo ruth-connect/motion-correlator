@@ -363,6 +363,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					// Is there a person detection?
 					if (currentMotionDetection.getPersonDetections() != null
 							&& currentMotionDetection.getPersonDetections().getPersonDetections().size() > 0) {
+						logger.info("ROUND ROBIN person detection at timestamp: "
+								+ currentMotionDetection.getFrameTimestamp() + " for camera: " + camera);
+
 						// add motion correlations with no frame vector for the last 3 seconds.
 						addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
 
@@ -372,6 +375,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 						// Set the current frame in the map for this camera.
 						currentFrameMap.put(camera, currentMotionDetection.getFrame());
+					} else if (isDetectionInLast3Seconds(currentMotionDetection)) {
+						logger.info("ROUND ROBIN - detection within last 3 seconds - adding empty motion correlations");
+
+						// add motion correlations with no frame vector for the last 3 seconds.
+						addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
 					} else {
 						// No person detections, so clear the motion detection.
 						frame.setMotionCorrelation(null);
@@ -401,6 +409,35 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			if (cameraIndex >= cameras.size()) {
 				cameraIndex = 0;
 			}
+		}
+
+		boolean isDetectionInLast3Seconds(MotionCorrelation currentMotionCorrelation) {
+			long currentImageTimestampMilliseconds = TimeUtils
+					.toMilliseconds(currentMotionCorrelation.getFrameTimestamp());
+			Frame previousFrame = currentMotionCorrelation.getFrame().getPreviousFrame();
+			if (previousFrame != null) {
+				long previousImageTimestampMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
+				while (previousFrame != null
+						&& (currentImageTimestampMilliseconds - previousImageTimestampMilliseconds <= 3000)) {
+
+					// Is there a previous detection?
+					if (previousFrame.getMotionCorrelation() != null) {
+						MotionCorrelation previousMotionCorrelation = previousFrame.getMotionCorrelation();
+						if (previousMotionCorrelation.getVectorTimestamp() != null
+								|| (previousMotionCorrelation.getPersonDetections() != null && previousMotionCorrelation
+										.getPersonDetections().getPersonDetections().size() > 0)) {
+							return true;
+						}
+					}
+
+					// Not a previous detection this time - get previous.
+					previousFrame = previousFrame.getPreviousFrame();
+					if (previousFrame != null) {
+						previousImageTimestampMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
+					}
+				}
+			}
+			return false;
 		}
 	}
 }
