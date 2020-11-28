@@ -30,6 +30,8 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 @Service
 public class ImageServiceImpl implements ImageService {
 
+	private static final String IMAGE_PATH_PREFIX = "/mnt/media/motioncorrelator/";
+
 	@Override
 	public Image readImage(String camera) throws IOException, URISyntaxException {
 		URI uri = new URI("http://" + camera + "/mjpeg_read.php");
@@ -47,31 +49,21 @@ public class ImageServiceImpl implements ImageService {
 
 	@Override
 	public void writeImage(String camera, Image image) throws IOException {
-		String path = "/mnt/media/motioncorrelator/" + ImageUtils.getImagePath(camera, image);
-		File file = new File(path);
-		file.mkdirs();
-		String filename = image.getTimestamp() + ".jpg";
-		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
+		writeImage(camera, image, "");
 	}
 
 	@Override
 	public void writeImage(String camera, Image image, PersonDetections personDetections) throws IOException {
-		String path = "/mnt/media/motioncorrelator/" + ImageUtils.getImagePath(camera, image);
-		File file = new File(path);
-		file.mkdirs();
-		String filename = personDetections.getDetectionsFilename();
-		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
+		Files.write(
+				FileSystems.getDefault().getPath(getImagePath(camera, image), personDetections.getDetectionsFilename()),
+				image.getBytes(), StandardOpenOption.CREATE);
 	}
 
 	@Override
 	public void writeImage(String camera, Image image, String suffix) throws IOException {
 		if (image != null) {
-			LocalDateTime timestamp = image.getTimestamp();
-			String path = "/mnt/media/motioncorrelator/" + ImageUtils.getImagePath(camera, image);
-			File file = new File(path);
-			file.mkdirs();
-			String filename = timestamp + suffix + ".jpg";
-			Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
+			Files.write(FileSystems.getDefault().getPath(getImagePath(camera, image),
+					image.getTimestamp() + suffix + ".jpg"), image.getBytes(), StandardOpenOption.CREATE);
 		}
 	}
 
@@ -81,5 +73,12 @@ public class ImageServiceImpl implements ImageService {
 				.setSocketTimeout(timeout).build();
 		CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
 		return new HttpComponentsClientHttpRequestFactory(client);
+	}
+
+	private String getImagePath(String camera, Image image) {
+		String path = IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, image);
+		File file = new File(path);
+		file.mkdirs();
+		return path;
 	}
 }
