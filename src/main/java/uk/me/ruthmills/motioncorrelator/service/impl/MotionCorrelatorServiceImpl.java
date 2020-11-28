@@ -21,19 +21,15 @@ import org.springframework.stereotype.Service;
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Frame;
-import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
+import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
-import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
-import uk.me.ruthmills.motioncorrelator.service.ImageService;
-import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 import uk.me.ruthmills.motioncorrelator.service.MotionCorrelatorService;
 import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
 import uk.me.ruthmills.motioncorrelator.service.VectorDataService;
-import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 
 @Service
@@ -46,19 +42,13 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 	private FrameService frameService;
 
 	@Autowired
-	private ImageService imageService;
-
-	@Autowired
 	private PersonDetectionService personDetectionService;
 
 	@Autowired
-	private ImageStampingService imageStampingService;
+	private DetectionAggregatorService detectionAggregatorService;
 
 	@Autowired
 	private CameraService cameraService;
-
-	@Autowired
-	private HomeAssistantService homeAssistantService;
 
 	private List<Camera> cameras;
 	private MotionCorrelator motionCorrelator;
@@ -165,22 +155,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					motionCorrelation.setPersonDetections(personDetections);
 					if (motionCorrelation.getVectorTimestamp() != null
 							|| personDetections.getPersonDetections().size() > 0) {
-						logger.info("Motion correlation data for camera " + motionCorrelation.getCamera() + ": "
-								+ motionCorrelation);
-
-						imageStampingService.stampImage(motionCorrelation);
-						imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
-						imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
-								motionCorrelation.getPersonDetections());
-						imageService.writeImage(motionCorrelation.getCamera(),
-								new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())),
-								"-average");
-						imageService.writeImage(motionCorrelation.getCamera(), personDetections.getDelta(), "-delta");
-
-						if (personDetections.getPersonDetections().size() > 0) {
-							homeAssistantService.notifyPersonDetected(
-									cameraService.getCamera(motionCorrelation.getCamera()), personDetections);
-						}
+						detectionAggregatorService.addDetection(motionCorrelation);
 					}
 				}
 			}
