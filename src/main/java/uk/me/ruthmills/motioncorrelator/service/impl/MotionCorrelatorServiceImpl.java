@@ -137,7 +137,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							// Run person detection on the motion detection.
 							performMotionCorrelation(currentMotionDetection);
 						} else {
-							// performMotionCorrelationOnNextCameraRoundRobin();
+							performMotionCorrelationOnNextCameraRoundRobin();
 						}
 					}
 				} catch (Exception ex) {
@@ -231,7 +231,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						+ endOffsetMilliseconds;
 
 				Frame frame = previousMotionDetection.getFrame().getNextFrame();
-				while (frame.getMotionCorrelation() == null) {
+				while (frame.getMotionCorrelation() == null
+						|| frame.getMotionCorrelation().getFrameTimestamp() == null) {
 					// Calculate the ratio of the current frame image time between the start and end
 					// image times.
 					long frameImageTimeMilliseconds = TimeUtils.toMilliseconds(frame.getTimestamp());
@@ -279,10 +280,13 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				long currentImageTimeMilliseconds = TimeUtils
 						.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
 				Frame previousFrame = currentMotionDetection.getFrame().getPreviousFrame();
-				if (previousFrame != null) {
+				if (previousFrame != null && previousFrame.getMotionCorrelation() == null) {
 					long previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
 					long imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
-					while (previousFrame != null && imageTimeDifferenceMilliseconds <= 3000) {
+					while (previousFrame != null && previousFrame.getMotionCorrelation() == null
+							&& imageTimeDifferenceMilliseconds <= 3000) {
+						logger.info("Adding empty motion correlation for frame with timestamp: "
+								+ previousFrame.getTimestamp() + " and camera: " + currentMotionDetection.getCamera());
 						previousFrame.setMotionCorrelation(
 								new MotionCorrelation(currentMotionDetection.getCamera(), previousFrame));
 
