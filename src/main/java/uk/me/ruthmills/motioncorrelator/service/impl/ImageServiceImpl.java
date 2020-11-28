@@ -46,8 +46,16 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public void writeImage(String camera, Image image, PersonDetections personDetections, boolean stamped)
-			throws IOException {
+	public void writeImage(String camera, Image image) throws IOException {
+		String path = "/mnt/media/motioncorrelator/" + ImageUtils.getImagePath(camera, image);
+		File file = new File(path);
+		file.mkdirs();
+		String filename = image.getTimestamp() + ".jpg";
+		Files.write(FileSystems.getDefault().getPath(path, filename), image.getBytes(), StandardOpenOption.CREATE);
+	}
+
+	@Override
+	public void writeImage(String camera, Image image, PersonDetections personDetections) throws IOException {
 		String path = "/mnt/media/motioncorrelator/" + ImageUtils.getImagePath(camera, image);
 		File file = new File(path);
 		file.mkdirs();

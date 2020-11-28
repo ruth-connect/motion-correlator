@@ -171,10 +171,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 								+ motionCorrelation);
 
 						imageStampingService.stampImage(motionCorrelation);
-						imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage(),
-								motionCorrelation.getPersonDetections(), false);
+						imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
 						imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
-								motionCorrelation.getPersonDetections(), true);
+								motionCorrelation.getPersonDetections());
 						imageService.writeImage(motionCorrelation.getCamera(),
 								new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())),
 								"-average");
