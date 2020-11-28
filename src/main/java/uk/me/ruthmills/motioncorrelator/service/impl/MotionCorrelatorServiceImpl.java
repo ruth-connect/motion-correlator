@@ -149,7 +149,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
 			Frame frame = motionCorrelation.getFrame();
 			if (frame == null && motionCorrelation.getVectorTimestamp() != null) {
-				frameService.getFrame(motionCorrelation.getCamera(), motionCorrelation.getVectorTimestamp());
+				frame = frameService.getFrame(motionCorrelation.getCamera(), motionCorrelation.getVectorTimestamp());
 			}
 			if (frame != null) {
 				if (frame.getMotionCorrelation() == null) {
