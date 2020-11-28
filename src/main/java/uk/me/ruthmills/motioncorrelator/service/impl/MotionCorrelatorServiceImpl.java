@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
@@ -56,12 +58,14 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 	@Autowired
 	private HomeAssistantService homeAssistantService;
 
+	private List<Camera> cameras;
 	private MotionCorrelator motionCorrelator;
 
 	private static final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
 
 	@PostConstruct
 	public void initialise() {
+		cameras = cameraService.getCameras();
 		motionCorrelator = new MotionCorrelator();
 		motionCorrelator.initialise();
 	}
@@ -79,6 +83,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		private BlockingQueue<VectorDataList> vectorDataQueue = new LinkedBlockingDeque<>();
 		private Map<String, MotionCorrelation> previousMotionDetectionMap = new HashMap<>();
 		private Map<String, Frame> currentFrameMap = new HashMap<>();
+		private int cameraIndex = 0;
 		private Thread motionCorrelatorThread;
 
 		public void initialise() {
@@ -96,26 +101,47 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		public void run() {
 			while (true) {
 				try {
-					VectorDataList vectorDataList = vectorDataQueue.take();
-					String camera = vectorDataList.getCamera();
-					MotionCorrelation currentMotionDetection = new MotionCorrelation(camera,
-							vectorDataList.getTimestamp(), vectorDataList.getFrameVector());
-					performMotionCorrelation(currentMotionDetection);
+					VectorDataList vectorDataList = vectorDataQueue.poll();
+					if (vectorDataList != null) {
+						// We have a new vector detection.
+						String camera = vectorDataList.getCamera();
+						MotionCorrelation currentMotionDetection = new MotionCorrelation(camera,
+								vectorDataList.getTimestamp(), vectorDataList.getFrameVector());
+						performMotionCorrelation(currentMotionDetection);
 
-					// Is there a previous motion detection for this camera?
-					MotionCorrelation previousMotionDetection = previousMotionDetectionMap.get(camera);
-					if (previousMotionDetection != null) {
-						// if both detections have frame vectors, and previous motion detection was
-						// within 3 seconds, interpolate the vectors over time.
-						interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection);
+						// Is there a previous motion detection for this camera?
+						MotionCorrelation previousMotionDetection = previousMotionDetectionMap.get(camera);
+						if (previousMotionDetection != null) {
+							// if both detections have frame vectors, and previous motion detection was
+							// within 3 seconds, interpolate the vectors over time.
+							interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection);
+						} else {
+							// add motion correlations with no frame vector for the last 3 seconds.
+							addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
+						}
+
+						// Set the current motion detection as the previous motion detection for next
+						// time round.
+						previousMotionDetectionMap.put(camera, currentMotionDetection);
+
+						// Set the current frame in the map for this camera.
+						currentFrameMap.put(camera, currentMotionDetection.getFrame());
+
+						// are we dealing with an existing vector detection? If so, do the logic for it.
 					} else {
-						// add motion correlations with no frame vector for the last 3 seconds.
-						addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
-					}
+						// Round-robin through the cameras.
+						String camera = getNextCamera();
+						if (camera != null) {
+							MotionCorrelation currentMotionDetection = new MotionCorrelation(camera);
+							performMotionCorrelation(currentMotionDetection);
 
-					// Set the current motion detection as the previous motion detection for next
-					// time round.
-					previousMotionDetectionMap.put(camera, currentMotionDetection);
+							// Is there a person detection?
+							if (currentMotionDetection.getPersonDetections().getPersonDetections().size() > 0) {
+								// add motion correlations with no frame vector for the last 3 seconds.
+								addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
+							}
+						}
+					}
 				} catch (Exception ex) {
 					logger.error("Failed performing motion correlation", ex);
 				}
@@ -249,6 +275,29 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
 					}
 				}
+			}
+		}
+
+		private String getNextCamera() {
+			int currentIndex = cameraIndex;
+			getNextCameraIndex();
+			Camera camera = cameras.get(cameraIndex);
+			if (camera.isConnected()) {
+				return camera.getName();
+			}
+			while (cameraIndex != currentIndex) {
+				getNextCameraIndex();
+				if (camera.isConnected()) {
+					return camera.getName();
+				}
+			}
+			return null;
+		}
+
+		private void getNextCameraIndex() {
+			cameraIndex++;
+			if (cameraIndex >= cameras.size()) {
+				cameraIndex = 0;
 			}
 		}
 	}
