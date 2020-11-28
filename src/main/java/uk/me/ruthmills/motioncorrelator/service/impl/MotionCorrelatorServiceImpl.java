@@ -132,7 +132,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						// Round-robin through the cameras.
 						String camera = getNextCamera();
 						if (camera != null) {
-							MotionCorrelation currentMotionDetection = new MotionCorrelation(camera);
+							// Get the latest frame for the camera.
+							Frame frame = frameService.getLatestFrame(camera);
+							MotionCorrelation currentMotionDetection = new MotionCorrelation(camera, frame);
 							performMotionCorrelation(currentMotionDetection);
 
 							// Is there a person detection?
@@ -149,7 +151,10 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		}
 
 		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
-			Frame frame = frameService.getFrame(motionCorrelation.getCamera(), motionCorrelation.getVectorTimestamp());
+			Frame frame = motionCorrelation.getFrame();
+			if (frame != null) {
+				frameService.getFrame(motionCorrelation.getCamera(), motionCorrelation.getVectorTimestamp());
+			}
 			if (frame.getMotionCorrelation() == null) {
 				frame.setMotionCorrelation(motionCorrelation);
 				logger.info("Got image from camera: " + motionCorrelation.getCamera());
@@ -266,7 +271,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				long previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
 				long imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
 				while (previousFrame != null && imageTimeDifferenceMilliseconds <= 3000) {
-					previousFrame.setMotionCorrelation(new MotionCorrelation(currentMotionDetection.getCamera()));
+					previousFrame.setMotionCorrelation(
+							new MotionCorrelation(currentMotionDetection.getCamera(), previousFrame));
 
 					currentImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
 					previousFrame = previousFrame.getPreviousFrame();
