@@ -153,10 +153,10 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
 			Frame frame = motionCorrelation.getFrame();
-			if (frame == null) {
+			if (frame == null && motionCorrelation.getVectorTimestamp() != null) {
 				frameService.getFrame(motionCorrelation.getCamera(), motionCorrelation.getVectorTimestamp());
 			}
-			if (frame.getMotionCorrelation() == null) {
+			if (frame != null && frame.getMotionCorrelation() == null) {
 				frame.setMotionCorrelation(motionCorrelation);
 				PersonDetections personDetections = personDetectionService
 						.detectPersonsFromDelta(motionCorrelation.getCamera(), frame);

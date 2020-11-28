@@ -5,6 +5,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
@@ -56,7 +57,11 @@ public class FrameServiceImpl implements FrameService {
 
 	@Override
 	public Frame getLatestFrame(String camera) {
-		return framesMap.get(camera).getFrames().getLast();
+		try {
+			return framesMap.get(camera).getFrames().getLast();
+		} catch (NoSuchElementException ex) {
+			return null;
+		}
 	}
 
 	@Override
