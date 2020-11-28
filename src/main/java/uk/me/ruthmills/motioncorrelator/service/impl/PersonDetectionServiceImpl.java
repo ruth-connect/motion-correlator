@@ -16,8 +16,6 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.objdetect.HOGDescriptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Frame;
@@ -32,8 +30,6 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	private HOGDescriptor hogDescriptor;
-
-	private static final Logger logger = LoggerFactory.getLogger(PersonDetectionServiceImpl.class);
 
 	@PostConstruct
 	public void initialise() throws IOException {
@@ -50,7 +46,6 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 	@Override
 	public PersonDetections detectPersons(Image image, PersonDetectionParameters personDetectionParameters) {
 		Mat frame = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
-		logger.info("Frame size: " + frame.size());
 		PersonDetections personDetections = detect(frame, personDetectionParameters);
 		personDetections.setImage(image);
 		frame.release();
@@ -111,7 +106,6 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 			personDetections.add(personDetection);
 		}
 		personDetections.sort(Comparator.comparing(PersonDetection::getWeight).reversed());
-		logger.info("Number of person detections: " + personDetections.size());
 		foundLocations.release();
 		foundWeights.release();
 		return new PersonDetections(personDetections, stopWatch.getTime(TimeUnit.MILLISECONDS));
