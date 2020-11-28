@@ -282,11 +282,15 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		}
 
 		private void addEmptyMotionCorrelationsForLast3Seconds(MotionCorrelation currentMotionDetection) {
+			logger.info("addEmptyMotionCorrelationsForLast3Seconds called for camera: "
+					+ currentMotionDetection.getCamera());
 			if (currentMotionDetection.getFrame() != null) {
+				logger.info("Current motion detection has a frame");
 				long currentImageTimeMilliseconds = TimeUtils
 						.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
 				Frame previousFrame = currentMotionDetection.getFrame().getPreviousFrame();
 				if (previousFrame != null && previousFrame.getMotionCorrelation() == null) {
+					logger.info("Executing...");
 					long previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
 					long imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
 					while (previousFrame != null && previousFrame.getMotionCorrelation() == null
@@ -303,6 +307,13 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds
 									- previousImageTimeMilliseconds;
 						}
+					}
+				} else {
+					if (previousFrame == null) {
+						logger.info("Not executing. Previous frame is null");
+					} else {
+						logger.info("Not executing. Previous frame: " + previousFrame + ", with motion correlation: "
+								+ previousFrame.getMotionCorrelation());
 					}
 				}
 			}
