@@ -48,6 +48,7 @@ public class MjpegStream implements Runnable {
 		this.streamReader = new Thread(this, camera.getName() + " stream reader");
 		streamReader.setPriority(6); // higher priority than normal (5).
 		streamReader.start();
+		logger.info("Started MJPEG stream reader thread for camera: " + camera.getName());
 	}
 
 	public void run() {
