@@ -137,28 +137,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							// Run person detection on the motion detection.
 							performMotionCorrelation(currentMotionDetection);
 						} else {
-							// Round-robin through the cameras.
-							String camera = getNextCamera();
-							if (camera != null) {
-								// Get the latest frame for the camera.
-								Frame frame = frameService.getLatestFrame(camera);
-								currentMotionDetection = new MotionCorrelation(camera, frame);
-								performMotionCorrelation(currentMotionDetection);
-
-								// Is there a person detection?
-								if (currentMotionDetection.getPersonDetections() != null && currentMotionDetection
-										.getPersonDetections().getPersonDetections().size() > 0) {
-									// add motion correlations with no frame vector for the last 3 seconds.
-									addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
-
-									// Set the current motion detection as the previous motion detection for next
-									// time round.
-									previousMotionDetectionMap.put(camera, currentMotionDetection);
-
-									// Set the current frame in the map for this camera.
-									currentFrameMap.put(camera, currentMotionDetection.getFrame());
-								}
-							}
+							// performMotionCorrelationOnNextCameraRoundRobin();
 						}
 					}
 				} catch (Exception ex) {
@@ -339,7 +318,33 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			return null;
 		}
 
-		private String getNextCamera() {
+		private void performMotionCorrelationOnNextCameraRoundRobin() throws IOException {
+			MotionCorrelation currentMotionDetection;
+			// Round-robin through the cameras.
+			String camera = getNextCamera();
+			if (camera != null) {
+				// Get the latest frame for the camera.
+				Frame frame = frameService.getLatestFrame(camera);
+				currentMotionDetection = new MotionCorrelation(camera, frame);
+				performMotionCorrelation(currentMotionDetection);
+
+				// Is there a person detection?
+				if (currentMotionDetection.getPersonDetections() != null
+						&& currentMotionDetection.getPersonDetections().getPersonDetections().size() > 0) {
+					// add motion correlations with no frame vector for the last 3 seconds.
+					addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
+
+					// Set the current motion detection as the previous motion detection for next
+					// time round.
+					previousMotionDetectionMap.put(camera, currentMotionDetection);
+
+					// Set the current frame in the map for this camera.
+					currentFrameMap.put(camera, currentMotionDetection.getFrame());
+				}
+			}
+		}
+
+		String getNextCamera() {
 			int currentIndex = cameraIndex;
 			getNextCameraIndex();
 			Camera camera = cameras.get(cameraIndex);
