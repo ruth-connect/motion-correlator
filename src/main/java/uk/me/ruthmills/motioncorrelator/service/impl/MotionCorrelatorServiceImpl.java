@@ -289,16 +289,21 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				long currentImageTimeMilliseconds = TimeUtils
 						.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
 				Frame previousFrame = currentMotionDetection.getFrame().getPreviousFrame();
-				if (previousFrame != null && previousFrame.getMotionCorrelation() == null) {
+				if (previousFrame != null) {
 					logger.info("Executing...");
 					long previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
 					long imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
-					while (previousFrame != null && previousFrame.getMotionCorrelation() == null
-							&& imageTimeDifferenceMilliseconds <= 3000) {
-						logger.info("Adding empty motion correlation for frame with timestamp: "
-								+ previousFrame.getTimestamp() + " and camera: " + currentMotionDetection.getCamera());
-						previousFrame.setMotionCorrelation(
-								new MotionCorrelation(currentMotionDetection.getCamera(), previousFrame));
+					while (previousFrame != null && imageTimeDifferenceMilliseconds <= 3000) {
+						if (previousFrame.getMotionCorrelation() == null) {
+							logger.info("Adding empty motion correlation for frame with timestamp: "
+									+ previousFrame.getTimestamp() + " and camera: "
+									+ currentMotionDetection.getCamera());
+							previousFrame.setMotionCorrelation(
+									new MotionCorrelation(currentMotionDetection.getCamera(), previousFrame));
+						} else {
+							logger.info("Skipping frame: " + previousFrame.getTimestamp() + " for camera: "
+									+ currentMotionDetection.getCamera() + " as it already has a motion correlation.");
+						}
 
 						previousFrame = previousFrame.getPreviousFrame();
 						if (previousFrame != null) {
@@ -308,12 +313,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						}
 					}
 				} else {
-					if (previousFrame == null) {
-						logger.info("Not executing. Previous frame is null");
-					} else {
-						logger.info("Not executing. Previous frame: " + previousFrame + ", with motion correlation: "
-								+ previousFrame.getMotionCorrelation());
-					}
+					logger.info("Not executing. Previous frame is null");
 				}
 			}
 		}
