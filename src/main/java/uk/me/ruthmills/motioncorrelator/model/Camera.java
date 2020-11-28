@@ -6,6 +6,7 @@ public class Camera {
 	private String url;
 	private String location;
 	private String locationDescription;
+	private boolean connected;
 
 	public String getName() {
 		return name;
@@ -39,12 +40,21 @@ public class Camera {
 		this.locationDescription = locationDescription;
 	}
 
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public void setConnected(boolean connected) {
+		this.connected = connected;
+	}
+
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("name: " + name);
 		stringBuilder.append(", url: " + url);
 		stringBuilder.append(", location: " + location);
-		stringBuilder.append(", locationDescription: " + locationDescription + "\n");
+		stringBuilder.append(", locationDescription: " + locationDescription);
+		stringBuilder.append(", connected: " + connected + "\n");
 		return stringBuilder.toString();
 	}
 }

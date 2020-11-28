@@ -35,7 +35,6 @@ public class MjpegStream implements Runnable {
 	private Camera camera;
 	private URLConnection conn;
 	private ByteArrayOutputStream outputStream;
-	private boolean connected;
 	protected byte[] currentFrame = new byte[0];
 	private Thread streamReader;
 
@@ -72,10 +71,10 @@ public class MjpegStream implements Runnable {
 							outputStream.close();
 							// the image is now available - read it
 							handleNewFrame();
-							if (connected == false) {
+							if (!camera.isConnected()) {
 								logger.info("Connected to: " + camera.getUrl() + " successfully!");
 								homeAssistantService.notifyCameraConnected(camera);
-								connected = true;
+								camera.setConnected(true);
 							}
 						}
 					}
@@ -85,9 +84,9 @@ public class MjpegStream implements Runnable {
 				logger.error("Failed to read stream", ex);
 			}
 
-			if (connected) {
+			if (camera.isConnected()) {
 				homeAssistantService.notifyCameraConnectionFailed(camera);
-				connected = false;
+				camera.setConnected(false);
 			}
 
 			try {
