@@ -192,10 +192,14 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							motionCorrelation.getPersonDetections(), false);
 					imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
 							motionCorrelation.getPersonDetections(), true);
-					imageService.writeImage(motionCorrelation.getCamera(),
-							new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())),
-							"-average");
-					imageService.writeImage(motionCorrelation.getCamera(), personDetections.getDelta(), "-delta");
+					if (frame.getAverageFrame() != null) {
+						imageService.writeImage(motionCorrelation.getCamera(),
+								new Image(frame.getTimestamp(), ImageUtils.encodeImage(frame.getAverageFrame())),
+								"-average");
+					}
+					if (personDetections.getDelta() != null) {
+						imageService.writeImage(motionCorrelation.getCamera(), personDetections.getDelta(), "-delta");
+					}
 
 					if (personDetections.getPersonDetections().size() > 0) {
 						homeAssistantService.notifyPersonDetected(
