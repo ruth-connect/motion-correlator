@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
@@ -82,7 +82,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 	private class MotionCorrelator implements Runnable {
 
-		private BlockingQueue<VectorDataList> vectorDataQueue = new LinkedBlockingDeque<>();
+		private BlockingDeque<VectorDataList> vectorDataQueue = new LinkedBlockingDeque<>();
 		private Map<String, MotionCorrelation> previousMotionDetectionMap = new HashMap<>();
 		private Map<String, Frame> currentFrameMap = new HashMap<>();
 		private int cameraIndex = 0;
@@ -103,9 +103,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		public void run() {
 			while (true) {
 				try {
-					VectorDataList vectorDataList = vectorDataQueue.poll();
+					VectorDataList vectorDataList = vectorDataQueue.pollFirst();
 					if (vectorDataList != null) {
 						// We have a new vector detection.
+						logger.info("NEW VECTOR DETECTION for camera: " + vectorDataList.getCamera()
+								+ " with VECTOR timestamp: " + vectorDataList.getTimestamp());
 						String camera = vectorDataList.getCamera();
 						MotionCorrelation currentMotionDetection = new MotionCorrelation(camera,
 								vectorDataList.getTimestamp(), vectorDataList.getFrameVector());
