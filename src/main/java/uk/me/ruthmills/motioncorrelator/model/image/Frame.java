@@ -14,7 +14,6 @@ public class Frame {
 	private Frame previousFrame;
 	private Frame nextFrame;
 	private MotionCorrelation motionCorrelation;
-	private boolean processed;
 
 	public Frame(Image image) {
 		this.image = image;
@@ -77,13 +76,5 @@ public class Frame {
 
 	public void setMotionCorrelation(MotionCorrelation motionCorrelation) {
 		this.motionCorrelation = motionCorrelation;
-	}
-
-	public boolean isProcessed() {
-		return processed;
-	}
-
-	public void setProcessed(boolean processed) {
-		this.processed = processed;
 	}
 }

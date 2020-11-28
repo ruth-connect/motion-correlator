@@ -107,16 +107,10 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					if (previousMotionDetection != null) {
 						// if both detections have frame vectors, and previous motion detection was
 						// within 3 seconds, interpolate the vectors over time.
-						long vectorTimeDifferenceMilliseconds = TimeUtils
-								.toMilliseconds(currentMotionDetection.getVectorTimestamp())
-								- TimeUtils.toMilliseconds(previousMotionDetection.getVectorTimestamp());
-						if ((currentMotionDetection.getFrameVector() != null)
-								&& (previousMotionDetection.getFrameVector() != null)
-								&& (vectorTimeDifferenceMilliseconds > 0)
-								&& (vectorTimeDifferenceMilliseconds <= 3000)) {
-							interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection,
-									vectorTimeDifferenceMilliseconds);
-						}
+						interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection);
+					} else {
+						// add motion correlations with no frame vector for the last 3 seconds.
+						addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
 					}
 
 					// Set the current motion detection as the previous motion detection for next
@@ -156,6 +150,20 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					homeAssistantService.notifyPersonDetected(cameraService.getCamera(motionCorrelation.getCamera()),
 							personDetections);
 				}
+			}
+		}
+
+		private void interpolateVectorsOverTime(MotionCorrelation currentMotionDetection,
+				MotionCorrelation previousMotionDetection) {
+			// if both detections have frame vectors, and previous motion detection was
+			// within 3 seconds, interpolate the vectors over time.
+			long vectorTimeDifferenceMilliseconds = TimeUtils
+					.toMilliseconds(currentMotionDetection.getVectorTimestamp())
+					- TimeUtils.toMilliseconds(previousMotionDetection.getVectorTimestamp());
+			if ((currentMotionDetection.getFrameVector() != null) && (previousMotionDetection.getFrameVector() != null)
+					&& (vectorTimeDifferenceMilliseconds > 0) && (vectorTimeDifferenceMilliseconds <= 3000)) {
+				interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection,
+						vectorTimeDifferenceMilliseconds);
 			}
 		}
 
@@ -222,6 +230,26 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			double startProportion = ((double) start * (1d - ratio));
 			double endProportion = ((double) end * ratio);
 			return (int) Math.round(startProportion + endProportion);
+		}
+
+		private void addEmptyMotionCorrelationsForLast3Seconds(MotionCorrelation currentMotionDetection) {
+			long currentImageTimeMilliseconds = TimeUtils
+					.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
+			Frame previousFrame = currentMotionDetection.getFrame().getPreviousFrame();
+			if (previousFrame != null) {
+				long previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
+				long imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
+				while (previousFrame != null && imageTimeDifferenceMilliseconds <= 3000) {
+					previousFrame.setMotionCorrelation(new MotionCorrelation(currentMotionDetection.getCamera()));
+
+					currentImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
+					previousFrame = previousFrame.getPreviousFrame();
+					if (previousFrame != null) {
+						previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
+						imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
+					}
+				}
+			}
 		}
 	}
 }

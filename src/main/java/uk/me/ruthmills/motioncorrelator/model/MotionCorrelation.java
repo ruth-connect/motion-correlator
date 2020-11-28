@@ -19,6 +19,10 @@ public class MotionCorrelation {
 	public MotionCorrelation() {
 	}
 
+	public MotionCorrelation(String camera) {
+		this.camera = camera;
+	}
+
 	public MotionCorrelation(String camera, LocalDateTime vectorTimestamp, Vector frameVector) {
 		this.camera = camera;
 		this.vectorTimestamp = vectorTimestamp;
