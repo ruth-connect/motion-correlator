@@ -373,6 +373,10 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 						// add motion correlations with no frame vector for the last 3 seconds.
 						addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
+
+						// Set the current motion detection as the previous motion detection for next
+						// time round.
+						previousMotionDetectionMap.put(camera, currentMotionDetection);
 					} else {
 						// No person detections, so clear the motion detection.
 						frame.setMotionCorrelation(null);
