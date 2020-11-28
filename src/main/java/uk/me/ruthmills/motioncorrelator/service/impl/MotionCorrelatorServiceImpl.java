@@ -352,8 +352,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				// Get the latest frame for the camera.
 				Frame frame = frameService.getLatestFrame(camera);
 
-				// Is there no motion correlation for this frame?
-				if (frame.getMotionCorrelation() == null) {
+				// Is there a frame, and no motion correlation for this frame?
+				if (frame != null && frame.getMotionCorrelation() == null) {
 					currentMotionDetection = new MotionCorrelation(camera, frame);
 					performMotionCorrelation(currentMotionDetection);
 
