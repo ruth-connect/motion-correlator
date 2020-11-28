@@ -300,7 +300,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						previousFrame.setMotionCorrelation(
 								new MotionCorrelation(currentMotionDetection.getCamera(), previousFrame));
 
-						currentImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
 						previousFrame = previousFrame.getPreviousFrame();
 						if (previousFrame != null) {
 							previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
