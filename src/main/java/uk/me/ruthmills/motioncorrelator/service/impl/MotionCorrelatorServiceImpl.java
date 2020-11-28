@@ -229,56 +229,59 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			Vector endVector = currentMotionDetection.getFrameVector();
 
 			long vectorStartTimeMilliseconds = TimeUtils.toMilliseconds(previousMotionDetection.getVectorTimestamp());
-			long imageStartTimeMilliseconds = TimeUtils
-					.toMilliseconds(previousMotionDetection.getFrame().getTimestamp());
+			if (previousMotionDetection.getFrame() != null) {
+				long imageStartTimeMilliseconds = TimeUtils
+						.toMilliseconds(previousMotionDetection.getFrame().getTimestamp());
 
-			// extra time if image timestamp is before vector timestamp, less time
-			// otherwise.
-			long startOffsetMilliseconds = vectorStartTimeMilliseconds - imageStartTimeMilliseconds;
+				// extra time if image timestamp is before vector timestamp, less time
+				// otherwise.
+				long startOffsetMilliseconds = vectorStartTimeMilliseconds - imageStartTimeMilliseconds;
 
-			long imageEndTimeMilliseconds = TimeUtils.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
-			long vectorEndTimeMilliseconds = TimeUtils.toMilliseconds(currentMotionDetection.getVectorTimestamp());
+				long imageEndTimeMilliseconds = TimeUtils
+						.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
+				long vectorEndTimeMilliseconds = TimeUtils.toMilliseconds(currentMotionDetection.getVectorTimestamp());
 
-			// extra time if image timestamp is after vector timestamp, less time otherwise.
-			long endOffsetMilliseconds = imageEndTimeMilliseconds - vectorEndTimeMilliseconds;
+				// extra time if image timestamp is after vector timestamp, less time otherwise.
+				long endOffsetMilliseconds = imageEndTimeMilliseconds - vectorEndTimeMilliseconds;
 
-			long imageTimeDifferenceMilliseconds = vectorTimeDifferenceMilliseconds + startOffsetMilliseconds
-					+ endOffsetMilliseconds;
+				long imageTimeDifferenceMilliseconds = vectorTimeDifferenceMilliseconds + startOffsetMilliseconds
+						+ endOffsetMilliseconds;
 
-			Frame frame = previousMotionDetection.getFrame().getNextFrame();
-			while (frame.getMotionCorrelation() == null) {
-				// Calculate the ratio of the current frame image time between the start and end
-				// image times.
-				long frameImageTimeMilliseconds = TimeUtils.toMilliseconds(frame.getTimestamp());
-				long frameTimeDifferenceMilliseconds = frameImageTimeMilliseconds - imageStartTimeMilliseconds;
-				double ratioTimeElapsed = (double) frameTimeDifferenceMilliseconds
-						/ (double) imageTimeDifferenceMilliseconds;
+				Frame frame = previousMotionDetection.getFrame().getNextFrame();
+				while (frame.getMotionCorrelation() == null) {
+					// Calculate the ratio of the current frame image time between the start and end
+					// image times.
+					long frameImageTimeMilliseconds = TimeUtils.toMilliseconds(frame.getTimestamp());
+					long frameTimeDifferenceMilliseconds = frameImageTimeMilliseconds - imageStartTimeMilliseconds;
+					double ratioTimeElapsed = (double) frameTimeDifferenceMilliseconds
+							/ (double) imageTimeDifferenceMilliseconds;
 
-				// Interpolate the frame vector time.
-				long frameVectorTimeMilliseconds = vectorStartTimeMilliseconds
-						+ Math.round((double) vectorTimeDifferenceMilliseconds * ratioTimeElapsed);
-				LocalDateTime frameVectorTime = TimeUtils.fromMilliseconds(frameVectorTimeMilliseconds);
+					// Interpolate the frame vector time.
+					long frameVectorTimeMilliseconds = vectorStartTimeMilliseconds
+							+ Math.round((double) vectorTimeDifferenceMilliseconds * ratioTimeElapsed);
+					LocalDateTime frameVectorTime = TimeUtils.fromMilliseconds(frameVectorTimeMilliseconds);
 
-				// Interpolate the vectors.
-				Vector frameVector = new Vector();
-				frameVector.setX(interpolateIntValue(startVector.getX(), endVector.getX(), ratioTimeElapsed));
-				frameVector.setY(interpolateIntValue(startVector.getY(), endVector.getY(), ratioTimeElapsed));
-				frameVector.setDx(interpolateIntValue(startVector.getDx(), endVector.getDx(), ratioTimeElapsed));
-				frameVector.setDy(interpolateIntValue(startVector.getDy(), endVector.getDy(), ratioTimeElapsed));
-				frameVector.setMagnitude(
-						interpolateIntValue(startVector.getMagnitude(), endVector.getMagnitude(), ratioTimeElapsed));
-				frameVector
-						.setCount(interpolateIntValue(startVector.getCount(), endVector.getCount(), ratioTimeElapsed));
+					// Interpolate the vectors.
+					Vector frameVector = new Vector();
+					frameVector.setX(interpolateIntValue(startVector.getX(), endVector.getX(), ratioTimeElapsed));
+					frameVector.setY(interpolateIntValue(startVector.getY(), endVector.getY(), ratioTimeElapsed));
+					frameVector.setDx(interpolateIntValue(startVector.getDx(), endVector.getDx(), ratioTimeElapsed));
+					frameVector.setDy(interpolateIntValue(startVector.getDy(), endVector.getDy(), ratioTimeElapsed));
+					frameVector.setMagnitude(interpolateIntValue(startVector.getMagnitude(), endVector.getMagnitude(),
+							ratioTimeElapsed));
+					frameVector.setCount(
+							interpolateIntValue(startVector.getCount(), endVector.getCount(), ratioTimeElapsed));
 
-				// Create the motion correlation for this frame.
-				MotionCorrelation motionCorrelation = new MotionCorrelation(currentMotionDetection.getCamera(),
-						frameVectorTime, frameVector);
-				frame.setMotionCorrelation(motionCorrelation);
-				logger.info("Interpolated data for image with timestamp: " + frame.getTimestamp() + " and camera: "
-						+ currentMotionDetection.getCamera() + "\n" + motionCorrelation);
+					// Create the motion correlation for this frame.
+					MotionCorrelation motionCorrelation = new MotionCorrelation(currentMotionDetection.getCamera(),
+							frameVectorTime, frameVector);
+					frame.setMotionCorrelation(motionCorrelation);
+					logger.info("Interpolated data for image with timestamp: " + frame.getTimestamp() + " and camera: "
+							+ currentMotionDetection.getCamera() + "\n" + motionCorrelation);
 
-				// Get the next frame.
-				frame = frame.getNextFrame();
+					// Get the next frame.
+					frame = frame.getNextFrame();
+				}
 			}
 		}
 
