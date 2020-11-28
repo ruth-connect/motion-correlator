@@ -34,6 +34,10 @@ public class MotionCorrelation {
 		return camera;
 	}
 
+	public LocalDateTime getFrameTimestamp() {
+		return frame != null ? frame.getTimestamp() : null;
+	}
+
 	public LocalDateTime getVectorTimestamp() {
 		return vectorTimestamp;
 	}

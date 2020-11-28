@@ -3,11 +3,13 @@ package uk.me.ruthmills.motioncorrelator.service.impl;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -127,21 +129,35 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						// Set the current frame in the map for this camera.
 						currentFrameMap.put(camera, currentMotionDetection.getFrame());
 
-						// are we dealing with an existing vector detection? If so, do the logic for it.
 					} else {
-						// Round-robin through the cameras.
-						String camera = getNextCamera();
-						if (camera != null) {
-							// Get the latest frame for the camera.
-							Frame frame = frameService.getLatestFrame(camera);
-							MotionCorrelation currentMotionDetection = new MotionCorrelation(camera, frame);
+						// Do we have an existing motion detection we want to person detect previous
+						// frames on?
+						MotionCorrelation currentMotionDetection = getLatestMotionDetection();
+						if (currentMotionDetection != null) {
+							// Run person detection on the motion detection.
 							performMotionCorrelation(currentMotionDetection);
+						} else {
+							// Round-robin through the cameras.
+							String camera = getNextCamera();
+							if (camera != null) {
+								// Get the latest frame for the camera.
+								Frame frame = frameService.getLatestFrame(camera);
+								currentMotionDetection = new MotionCorrelation(camera, frame);
+								performMotionCorrelation(currentMotionDetection);
 
-							// Is there a person detection?
-							if (currentMotionDetection.getPersonDetections() != null
-									&& currentMotionDetection.getPersonDetections().getPersonDetections().size() > 0) {
-								// add motion correlations with no frame vector for the last 3 seconds.
-								addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
+								// Is there a person detection?
+								if (currentMotionDetection.getPersonDetections() != null && currentMotionDetection
+										.getPersonDetections().getPersonDetections().size() > 0) {
+									// add motion correlations with no frame vector for the last 3 seconds.
+									addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
+
+									// Set the current motion detection as the previous motion detection for next
+									// time round.
+									previousMotionDetectionMap.put(camera, currentMotionDetection);
+
+									// Set the current frame in the map for this camera.
+									currentFrameMap.put(camera, currentMotionDetection.getFrame());
+								}
 							}
 						}
 					}
@@ -156,9 +172,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			if (frame == null && motionCorrelation.getVectorTimestamp() != null) {
 				frameService.getFrame(motionCorrelation.getCamera(), motionCorrelation.getVectorTimestamp());
 			}
-			if (frame != null && frame.getMotionCorrelation() == null) { // TODO - will this work for vector
-																			// interpolation case?
-				frame.setMotionCorrelation(motionCorrelation);
+			if (frame != null) {
+				if (frame.getMotionCorrelation() == null) {
+					frame.setMotionCorrelation(motionCorrelation);
+				}
+
 				PersonDetections personDetections = personDetectionService
 						.detectPersonsFromDelta(motionCorrelation.getCamera(), frame);
 
@@ -288,6 +306,23 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					}
 				}
 			}
+		}
+
+		private MotionCorrelation getLatestMotionDetection() {
+			List<MotionCorrelation> latestMotionDetections = previousMotionDetectionMap.entrySet().stream()
+					.map(entry -> entry.getValue()).filter(entry -> entry != null).collect(Collectors.toList());
+			latestMotionDetections.sort(Comparator.comparing(MotionCorrelation::getFrameTimestamp).reversed());
+			for (MotionCorrelation motionDetection : latestMotionDetections) {
+				Frame frame = motionDetection.getFrame();
+				while (frame != null && frame.getMotionCorrelation() != null) {
+					if (frame.getMotionCorrelation().getPersonDetections() == null) {
+						return frame.getMotionCorrelation();
+					} else {
+						frame = frame.getPreviousFrame();
+					}
+				}
+			}
+			return null;
 		}
 
 		private String getNextCamera() {
