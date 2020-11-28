@@ -156,7 +156,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			if (frame == null && motionCorrelation.getVectorTimestamp() != null) {
 				frameService.getFrame(motionCorrelation.getCamera(), motionCorrelation.getVectorTimestamp());
 			}
-			if (frame != null && frame.getMotionCorrelation() == null) {
+			if (frame != null && frame.getMotionCorrelation() == null) { // TODO - will this work for vector
+																			// interpolation case?
 				frame.setMotionCorrelation(motionCorrelation);
 				PersonDetections personDetections = personDetectionService
 						.detectPersonsFromDelta(motionCorrelation.getCamera(), frame);
