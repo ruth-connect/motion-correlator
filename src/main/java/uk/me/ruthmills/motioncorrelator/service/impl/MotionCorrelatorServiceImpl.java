@@ -267,21 +267,24 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		}
 
 		private void addEmptyMotionCorrelationsForLast3Seconds(MotionCorrelation currentMotionDetection) {
-			long currentImageTimeMilliseconds = TimeUtils
-					.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
-			Frame previousFrame = currentMotionDetection.getFrame().getPreviousFrame();
-			if (previousFrame != null) {
-				long previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
-				long imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
-				while (previousFrame != null && imageTimeDifferenceMilliseconds <= 3000) {
-					previousFrame.setMotionCorrelation(
-							new MotionCorrelation(currentMotionDetection.getCamera(), previousFrame));
+			if (currentMotionDetection.getFrame() != null) {
+				long currentImageTimeMilliseconds = TimeUtils
+						.toMilliseconds(currentMotionDetection.getFrame().getTimestamp());
+				Frame previousFrame = currentMotionDetection.getFrame().getPreviousFrame();
+				if (previousFrame != null) {
+					long previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
+					long imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
+					while (previousFrame != null && imageTimeDifferenceMilliseconds <= 3000) {
+						previousFrame.setMotionCorrelation(
+								new MotionCorrelation(currentMotionDetection.getCamera(), previousFrame));
 
-					currentImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
-					previousFrame = previousFrame.getPreviousFrame();
-					if (previousFrame != null) {
-						previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
-						imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds - previousImageTimeMilliseconds;
+						currentImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
+						previousFrame = previousFrame.getPreviousFrame();
+						if (previousFrame != null) {
+							previousImageTimeMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
+							imageTimeDifferenceMilliseconds = currentImageTimeMilliseconds
+									- previousImageTimeMilliseconds;
+						}
 					}
 				}
 			}
