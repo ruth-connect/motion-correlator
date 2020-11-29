@@ -17,7 +17,7 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 @Service
 public class ImageFileWritingServiceImpl implements ImageFileWritingService {
 
-	private static final String IMAGE_PATH_PREFIX = "/mnt/media/motioncorrelator/";
+	private static final String IMAGE_PATH_PREFIX = "/mnt/media/images/";
 
 	@Override
 	public void writeImage(String camera, Image image) throws IOException {
