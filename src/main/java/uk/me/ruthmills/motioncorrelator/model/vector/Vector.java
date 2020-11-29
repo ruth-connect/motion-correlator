@@ -92,12 +92,60 @@ public class Vector extends VectorData {
 	}
 
 	private int convertX(int x) {
-		int converted = Math.round((float) x * 640f / 100f);
-		return converted > 639 ? 639 : converted;
+		return new VectorCoordinates(x, y).convert().getX();
 	}
 
 	private int convertY(int y) {
-		int converted = Math.round(480 - ((float) y * 480f / 100f));
-		return converted > 479 ? 479 : converted;
+		return new VectorCoordinates(x, y).convert().getY();
+	}
+
+	private class VectorCoordinates {
+		private int x;
+		private int y;
+
+		public VectorCoordinates(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		public int getX() {
+			return x;
+		}
+
+		public int getY() {
+			return y;
+		}
+
+		public VectorCoordinates convert() {
+			int convertedX = Math.round((float) x * 640f / 100f);
+			float ratioX = 1f;
+			if (convertedX > 639) {
+				ratioX = 640f / (float) convertedX;
+			} else if (convertedX < 0) {
+				ratioX = 640f / (640f - (float) convertedX);
+			}
+
+			int convertedY = Math.round(480f - ((float) y * 480f / 100f));
+			float ratioY = 1f;
+			if (convertedY > 479) {
+				ratioY = (float) 480f / convertedY;
+			} else if (convertedY < 0) {
+				ratioY = 480f / (480f - (float) convertedY);
+			}
+
+			float ratio = ratioX < ratioY ? ratioX : ratioY;
+
+			convertedX = Math.round((float) x * ratio);
+			if (convertedX > 639) {
+				convertedX = 639;
+			}
+
+			convertedY = Math.round(480f - ((float) y * ratio));
+			if (convertedY > 479) {
+				convertedY = 479;
+			}
+
+			return new VectorCoordinates(convertedX, convertedY);
+		}
 	}
 }
