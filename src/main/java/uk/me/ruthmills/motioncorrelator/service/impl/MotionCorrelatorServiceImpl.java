@@ -101,7 +101,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						MotionCorrelation currentMotionDetection = new MotionCorrelation(camera,
 								new VectorMotionDetection(vectorDataList.getTimestamp(),
 										vectorDataList.getFrameVector()));
-						performMotionCorrelation(currentMotionDetection);
+						performMotionCorrelation(currentMotionDetection, false);
 
 						// Is there a previous motion detection for this camera?
 						MotionCorrelation previousMotionDetection = previousMotionDetectionMap.get(camera);
@@ -124,7 +124,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						MotionCorrelation currentMotionDetection = getLatestMotionDetection();
 						if (currentMotionDetection != null) {
 							// Run person detection on the motion detection.
-							performMotionCorrelation(currentMotionDetection);
+							performMotionCorrelation(currentMotionDetection, false);
 						} else {
 							performMotionCorrelationOnNextCameraRoundRobin();
 						}
@@ -135,7 +135,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			}
 		}
 
-		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
+		private void performMotionCorrelation(MotionCorrelation motionCorrelation, boolean speculativeRoundRobin)
+				throws IOException {
 			Frame frame = motionCorrelation.getFrame();
 			if (frame == null && motionCorrelation.getVectorMotionDetection() != null) {
 				frame = frameService.getFrame(motionCorrelation.getCamera(),
@@ -151,11 +152,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							+ motionCorrelation.getCamera());
 				} else {
 					personDetectionService.detectPersonsFromDelta(motionCorrelation);
-
 					motionCorrelation.setFrame(frame);
-					if (motionCorrelation.getVectorMotionDetection() != null
-							|| (motionCorrelation.getPersonDetections() != null
-									&& motionCorrelation.getPersonDetections().getPersonDetections().size() > 0)) {
+
+					// Send to the detection aggregator service if this is not a speculative round
+					// robin - i.e. we have an actual or recent detection.
+					if (!speculativeRoundRobin) {
 						detectionAggregatorService.addDetection(motionCorrelation);
 					}
 				}
@@ -250,6 +251,10 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 								new MotionCorrelation(currentMotionDetection.getCamera(), vectorMotionDetection));
 					} else {
 						frame.getMotionCorrelation().setVectorMotionDetection(vectorMotionDetection);
+
+						// Replace previous detection (without vector) with updated detection (with
+						// interpolated vector).
+						detectionAggregatorService.addDetection(frame.getMotionCorrelation());
 					}
 
 					logger.info("Interpolated data for image with timestamp: " + frame.getTimestamp() + " and camera: "
@@ -334,7 +339,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				// Is there a frame, and no motion correlation for this frame?
 				if (frame != null && frame.getMotionCorrelation() == null) {
 					currentMotionDetection = new MotionCorrelation(camera, frame);
-					performMotionCorrelation(currentMotionDetection);
+					performMotionCorrelation(currentMotionDetection, true);
 
 					// Is there a person detection?
 					if (currentMotionDetection.getPersonDetections() != null
