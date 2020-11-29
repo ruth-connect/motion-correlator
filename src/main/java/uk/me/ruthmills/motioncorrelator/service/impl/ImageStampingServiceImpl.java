@@ -59,6 +59,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
 		drawFrameVector(graphics2D, motionCorrelation.getVectorMotionDetection());
 		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
+		drawDetectionTime(graphics2D, motionCorrelation.getPersonDetections().getDetectionTimeMilliseconds());
 		drawTimestamp(graphics2D, motionCorrelation.getFrame().getTimestamp(), 0, Color.WHITE);
 		drawVectorText(graphics2D, motionCorrelation.getVectorMotionDetection());
 		graphics2D.dispose();
@@ -82,6 +83,10 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 			BigDecimal weight = new BigDecimal(personDetections.getPersonDetections().get(i).getWeight());
 			drawText(graphics2D, weight.setScale(3, RoundingMode.HALF_UP).toString(), 10, 30 + (i * 40), color);
 		}
+	}
+
+	private void drawDetectionTime(Graphics2D graphics2D, long detectionTimeMilliseconds) {
+		drawText(graphics2D, detectionTimeMilliseconds + "ms", 10, 450, Color.WHITE);
 	}
 
 	private Color getPersonDetectionColor(int i) {
