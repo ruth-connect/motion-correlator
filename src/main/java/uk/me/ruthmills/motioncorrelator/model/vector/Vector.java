@@ -139,11 +139,15 @@ public class Vector extends VectorData {
 			convertedX = Math.round(((float) x) * ratio * 640f / 100f);
 			if (convertedX > 639) {
 				convertedX = 639;
+			} else if (convertedX < 0) {
+				convertedX = 0;
 			}
 
 			convertedY = Math.round(480f - (((float) y) * ratio * 480f / 100f));
 			if (convertedY > 479) {
 				convertedY = 479;
+			} else if (convertedY < 0) {
+				convertedY = 0;
 			}
 
 			return new VectorCoordinates(convertedX, convertedY);
