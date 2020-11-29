@@ -36,6 +36,10 @@ public class MotionCorrelation {
 		return frame != null ? frame.getTimestamp() : null;
 	}
 
+	public void setVectorMotionDetection(VectorMotionDetection vectorMotionDetection) {
+		this.vectorMotionDetection = vectorMotionDetection;
+	}
+
 	public VectorMotionDetection getVectorMotionDetection() {
 		return vectorMotionDetection;
 	}
