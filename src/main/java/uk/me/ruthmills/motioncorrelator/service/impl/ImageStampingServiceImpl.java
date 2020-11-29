@@ -86,7 +86,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 	}
 
 	private void drawDetectionTime(Graphics2D graphics2D, long detectionTimeMilliseconds) {
-		drawText(graphics2D, detectionTimeMilliseconds + "ms", 10, 450, Color.WHITE);
+		drawText(graphics2D, detectionTimeMilliseconds + "ms", 10, 410, Color.WHITE);
 	}
 
 	private Color getPersonDetectionColor(int i) {
