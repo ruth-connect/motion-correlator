@@ -72,12 +72,16 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 			absBlurredFrame.release();
 			absAverageFrame.release();
 
+			Mat normalizedDelta = new Mat();
+			Core.normalize(frameDelta, normalizedDelta);
+			frameDelta.release();
+
 			// Perform the person detection.
-			PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
+			PersonDetections personDetections = detect(normalizedDelta, personDetectionParameters);
 			motionCorrelation.setPersonDetections(personDetections);
 
-			Image delta = new Image(frame.getSequence(), frame.getTimestamp(), ImageUtils.encodeImage(frameDelta));
-			frameDelta.release();
+			Image delta = new Image(frame.getSequence(), frame.getTimestamp(), ImageUtils.encodeImage(normalizedDelta));
+			normalizedDelta.release();
 			motionCorrelation.setDelta(delta);
 		}
 	}
