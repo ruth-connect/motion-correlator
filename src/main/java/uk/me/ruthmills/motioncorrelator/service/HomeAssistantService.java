@@ -1,5 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.service;
 
+import java.time.LocalDateTime;
+
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 
@@ -11,5 +13,6 @@ public interface HomeAssistantService {
 
 	public void notifyCameraConnectionFailed(Camera camera);
 
-	public void notifyPersonDetected(Camera camera, PersonDetections personDetections);
+	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
+			PersonDetections personDetections);
 }

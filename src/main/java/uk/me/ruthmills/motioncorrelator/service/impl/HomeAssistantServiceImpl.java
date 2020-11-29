@@ -66,11 +66,12 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	}
 
 	@Override
-	public void notifyPersonDetected(Camera camera, PersonDetections personDetections) {
+	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
+			PersonDetections personDetections) {
 		logger.info(camera.getName() + " person detected");
 		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_person_detected",
-				ImageUtils.getImagePath(camera.getName(), personDetections.getTimestamp())
-						+ personDetections.getDetectionsFilename());
+				ImageUtils.getImagePath(camera.getName(), timestamp)
+						+ personDetections.getDetectionsFilename(sequence, timestamp));
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {

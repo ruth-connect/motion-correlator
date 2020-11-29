@@ -74,10 +74,9 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 			// Perform the person detection.
 			PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
-			personDetections.setTimestamp(frame.getTimestamp());
 			motionCorrelation.setPersonDetections(personDetections);
 
-			Image delta = new Image(frame.getTimestamp(), ImageUtils.encodeImage(frameDelta));
+			Image delta = new Image(frame.getSequence(), frame.getTimestamp(), ImageUtils.encodeImage(frameDelta));
 			frameDelta.release();
 			motionCorrelation.setDelta(delta);
 		}

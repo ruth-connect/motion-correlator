@@ -86,15 +86,15 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 					// Create the detection object.
 					Detection detection = new Detection(motionCorrelation.getCamera(),
+							motionCorrelation.getFrame().getSequence(), motionCorrelation.getFrame().getTimestamp(),
 							motionCorrelation.getVectorMotionDetection(), motionCorrelation.getPersonDetections());
 
 					// Add the detection to the list.
 //					getDetectionListForCamera(detection.getCamera()).add(detection);
 
 					if (motionCorrelation.getPersonDetections().getPersonDetections().size() > 0) {
-						homeAssistantService.notifyPersonDetected(
-								cameraService.getCamera(motionCorrelation.getCamera()),
-								motionCorrelation.getPersonDetections());
+						homeAssistantService.notifyPersonDetected(cameraService.getCamera(detection.getCamera()),
+								detection.getSequence(), detection.getTimestamp(), detection.getPersonDetections());
 					}
 				} catch (Exception ex) {
 					logger.error("Failed performing detection aggregation", ex);
@@ -106,11 +106,10 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
 			imageService.writeImage(motionCorrelation.getCamera(), imageStampingService.stampImage(motionCorrelation),
 					motionCorrelation.getPersonDetections());
-			imageService
-					.writeImage(motionCorrelation.getCamera(),
-							new Image(motionCorrelation.getFrame().getTimestamp(),
-									ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
-							"-average");
+			imageService.writeImage(motionCorrelation.getCamera(),
+					new Image(motionCorrelation.getFrame().getSequence(), motionCorrelation.getFrame().getTimestamp(),
+							ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
+					"-average");
 			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta");
 		}
 

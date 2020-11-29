@@ -64,8 +64,8 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		graphics2D.dispose();
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-		Image stampedImage = new Image(motionCorrelation.getFrame().getTimestamp(),
-				byteArrayOutputStream.toByteArray());
+		Image stampedImage = new Image(motionCorrelation.getFrame().getSequence(),
+				motionCorrelation.getFrame().getTimestamp(), byteArrayOutputStream.toByteArray());
 		return stampedImage;
 	}
 

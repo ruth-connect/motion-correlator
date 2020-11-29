@@ -44,7 +44,7 @@ public class ImageServiceImpl implements ImageService {
 		InputStream body = response.getBody();
 		byte[] bytes = IOUtils.toByteArray(body);
 		response.close();
-		return new Image(timestamp, bytes);
+		return new Image(0, timestamp, bytes);
 	}
 
 	@Override
@@ -54,8 +54,10 @@ public class ImageServiceImpl implements ImageService {
 
 	@Override
 	public void writeImage(String camera, Image image, PersonDetections personDetections) throws IOException {
-		Files.write(FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp()),
-				personDetections.getDetectionsFilename()), image.getBytes(), StandardOpenOption.CREATE);
+		Files.write(
+				FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp()),
+						personDetections.getDetectionsFilename(image.getSequence(), image.getTimestamp())),
+				image.getBytes(), StandardOpenOption.CREATE);
 	}
 
 	@Override
