@@ -58,7 +58,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 		// Only detect if there is an average frame to compare with, and we haven't run
 		// person detection before for this frame.
-		if (frame.getPreviousFrame() != null && motionCorrelation.getPersonDetections() == null) {
+		if (frame != null && frame.getPreviousFrame() != null && motionCorrelation.getPersonDetections() == null) {
 			Mat averageFrame = frame.getPreviousFrame().getAverageFrame();
 			PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
 			Mat blurredFrame = frame.getBlurredFrame();
