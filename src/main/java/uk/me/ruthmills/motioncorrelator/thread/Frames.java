@@ -25,6 +25,7 @@ public class Frames implements Runnable {
 	private Camera camera;
 	private BlockingQueue<Image> unprocessedImages = new LinkedBlockingDeque<>(1); // 1 frame only.
 	private Deque<Frame> frames = new ConcurrentLinkedDeque<>();
+	private int sequence;
 	private int size;
 	private Thread frameProcessor;
 
@@ -75,7 +76,7 @@ public class Frames implements Runnable {
 					previousAverageFrame.copyTo(currentAverageFrame);
 					Imgproc.accumulateWeighted(blurredFrame, currentAverageFrame, 0.1d);
 				}
-				Frame newFrame = new Frame(image, blurredFrame, currentAverageFrame, previousFrame);
+				Frame newFrame = new Frame(sequence++, image, blurredFrame, currentAverageFrame, previousFrame);
 				if (size > 0) {
 					frames.getLast().setNextFrame(newFrame);
 				}
