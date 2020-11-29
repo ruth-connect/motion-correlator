@@ -107,8 +107,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						// Get the motion detection for this frame.
 						MotionCorrelation currentMotionDetection = frame.getMotionCorrelation();
 						if (currentMotionDetection == null) {
-							currentMotionDetection = new MotionCorrelation(camera, vectorMotionDetection);
-							frame.setMotionCorrelation(currentMotionDetection);
+							currentMotionDetection = new MotionCorrelation(camera, frame, vectorMotionDetection);
 						} else {
 							currentMotionDetection.setVectorMotionDetection(vectorMotionDetection);
 						}
@@ -155,12 +154,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				logger.warn("Attempt to perform motion correlation with no frame. Camera: "
 						+ motionCorrelation.getCamera());
 			} else {
-				if (frame.getMotionCorrelation() == null) {
-					logger.warn("Attempt to perform motion correlation on frame with no motion correlation. Camera: "
-							+ motionCorrelation.getCamera());
-					frame.setMotionCorrelation(motionCorrelation);
-				}
-
 				if (frame.getAverageFrame() == null) {
 					logger.warn("No average frame for frame: " + frame.getTimestamp() + " for camera: "
 							+ motionCorrelation.getCamera());
@@ -262,9 +255,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					// Add the vector to the motion correlation for this frame.
 					MotionCorrelation motionCorrelation = frame.getMotionCorrelation();
 					if (motionCorrelation == null) {
-						motionCorrelation = new MotionCorrelation(currentMotionDetection.getCamera(),
+						motionCorrelation = new MotionCorrelation(currentMotionDetection.getCamera(), frame,
 								vectorMotionDetection);
-						frame.setMotionCorrelation(motionCorrelation);
 					} else {
 						frame.getMotionCorrelation().setVectorMotionDetection(vectorMotionDetection);
 					}

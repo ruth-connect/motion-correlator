@@ -22,11 +22,14 @@ public class MotionCorrelation {
 	public MotionCorrelation(String camera, Frame frame) {
 		this.camera = camera;
 		this.frame = frame;
+		frame.setMotionCorrelation(this);
 	}
 
-	public MotionCorrelation(String camera, VectorMotionDetection vectorMotionDetection) {
+	public MotionCorrelation(String camera, Frame frame, VectorMotionDetection vectorMotionDetection) {
 		this.camera = camera;
+		this.frame = frame;
 		this.vectorMotionDetection = vectorMotionDetection;
+		frame.setMotionCorrelation(this);
 	}
 
 	public String getCamera() {
