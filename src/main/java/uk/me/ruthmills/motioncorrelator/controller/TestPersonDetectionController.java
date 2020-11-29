@@ -84,8 +84,7 @@ public class TestPersonDetectionController {
 		MotionCorrelation motionCorrelation = new MotionCorrelation();
 		motionCorrelation.setFrame(new Frame(originalImage));
 		motionCorrelation.setPersonDetections(personDetections);
-		imageStampingService.stampImage(motionCorrelation);
-		Image stampedImage = motionCorrelation.getStampedImage();
+		Image stampedImage = imageStampingService.stampImage(motionCorrelation);
 		testImageService.setStampedImage(stampedImage);
 		testPersonDetectionService.setPersonDetections(personDetections);
 

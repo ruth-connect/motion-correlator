@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Frame;
-import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
@@ -151,13 +150,12 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					logger.warn("No average frame for frame: " + frame.getTimestamp() + " for camera: "
 							+ motionCorrelation.getCamera());
 				} else {
-					PersonDetections personDetections = personDetectionService
-							.detectPersonsFromDelta(motionCorrelation.getCamera(), frame);
+					personDetectionService.detectPersonsFromDelta(motionCorrelation);
 
 					motionCorrelation.setFrame(frame);
-					motionCorrelation.setPersonDetections(personDetections);
 					if (motionCorrelation.getVectorMotionDetection() != null
-							|| personDetections.getPersonDetections().size() > 0) {
+							|| (motionCorrelation.getPersonDetections() != null
+									&& motionCorrelation.getPersonDetections().getPersonDetections().size() > 0)) {
 						detectionAggregatorService.addDetection(motionCorrelation);
 					}
 				}

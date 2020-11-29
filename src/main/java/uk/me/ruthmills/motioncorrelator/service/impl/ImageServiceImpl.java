@@ -54,15 +54,14 @@ public class ImageServiceImpl implements ImageService {
 
 	@Override
 	public void writeImage(String camera, Image image, PersonDetections personDetections) throws IOException {
-		Files.write(
-				FileSystems.getDefault().getPath(getImagePath(camera, image), personDetections.getDetectionsFilename()),
-				image.getBytes(), StandardOpenOption.CREATE);
+		Files.write(FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp()),
+				personDetections.getDetectionsFilename()), image.getBytes(), StandardOpenOption.CREATE);
 	}
 
 	@Override
 	public void writeImage(String camera, Image image, String suffix) throws IOException {
 		if (image != null) {
-			Files.write(FileSystems.getDefault().getPath(getImagePath(camera, image),
+			Files.write(FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp()),
 					image.getTimestamp() + suffix + ".jpg"), image.getBytes(), StandardOpenOption.CREATE);
 		}
 	}
@@ -75,8 +74,8 @@ public class ImageServiceImpl implements ImageService {
 		return new HttpComponentsClientHttpRequestFactory(client);
 	}
 
-	private String getImagePath(String camera, Image image) {
-		String path = IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, image);
+	private String getImagePath(String camera, LocalDateTime timestamp) {
+		String path = IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, timestamp);
 		File file = new File(path);
 		file.mkdirs();
 		return path;

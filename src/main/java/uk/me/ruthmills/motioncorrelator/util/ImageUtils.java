@@ -1,5 +1,6 @@
 package uk.me.ruthmills.motioncorrelator.util;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.opencv.core.CvType;
@@ -40,7 +41,7 @@ public class ImageUtils {
 		return bytes;
 	}
 
-	public static String getImagePath(String camera, Image image) {
-		return camera + image.getTimestamp().format(DATE_TIME_FORMAT) + "/";
+	public static String getImagePath(String camera, LocalDateTime timestamp) {
+		return camera + timestamp.format(DATE_TIME_FORMAT) + "/";
 	}
 }

@@ -13,7 +13,7 @@ public class MotionCorrelation {
 	private Frame frame;
 	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
-	private Image stampedImage;
+	private Image delta;
 
 	public MotionCorrelation() {
 	}
@@ -56,6 +56,14 @@ public class MotionCorrelation {
 		return personDetections;
 	}
 
+	public void setDelta(Image delta) {
+		this.delta = delta;
+	}
+
+	public Image getDelta() {
+		return delta;
+	}
+
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		if (vectorMotionDetection != null) {
@@ -65,13 +73,5 @@ public class MotionCorrelation {
 			stringBuilder.append("Person Detections: " + personDetections + "\n");
 		}
 		return stringBuilder.toString();
-	}
-
-	public void setStampedImage(Image stampedImage) {
-		this.stampedImage = stampedImage;
-	}
-
-	public Image getStampedImage() {
-		return stampedImage;
 	}
 }

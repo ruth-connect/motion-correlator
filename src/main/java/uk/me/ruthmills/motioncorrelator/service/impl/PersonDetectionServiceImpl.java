@@ -18,6 +18,7 @@ import org.opencv.core.Size;
 import org.opencv.objdetect.HOGDescriptor;
 import org.springframework.stereotype.Service;
 
+import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
@@ -47,39 +48,38 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 	public PersonDetections detectPersons(Image image, PersonDetectionParameters personDetectionParameters) {
 		Mat frame = ImageUtils.decodeImage(image, personDetectionParameters.getImageWidthPixels());
 		PersonDetections personDetections = detect(frame, personDetectionParameters);
-		personDetections.setImage(image);
 		frame.release();
 		return personDetections;
 	}
 
 	@Override
-	public PersonDetections detectPersonsFromDelta(String camera, Frame frame) {
-		if (frame.getPreviousFrame() == null) {
-			return detectPersons(frame.getImage()); // fall back to just detecting from image.
+	public void detectPersonsFromDelta(MotionCorrelation motionCorrelation) {
+		Frame frame = motionCorrelation.getFrame();
+
+		// Only detect if there is an average frame to compare with.
+		if (frame.getPreviousFrame() != null) {
+			Mat averageFrame = frame.getPreviousFrame().getAverageFrame();
+			PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
+			Mat blurredFrame = frame.getBlurredFrame();
+
+			Mat absBlurredFrame = new Mat();
+			Mat absAverageFrame = new Mat();
+			Core.convertScaleAbs(blurredFrame, absBlurredFrame);
+			Core.convertScaleAbs(averageFrame, absAverageFrame);
+			Mat frameDelta = new Mat();
+			Core.absdiff(absBlurredFrame, absAverageFrame, frameDelta);
+			absBlurredFrame.release();
+			absAverageFrame.release();
+
+			// Perform the person detection.
+			PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
+			personDetections.setTimestamp(frame.getTimestamp());
+			motionCorrelation.setPersonDetections(personDetections);
+
+			Image delta = new Image(frame.getTimestamp(), ImageUtils.encodeImage(frameDelta));
+			frameDelta.release();
+			motionCorrelation.setDelta(delta);
 		}
-
-		Mat averageFrame = frame.getPreviousFrame().getAverageFrame();
-		PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
-		Mat blurredFrame = frame.getBlurredFrame();
-
-		Mat absBlurredFrame = new Mat();
-		Mat absAverageFrame = new Mat();
-		Core.convertScaleAbs(blurredFrame, absBlurredFrame);
-		Core.convertScaleAbs(averageFrame, absAverageFrame);
-		Mat frameDelta = new Mat();
-		Core.absdiff(absBlurredFrame, absAverageFrame, frameDelta);
-		absBlurredFrame.release();
-		absAverageFrame.release();
-
-		PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
-		personDetections.setImage(frame.getImage());
-
-		Image delta = new Image(frame.getTimestamp(), ImageUtils.encodeImage(frameDelta));
-		frameDelta.release();
-
-		personDetections.setDelta(delta);
-
-		return personDetections;
 	}
 
 	private PersonDetections detect(Mat frame, PersonDetectionParameters personDetectionParameters) {

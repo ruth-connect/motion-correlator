@@ -103,17 +103,15 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 		}
 
 		private void writeImages(MotionCorrelation motionCorrelation) throws IOException {
-			imageStampingService.stampImage(motionCorrelation);
 			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
-			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getStampedImage(),
+			imageService.writeImage(motionCorrelation.getCamera(), imageStampingService.stampImage(motionCorrelation),
 					motionCorrelation.getPersonDetections());
 			imageService
 					.writeImage(motionCorrelation.getCamera(),
 							new Image(motionCorrelation.getFrame().getTimestamp(),
 									ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
 							"-average");
-			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getPersonDetections().getDelta(),
-					"-delta");
+			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta");
 		}
 
 		private List<Detection> getDetectionListForCamera(String camera) {
