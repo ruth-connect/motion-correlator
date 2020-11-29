@@ -41,4 +41,16 @@ public class Detection {
 	public PersonDetections getPersonDetections() {
 		return personDetections;
 	}
+
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Camera: " + camera + ", Sequence: " + sequence + ", Timestamp: " + timestamp + "\n");
+		if (vectorMotionDetection != null) {
+			stringBuilder.append("Vector Motion Detection: " + vectorMotionDetection);
+		}
+		if (personDetections != null) {
+			stringBuilder.append("Person Detections: " + personDetections);
+		}
+		return stringBuilder.toString();
+	}
 }

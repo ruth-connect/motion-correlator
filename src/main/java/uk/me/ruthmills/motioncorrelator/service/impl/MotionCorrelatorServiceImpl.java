@@ -86,7 +86,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		}
 
 		public void addVectorData(VectorDataList vectorData) {
-			vectorDataQueue.offer(vectorData);
+			vectorDataQueue.offerLast(vectorData);
 		}
 
 		@Override
