@@ -15,6 +15,7 @@ import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
+import org.opencv.imgproc.CLAHE;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.HOGDescriptor;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,14 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	private HOGDescriptor hogDescriptor;
+	private CLAHE clahe;
 
 	@PostConstruct
 	public void initialise() throws IOException {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		hogDescriptor = new HOGDescriptor();
 		hogDescriptor.setSVMDetector(HOGDescriptor.getDefaultPeopleDetector());
+		clahe = Imgproc.createCLAHE();
 	}
 
 	@Override
@@ -73,16 +76,16 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 			absBlurredFrame.release();
 			absAverageFrame.release();
 
-			Mat equalizedDelta = new Mat();
-			Imgproc.equalizeHist(frameDelta, equalizedDelta);
+			Mat optimisedDelta = new Mat();
+			clahe.apply(frameDelta, optimisedDelta);
 			frameDelta.release();
 
 			// Perform the person detection.
-			PersonDetections personDetections = detect(equalizedDelta, personDetectionParameters);
+			PersonDetections personDetections = detect(optimisedDelta, personDetectionParameters);
 			motionCorrelation.setPersonDetections(personDetections);
 
-			Image delta = new Image(frame.getSequence(), frame.getTimestamp(), ImageUtils.encodeImage(equalizedDelta));
-			equalizedDelta.release();
+			Image delta = new Image(frame.getSequence(), frame.getTimestamp(), ImageUtils.encodeImage(optimisedDelta));
+			optimisedDelta.release();
 			motionCorrelation.setDelta(delta);
 		}
 	}
