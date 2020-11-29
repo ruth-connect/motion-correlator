@@ -14,6 +14,7 @@ public class MotionCorrelation {
 	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
 	private Image delta;
+	private boolean processed;
 
 	public MotionCorrelation() {
 	}
@@ -36,36 +37,45 @@ public class MotionCorrelation {
 		return frame != null ? frame.getTimestamp() : null;
 	}
 
-	public void setVectorMotionDetection(VectorMotionDetection vectorMotionDetection) {
-		this.vectorMotionDetection = vectorMotionDetection;
-	}
-
 	public VectorMotionDetection getVectorMotionDetection() {
 		return vectorMotionDetection;
 	}
 
-	public void setFrame(Frame frame) {
-		this.frame = frame;
+	public void setVectorMotionDetection(VectorMotionDetection vectorMotionDetection) {
+		this.vectorMotionDetection = vectorMotionDetection;
+		processed = false;
 	}
 
 	public Frame getFrame() {
 		return frame;
 	}
 
-	public void setPersonDetections(PersonDetections personDetections) {
-		this.personDetections = personDetections;
+	public void setFrame(Frame frame) {
+		this.frame = frame;
 	}
 
 	public PersonDetections getPersonDetections() {
 		return personDetections;
 	}
 
-	public void setDelta(Image delta) {
-		this.delta = delta;
+	public void setPersonDetections(PersonDetections personDetections) {
+		this.personDetections = personDetections;
 	}
 
 	public Image getDelta() {
 		return delta;
+	}
+
+	public void setDelta(Image delta) {
+		this.delta = delta;
+	}
+
+	public boolean isProcessed() {
+		return processed;
+	}
+
+	public void setProcessed(boolean processed) {
+		this.processed = processed;
 	}
 
 	public String toString() {

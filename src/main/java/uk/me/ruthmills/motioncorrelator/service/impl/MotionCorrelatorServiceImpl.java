@@ -97,10 +97,22 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						// We have a new vector detection.
 						logger.info("NEW VECTOR DETECTION for camera: " + vectorDataList.getCamera()
 								+ " with VECTOR timestamp: " + vectorDataList.getTimestamp());
+						VectorMotionDetection vectorMotionDetection = new VectorMotionDetection(
+								vectorDataList.getTimestamp(), vectorDataList.getFrameVector());
 						String camera = vectorDataList.getCamera();
-						MotionCorrelation currentMotionDetection = new MotionCorrelation(camera,
-								new VectorMotionDetection(vectorDataList.getTimestamp(),
-										vectorDataList.getFrameVector()));
+
+						// Get the frame for this vector detection.
+						Frame frame = frameService.getFrame(vectorDataList.getCamera(), vectorDataList.getTimestamp());
+
+						// Get the motion detection for this frame.
+						MotionCorrelation currentMotionDetection = frame.getMotionCorrelation();
+						if (currentMotionDetection == null) {
+							currentMotionDetection = new MotionCorrelation(camera, vectorMotionDetection);
+						} else {
+							currentMotionDetection.setVectorMotionDetection(vectorMotionDetection);
+						}
+
+						// Perform the motion correlation.
 						performMotionCorrelation(currentMotionDetection, false);
 
 						// Is there a previous motion detection for this camera?
@@ -138,10 +150,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		private void performMotionCorrelation(MotionCorrelation motionCorrelation, boolean speculativeRoundRobin)
 				throws IOException {
 			Frame frame = motionCorrelation.getFrame();
-			if (frame == null && motionCorrelation.getVectorMotionDetection() != null) {
-				frame = frameService.getFrame(motionCorrelation.getCamera(),
-						motionCorrelation.getVectorMotionDetection().getTimestamp());
-			}
 			if (frame != null) {
 				if (frame.getMotionCorrelation() == null) {
 					frame.setMotionCorrelation(motionCorrelation);
@@ -152,7 +160,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							+ motionCorrelation.getCamera());
 				} else {
 					personDetectionService.detectPersonsFromDelta(motionCorrelation);
-					motionCorrelation.setFrame(frame);
+					motionCorrelation.setProcessed(true);
 
 					// Send to the detection aggregator service if this is not a speculative round
 					// robin - i.e. we have an actual or recent detection.
@@ -164,7 +172,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		}
 
 		private void interpolateVectorsOverTime(MotionCorrelation currentMotionDetection,
-				MotionCorrelation previousMotionDetection) {
+				MotionCorrelation previousMotionDetection) throws IOException {
 			if (currentMotionDetection.getVectorMotionDetection() != null
 					&& previousMotionDetection.getVectorMotionDetection() != null) {
 				// if both detections have frame vectors, and previous motion detection was
@@ -188,7 +196,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		}
 
 		private void interpolateVectorsOverTime(MotionCorrelation currentMotionDetection,
-				MotionCorrelation previousMotionDetection, long vectorTimeDifferenceMilliseconds) {
+				MotionCorrelation previousMotionDetection, long vectorTimeDifferenceMilliseconds) throws IOException {
 			Vector startVector = previousMotionDetection.getVectorMotionDetection().getFrameVector();
 			Vector endVector = currentMotionDetection.getVectorMotionDetection().getFrameVector();
 
@@ -246,15 +254,13 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							frameVector, true);
 
 					// Add the vector to the motion correlation for this frame.
-					if (frame.getMotionCorrelation() == null) {
-						frame.setMotionCorrelation(
-								new MotionCorrelation(currentMotionDetection.getCamera(), vectorMotionDetection));
+					MotionCorrelation motionCorrelation = frame.getMotionCorrelation();
+					if (motionCorrelation == null) {
+						motionCorrelation = new MotionCorrelation(currentMotionDetection.getCamera(),
+								vectorMotionDetection);
+						frame.setMotionCorrelation(motionCorrelation);
 					} else {
 						frame.getMotionCorrelation().setVectorMotionDetection(vectorMotionDetection);
-
-						// Replace previous detection (without vector) with updated detection (with
-						// interpolated vector).
-						detectionAggregatorService.addDetection(frame.getMotionCorrelation());
 					}
 
 					logger.info("Interpolated data for image with timestamp: " + frame.getTimestamp() + " and camera: "
@@ -318,7 +324,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			for (MotionCorrelation motionDetection : latestMotionDetections) {
 				Frame frame = motionDetection.getFrame();
 				while (frame != null && frame.getMotionCorrelation() != null) {
-					if (frame.getMotionCorrelation().getPersonDetections() == null) {
+					if (!frame.getMotionCorrelation().isProcessed()) {
 						return frame.getMotionCorrelation();
 					} else {
 						frame = frame.getPreviousFrame();
