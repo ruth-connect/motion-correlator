@@ -108,6 +108,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						MotionCorrelation currentMotionDetection = frame.getMotionCorrelation();
 						if (currentMotionDetection == null) {
 							currentMotionDetection = new MotionCorrelation(camera, vectorMotionDetection);
+							frame.setMotionCorrelation(currentMotionDetection);
 						} else {
 							currentMotionDetection.setVectorMotionDetection(vectorMotionDetection);
 						}
@@ -150,8 +151,13 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		private void performMotionCorrelation(MotionCorrelation motionCorrelation, boolean speculativeRoundRobin)
 				throws IOException {
 			Frame frame = motionCorrelation.getFrame();
-			if (frame != null) {
+			if (frame == null) {
+				logger.warn("Attempt to perform motion correlation with no frame. Camera: "
+						+ motionCorrelation.getCamera());
+			} else {
 				if (frame.getMotionCorrelation() == null) {
+					logger.warn("Attempt to perform motion correlation on frame with no motion correlation. Camera: "
+							+ motionCorrelation.getCamera());
 					frame.setMotionCorrelation(motionCorrelation);
 				}
 
