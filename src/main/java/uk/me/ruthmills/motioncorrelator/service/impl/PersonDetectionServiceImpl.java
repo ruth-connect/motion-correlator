@@ -15,6 +15,7 @@ import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.HOGDescriptor;
 import org.springframework.stereotype.Service;
 
@@ -72,16 +73,16 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 			absBlurredFrame.release();
 			absAverageFrame.release();
 
-			Mat normalizedDelta = new Mat();
-			Core.normalize(frameDelta, normalizedDelta);
+			Mat equalizedDelta = new Mat();
+			Imgproc.equalizeHist(frameDelta, equalizedDelta);
 			frameDelta.release();
 
 			// Perform the person detection.
-			PersonDetections personDetections = detect(normalizedDelta, personDetectionParameters);
+			PersonDetections personDetections = detect(equalizedDelta, personDetectionParameters);
 			motionCorrelation.setPersonDetections(personDetections);
 
-			Image delta = new Image(frame.getSequence(), frame.getTimestamp(), ImageUtils.encodeImage(normalizedDelta));
-			normalizedDelta.release();
+			Image delta = new Image(frame.getSequence(), frame.getTimestamp(), ImageUtils.encodeImage(equalizedDelta));
+			equalizedDelta.release();
 			motionCorrelation.setDelta(delta);
 		}
 	}
