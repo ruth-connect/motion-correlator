@@ -28,7 +28,7 @@ public class Detections {
 		if (detections.peekFirst() != null) {
 			long nowMilliseconds = TimeUtils.toMilliseconds(LocalDateTime.now());
 			long timestampMilliseconds = TimeUtils.toMilliseconds(detections.peekFirst().getTimestamp());
-			if (nowMilliseconds - timestampMilliseconds > 60000) {
+			if (nowMilliseconds - timestampMilliseconds > 60000) { // 1 minute
 				logger.info("Removing expired detection: " + detections.peekFirst());
 				detections.removeFirst();
 				removeExpiredDetections();
