@@ -115,32 +115,44 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		if (vectorMotionDetection != null) {
 			Vector frameVector = vectorMotionDetection.getFrameVector();
 			if (frameVector != null) {
-				int x = frameVector.getStartX();
-				int y = frameVector.getStartY();
-				int endX = frameVector.getEndX();
-				int endY = frameVector.getEndY();
-
-				graphics2D.setColor(Color.MAGENTA);
-
-				double angle = Math.atan2(endY - y, endX - x);
-
-				graphics2D.setStroke(new BasicStroke(2));
-
-				graphics2D.drawLine(x, y, (int) (endX - 10 * Math.cos(angle)), (int) (endY - 10 * Math.sin(angle)));
-
-				AffineTransform tx1 = graphics2D.getTransform();
-
-				AffineTransform tx2 = (AffineTransform) tx1.clone();
-
-				tx2.translate(endX, endY);
-				tx2.rotate(angle - Math.PI / 2);
-
-				graphics2D.setTransform(tx2);
-				graphics2D.fill(ARROW_HEAD);
-
-				graphics2D.setTransform(tx1);
+				drawFrameVector(graphics2D, frameVector, -1, -1, Color.BLACK);
+				drawFrameVector(graphics2D, frameVector, 0, -1, Color.BLACK);
+				drawFrameVector(graphics2D, frameVector, 1, -1, Color.BLACK);
+				drawFrameVector(graphics2D, frameVector, -1, 0, Color.BLACK);
+				drawFrameVector(graphics2D, frameVector, 1, 0, Color.BLACK);
+				drawFrameVector(graphics2D, frameVector, -1, 1, Color.BLACK);
+				drawFrameVector(graphics2D, frameVector, 0, 1, Color.BLACK);
+				drawFrameVector(graphics2D, frameVector, 1, 1, Color.BLACK);
+				drawFrameVector(graphics2D, frameVector, 0, 0, Color.MAGENTA);
 			}
 		}
+	}
+
+	private void drawFrameVector(Graphics2D graphics2D, Vector frameVector, int offsetX, int offsetY, Color color) {
+		int startX = frameVector.getStartX() + offsetX;
+		int startY = frameVector.getStartY() + offsetY;
+		int endX = frameVector.getEndX() + offsetX;
+		int endY = frameVector.getEndY() + offsetY;
+
+		graphics2D.setColor(color);
+
+		double angle = Math.atan2(endY - startY, endX - startX);
+
+		graphics2D.setStroke(new BasicStroke(2));
+
+		graphics2D.drawLine(startX, startY, (int) (endX - 10 * Math.cos(angle)), (int) (endY - 10 * Math.sin(angle)));
+
+		AffineTransform tx1 = graphics2D.getTransform();
+
+		AffineTransform tx2 = (AffineTransform) tx1.clone();
+
+		tx2.translate(endX, endY);
+		tx2.rotate(angle - Math.PI / 2);
+
+		graphics2D.setTransform(tx2);
+		graphics2D.fill(ARROW_HEAD);
+
+		graphics2D.setTransform(tx1);
 	}
 
 	private void drawVectorText(Graphics2D graphics2D, VectorMotionDetection vectorMotionDetection) {
