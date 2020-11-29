@@ -136,12 +136,12 @@ public class Vector extends VectorData {
 
 			float ratio = ratioX < ratioY ? ratioX : ratioY;
 
-			convertedX = Math.round(((float) x) * ratio);
+			convertedX = Math.round(((float) x) * ratio * 640f / 100f);
 			if (convertedX > 639) {
 				convertedX = 639;
 			}
 
-			convertedY = Math.round(480f - (((float) y) * ratio));
+			convertedY = Math.round(480f - (((float) y) * ratio * 480f / 100f));
 			if (convertedY > 479) {
 				convertedY = 479;
 			}
