@@ -96,10 +96,11 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 							homeAssistantService.notifyPersonDetected(cameraService.getCamera(detection.getCamera()),
 									detection.getSequence(), detection.getTimestamp(), detection.getPersonDetections());
 						}
-
-						// Remove expired detections.
-						removeExpiredDetections();
 					}
+
+					// Remove expired detections.
+					removeExpiredDetections();
+
 				} catch (Exception ex) {
 					logger.error("Failed performing detection aggregation", ex);
 				}
