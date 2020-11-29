@@ -30,7 +30,7 @@ public class PersonDetections {
 	public String getDetectionsFilename(long sequence, LocalDateTime timestamp) {
 		String detections = personDetections.size() > 0 ? "-" + personDetections.size() + "-"
 				+ new BigDecimal(personDetections.get(0).getWeight()).setScale(3, RoundingMode.HALF_UP) : "";
-		return timestamp + "-" + sequence + "-" + "-stamped" + detections + ".jpg";
+		return timestamp + "-" + sequence + "-stamped" + detections + ".jpg";
 	}
 
 	public String toString() {

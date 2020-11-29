@@ -21,7 +21,7 @@ import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
-import uk.me.ruthmills.motioncorrelator.service.ImageService;
+import uk.me.ruthmills.motioncorrelator.service.ImageFileWritingService;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
@@ -35,7 +35,7 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 	private ImageStampingService imageStampingService;
 
 	@Autowired
-	private ImageService imageService;
+	private ImageFileWritingService imageFileWritingService;
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
@@ -103,14 +103,14 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 		}
 
 		private void writeImages(MotionCorrelation motionCorrelation) throws IOException {
-			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
-			imageService.writeImage(motionCorrelation.getCamera(), imageStampingService.stampImage(motionCorrelation),
+			imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
+			imageFileWritingService.writeImage(motionCorrelation.getCamera(), imageStampingService.stampImage(motionCorrelation),
 					motionCorrelation.getPersonDetections());
-			imageService.writeImage(motionCorrelation.getCamera(),
+			imageFileWritingService.writeImage(motionCorrelation.getCamera(),
 					new Image(motionCorrelation.getFrame().getSequence(), motionCorrelation.getFrame().getTimestamp(),
 							ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
 					"-average");
-			imageService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta");
+			imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta");
 		}
 
 		private List<Detection> getDetectionListForCamera(String camera) {
