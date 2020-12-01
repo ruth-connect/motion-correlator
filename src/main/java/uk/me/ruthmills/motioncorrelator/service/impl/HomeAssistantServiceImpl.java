@@ -66,6 +66,18 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	}
 
 	@Override
+	public void notifyDiskOK() {
+		logger.info("Disk OK");
+		homeAssistantNotifier.notify("heimdallr_disk_ok", LocalDateTime.now().toString());
+	}
+
+	@Override
+	public void notifyDiskFailed() {
+		logger.info("Disk Failed");
+		homeAssistantNotifier.notify("heimdallr_disk_failed", LocalDateTime.now().toString());
+	}
+
+	@Override
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections) {
 		logger.info(camera.getName() + " person detected");

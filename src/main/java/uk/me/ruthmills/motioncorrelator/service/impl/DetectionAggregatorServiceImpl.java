@@ -1,6 +1,5 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -41,6 +40,8 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 	private HomeAssistantService homeAssistantService;
 
 	private DetectionAggregator detectionAggregator;
+
+	private boolean diskOK = false;
 
 	private static final Logger logger = LoggerFactory.getLogger(DetectionAggregatorServiceImpl.class);
 
@@ -107,15 +108,31 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 			}
 		}
 
-		private void writeImages(MotionCorrelation motionCorrelation) throws IOException {
-			imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
-			imageFileWritingService.writeImage(motionCorrelation.getCamera(),
-					imageStampingService.stampImage(motionCorrelation), motionCorrelation.getPersonDetections());
-			imageFileWritingService.writeImage(motionCorrelation.getCamera(),
-					new Image(motionCorrelation.getFrame().getSequence(), motionCorrelation.getFrame().getTimestamp(),
-							ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
-					"-average");
-			imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta");
+		private void writeImages(MotionCorrelation motionCorrelation) {
+			try {
+				imageFileWritingService.writeImage(motionCorrelation.getCamera(),
+						motionCorrelation.getFrame().getImage());
+				imageFileWritingService.writeImage(motionCorrelation.getCamera(),
+						imageStampingService.stampImage(motionCorrelation), motionCorrelation.getPersonDetections());
+				imageFileWritingService.writeImage(motionCorrelation.getCamera(),
+						new Image(motionCorrelation.getFrame().getSequence(),
+								motionCorrelation.getFrame().getTimestamp(),
+								ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
+						"-average");
+				imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(),
+						"-delta");
+
+				if (!diskOK) {
+					homeAssistantService.notifyDiskOK();
+					diskOK = true;
+				}
+			} catch (Exception ex) {
+				logger.info("Failed to write images", ex);
+				if (diskOK) {
+					homeAssistantService.notifyDiskFailed();
+					diskOK = false;
+				}
+			}
 		}
 
 		private Detections getDetectionsForCamera(String camera) {

@@ -13,6 +13,10 @@ public interface HomeAssistantService {
 
 	public void notifyCameraConnectionFailed(Camera camera);
 
+	public void notifyDiskOK();
+
+	public void notifyDiskFailed();
+
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections);
 }

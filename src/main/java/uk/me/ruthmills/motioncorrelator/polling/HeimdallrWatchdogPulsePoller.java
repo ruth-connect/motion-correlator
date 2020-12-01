@@ -16,7 +16,7 @@ public class HeimdallrWatchdogPulsePoller {
 
 	private final Logger logger = LoggerFactory.getLogger(HeimdallrWatchdogPulsePoller.class);
 
-	@Scheduled(cron = "*/5 * * * * *")
+	@Scheduled(cron = "*/10 * * * * *")
 	public void tick() {
 		try {
 			homeAssistantService.notifyHeimdallrWatchdogPulse();
