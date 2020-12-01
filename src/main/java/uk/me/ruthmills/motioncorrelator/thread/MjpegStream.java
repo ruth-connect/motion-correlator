@@ -36,7 +36,6 @@ public class MjpegStream implements Runnable {
 	private URLConnection conn;
 	private ByteArrayOutputStream outputStream;
 	protected byte[] currentFrame = new byte[0];
-	private long sequence;
 	private Thread streamReader;
 
 	private static final Logger logger = LoggerFactory.getLogger(MjpegStream.class);
@@ -111,7 +110,7 @@ public class MjpegStream implements Runnable {
 	}
 
 	private void handleNewFrame() {
-		Image image = new Image(sequence++, LocalDateTime.now(), currentFrame);
+		Image image = new Image(LocalDateTime.now(), currentFrame);
 		frameService.addCurrentFrame(camera.getName(), image);
 	}
 }

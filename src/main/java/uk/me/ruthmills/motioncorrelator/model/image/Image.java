@@ -8,10 +8,19 @@ public class Image {
 	private LocalDateTime timestamp;
 	private byte[] bytes;
 
+	public Image(LocalDateTime timestamp, byte[] bytes) {
+		this.timestamp = timestamp;
+		this.bytes = bytes;
+	}
+
 	public Image(long sequence, LocalDateTime timestamp, byte[] bytes) {
 		this.sequence = sequence;
 		this.timestamp = timestamp;
 		this.bytes = bytes;
+	}
+
+	public void setSequence(long sequence) {
+		this.sequence = sequence;
 	}
 
 	public long getSequence() {

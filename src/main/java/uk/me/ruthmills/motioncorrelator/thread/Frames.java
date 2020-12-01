@@ -27,6 +27,7 @@ public class Frames implements Runnable {
 	private Deque<Frame> frames = new ConcurrentLinkedDeque<>();
 	private int size;
 	private Thread frameProcessor;
+	private long sequence;
 
 	private static final Logger logger = LoggerFactory.getLogger(Frames.class);
 
@@ -55,6 +56,7 @@ public class Frames implements Runnable {
 		while (true) {
 			try {
 				Image image = unprocessedImages.take();
+				image.setSequence(sequence++);
 				Frame previousFrame = null;
 				Mat previousAverageFrame = null;
 				Mat currentAverageFrame = new Mat();
