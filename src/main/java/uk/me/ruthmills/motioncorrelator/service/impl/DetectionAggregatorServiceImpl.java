@@ -16,13 +16,11 @@ import org.springframework.stereotype.Service;
 import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.model.Detections;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
-import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.service.ImageFileWritingService;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
-import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 @Service
 public class DetectionAggregatorServiceImpl implements DetectionAggregatorService {
@@ -114,10 +112,7 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 						motionCorrelation.getFrame().getImage());
 				imageFileWritingService.writeImage(motionCorrelation.getCamera(),
 						imageStampingService.stampImage(motionCorrelation), motionCorrelation.getPersonDetections());
-				imageFileWritingService.writeImage(motionCorrelation.getCamera(),
-						new Image(motionCorrelation.getFrame().getSequence(),
-								motionCorrelation.getFrame().getTimestamp(),
-								ImageUtils.encodeImage(motionCorrelation.getFrame().getAverageFrame())),
+				imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getAverageFrame(),
 						"-average");
 				imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(),
 						"-delta");

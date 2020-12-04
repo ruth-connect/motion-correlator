@@ -13,6 +13,7 @@ public class MotionCorrelation {
 	private Frame frame;
 	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
+	private Image averageFrame;
 	private Image delta;
 	private boolean processed;
 
@@ -63,6 +64,14 @@ public class MotionCorrelation {
 
 	public void setPersonDetections(PersonDetections personDetections) {
 		this.personDetections = personDetections;
+	}
+
+	public Image getAverageFrame() {
+		return averageFrame;
+	}
+
+	public void setAverageFrame(Image averageFrame) {
+		this.averageFrame = averageFrame;
 	}
 
 	public Image getDelta() {

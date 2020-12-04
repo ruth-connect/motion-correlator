@@ -76,8 +76,11 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 			PersonDetections personDetections = detect(frameDelta, personDetectionParameters);
 			motionCorrelation.setPersonDetections(personDetections);
 
+			Image averageImage = new Image(frame.getSequence(), frame.getTimestamp(),
+					ImageUtils.encodeImage(averageFrame));
 			Image delta = new Image(frame.getSequence(), frame.getTimestamp(), ImageUtils.encodeImage(frameDelta));
 			frameDelta.release();
+			motionCorrelation.setAverageFrame(averageImage);
 			motionCorrelation.setDelta(delta);
 		}
 	}
