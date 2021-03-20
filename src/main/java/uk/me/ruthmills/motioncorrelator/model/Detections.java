@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+import org.apache.commons.collections4.iterators.ReverseListIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
 import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 
 public class Detections {
@@ -34,5 +36,35 @@ public class Detections {
 				removeExpiredDetections();
 			}
 		}
+	}
+
+	public PersonProbability getPersonProbability() {
+		int numPersonDetectionFrames = 0;
+		int numVectorDetectionFrames = 0;
+		int numBothDetectionFrames = 0;
+		double cumulativePersonDetectionWeights = 0d;
+		Detection strongestPersonDetection = null;
+		ReverseListIterator<Detection> iterator = new ReverseListIterator<>(detections);
+		while (iterator.hasNext()) {
+			Detection detection = iterator.next();
+			PersonDetection personDetection = detection.getPersonDetections().getStrongestPersonDetection();
+			if (personDetection != null) {
+				numPersonDetectionFrames++;
+				cumulativePersonDetectionWeights += personDetection.getWeight();
+				if (detection.getVectorMotionDetection() != null) {
+					numBothDetectionFrames++;
+				}
+				if (strongestPersonDetection == null
+						|| personDetection.getWeight() > strongestPersonDetection.getStrongestPersonDetectionWeight()) {
+					strongestPersonDetection = detection;
+				}
+			}
+			if (detection.getVectorMotionDetection() != null) {
+				numVectorDetectionFrames++;
+			}
+		}
+		PersonProbability personProbability = new PersonProbability(strongestPersonDetection, numPersonDetectionFrames,
+				numVectorDetectionFrames, numBothDetectionFrames, cumulativePersonDetectionWeights);
+		return personProbability;
 	}
 }

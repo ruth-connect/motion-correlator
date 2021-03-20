@@ -42,6 +42,10 @@ public class Detection {
 		return personDetections;
 	}
 
+	public double getStrongestPersonDetectionWeight() {
+		return personDetections.getStrongestPersonDetection().getWeight();
+	}
+
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Camera: " + camera + ", Sequence: " + sequence + ", Timestamp: " + timestamp + "\n");

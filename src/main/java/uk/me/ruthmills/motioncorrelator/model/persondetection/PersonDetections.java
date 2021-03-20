@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PersonDetections {
 
@@ -21,6 +22,14 @@ public class PersonDetections {
 
 	public List<PersonDetection> getPersonDetections() {
 		return personDetections;
+	}
+
+	public PersonDetection getStrongestPersonDetection() {
+		if (personDetections == null || personDetections.size() == 0) {
+			return null;
+		}
+		return personDetections.stream().sorted((pd1, pd2) -> Double.compare(pd2.getWeight(), pd1.getWeight()))
+				.collect(Collectors.toList()).get(0);
 	}
 
 	public long getDetectionTimeMilliseconds() {

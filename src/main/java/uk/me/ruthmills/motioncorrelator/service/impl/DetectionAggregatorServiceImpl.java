@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.model.Detections;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
+import uk.me.ruthmills.motioncorrelator.model.PersonProbability;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
@@ -89,7 +90,12 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 								motionCorrelation.getVectorMotionDetection(), motionCorrelation.getPersonDetections());
 
 						// Add the detection to the list.
-						getDetectionsForCamera(detection.getCamera()).addDetection(detection);
+						Detections detections = getDetectionsForCamera(detection.getCamera());
+						detections.addDetection(detection);
+
+						// Get the person probability.
+						PersonProbability personProbability = detections.getPersonProbability();
+						logger.info(personProbability.toString());
 
 						if (motionCorrelation.getPersonDetections().getPersonDetections().size() > 0) {
 							homeAssistantService.notifyPersonDetected(cameraService.getCamera(detection.getCamera()),
