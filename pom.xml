@@ -17,7 +17,7 @@
 	<properties>
 		<java.version>8</java.version>
 		<spring-data-releasetrain.version>Kay-SR4</spring-data-releasetrain.version>
-		<mongodb.version>3.5.0</mongodb.version>
+		<mongodb.version>2.4.14</mongodb.version>
 	</properties>
 	
 	<repositories>
