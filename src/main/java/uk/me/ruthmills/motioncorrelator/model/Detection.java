@@ -2,15 +2,11 @@ package uk.me.ruthmills.motioncorrelator.model;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.Id;
-
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
 
 public class Detection {
 
-	@Id
-	private String id;
 	private String camera;
 	private long sequence;
 	private LocalDateTime timestamp;
