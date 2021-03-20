@@ -17,6 +17,7 @@ import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.model.Detections;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.PersonProbability;
+import uk.me.ruthmills.motioncorrelator.repository.DetectionRepository;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
@@ -37,6 +38,9 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
+
+	@Autowired
+	private DetectionRepository detectionRepository;
 
 	private DetectionAggregator detectionAggregator;
 
@@ -101,6 +105,9 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 							homeAssistantService.notifyPersonDetected(cameraService.getCamera(detection.getCamera()),
 									detection.getSequence(), detection.getTimestamp(), detection.getPersonDetections());
 						}
+
+						// Store the detection in MongoDB.
+						detectionRepository.insert(detection);
 					}
 
 					// Remove expired detections.
