@@ -3,6 +3,8 @@ package uk.me.ruthmills.motioncorrelator.controller;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,8 @@ public class StreamController {
 
 	@Autowired
 	private FrameService frameService;
+
+	private static final Logger logger = LoggerFactory.getLogger(StreamController.class);
 
 	@GetMapping(value = "/{camera}", produces = "multipart/x-mixed-replace; boundary=--BoundaryString")
 	public StreamingResponseBody stream(@PathVariable String camera) {
@@ -36,6 +40,7 @@ public class StreamController {
 							out.write(image);
 							out.write("\r\n\r\n".getBytes());
 							out.flush();
+							logger.info("Wrote image with sequence: " + currentSequence);
 						}
 						oldSequence = currentSequence;
 						Thread.sleep(20);
