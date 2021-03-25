@@ -22,19 +22,21 @@ public class StreamController {
 	public ResponseEntity<StreamingResponseBody> stream(@PathVariable String camera) {
 		StreamingResponseBody stream = out -> {
 			long oldSequence = 0;
-			try {
-				long currentSequence = frameService.getLatestFrame(camera).getSequence();
-				if (currentSequence != oldSequence) {
-					byte[] image = frameService.getLatestFrame(camera).getImage().getBytes();
-					out.write(("--BoundaryString\r\n" + "Content-type: image/jpeg\r\n" + "Content-Length: "
-							+ image.length + "\r\n\r\n").getBytes());
-					out.write(image);
-					out.write("\r\n\r\n".getBytes());
-					out.flush();
+			while (true) {
+				try {
+					long currentSequence = frameService.getLatestFrame(camera).getSequence();
+					if (currentSequence != oldSequence) {
+						byte[] image = frameService.getLatestFrame(camera).getImage().getBytes();
+						out.write(("--BoundaryString\r\n" + "Content-type: image/jpeg\r\n" + "Content-Length: "
+								+ image.length + "\r\n\r\n").getBytes());
+						out.write(image);
+						out.write("\r\n\r\n".getBytes());
+						out.flush();
+					}
+					oldSequence = currentSequence;
+					Thread.sleep(20);
+				} catch (InterruptedException ex) {
 				}
-				oldSequence = currentSequence;
-				Thread.sleep(20);
-			} catch (InterruptedException ex) {
 			}
 		};
 		return new ResponseEntity<>(stream, HttpStatus.OK);
