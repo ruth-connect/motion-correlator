@@ -3,6 +3,8 @@ package uk.me.ruthmills.motioncorrelator.controller;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,10 @@ public class StreamController {
 
 	private static final Logger logger = LoggerFactory.getLogger(StreamController.class);
 
-	@GetMapping(value = "/{camera}", produces = "multipart/x-mixed-replace; boundary=--BoundaryString")
-	public StreamingResponseBody stream(@PathVariable String camera) {
+	@GetMapping(value = "/{camera}")
+	public StreamingResponseBody stream(@PathVariable String camera, HttpServletResponse response) {
+		response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
+
 		return new StreamingResponseBody() {
 
 			@Override
@@ -38,8 +42,8 @@ public class StreamController {
 						if (currentSequence != oldSequence) {
 							logger.info("About to write image with sequence: " + currentSequence);
 							byte[] image = frame.getImage().getBytes();
-							out.write(("--BoundaryString\r\n" + "Content-type: image/jpeg\r\n" + "Content-Length: "
-									+ image.length + "\r\n\r\n").getBytes());
+							out.write(("--BoundaryString\r\nContent-type: image/jpeg\r\nContent-Length: " + image.length
+									+ "\r\n\r\n").getBytes());
 							out.write(image);
 							out.write("\r\n\r\n".getBytes());
 							out.flush();
