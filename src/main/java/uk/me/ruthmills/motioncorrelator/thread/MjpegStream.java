@@ -19,13 +19,13 @@ import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
+import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MjpegStream implements Runnable {
 
 	private static final int INPUT_BUFFER_SIZE = 16384;
-	private static final long ONE_MILLION = 1000000L;
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
@@ -60,7 +60,7 @@ public class MjpegStream implements Runnable {
 				int prev = 0;
 				int cur = 0;
 				sequence = 0;
-				startTimeMilliseconds = LocalDateTime.now().getNano() / ONE_MILLION;
+				startTimeMilliseconds = TimeUtils.toMilliseconds(LocalDateTime.now());
 
 				// EOF is -1
 				while ((inputStream != null) && ((cur = inputStream.read()) >= 0)) {
@@ -119,18 +119,15 @@ public class MjpegStream implements Runnable {
 		LocalDateTime now = LocalDateTime.now();
 		long expectedTimeElapsedMilliseconds = sequence * 250L;
 		long expectedMillisNow = startTimeMilliseconds + expectedTimeElapsedMilliseconds;
-		long actualMillisNow = (now.getNano() / ONE_MILLION);
+		long actualMillisNow = TimeUtils.toMilliseconds(now);
 
 		// Do not allow it to get more than 2 seconds behind.
 		logger.info(camera.getLocationDescription() + " camera stream is: " + (actualMillisNow - expectedMillisNow)
-				+ " milliseconds behind schedule for sequence: " + sequence + " for " + expectedTimeElapsedMilliseconds
-				+ " expected elapsed milliseconds and " + startTimeMilliseconds + " start time");
+				+ " milliseconds behind schedule");
 		if (actualMillisNow - expectedMillisNow > 2000) {
 			homeAssistantService.notifyCameraStreamBehindSchedule(camera);
 			throw new RuntimeException(camera.getLocationDescription() + " camera stream is: "
-					+ (actualMillisNow - expectedMillisNow) + " milliseconds behind schedule for sequence: " + sequence
-					+ " for " + expectedTimeElapsedMilliseconds + " expected elapsed milliseconds and "
-					+ startTimeMilliseconds + " start time");
+					+ (actualMillisNow - expectedMillisNow) + " milliseconds behind schedule");
 		}
 
 		Image image = new Image(now, currentFrame);
