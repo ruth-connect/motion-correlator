@@ -121,10 +121,8 @@ public class MjpegStream implements Runnable {
 		long expectedMillisNow = startTimeMilliseconds + expectedTimeElapsedMilliseconds;
 		long actualMillisNow = TimeUtils.toMilliseconds(now);
 
-		// Do not allow it to get more than 2 seconds behind.
-		logger.info(camera.getLocationDescription() + " camera stream is: " + (actualMillisNow - expectedMillisNow)
-				+ " milliseconds behind schedule");
-		if (actualMillisNow - expectedMillisNow > 2000) {
+		// Do not allow it to get more than 5 seconds behind.
+		if (actualMillisNow - expectedMillisNow > 5000) {
 			homeAssistantService.notifyCameraStreamBehindSchedule(camera);
 			throw new RuntimeException(camera.getLocationDescription() + " camera stream is: "
 					+ (actualMillisNow - expectedMillisNow) + " milliseconds behind schedule");
