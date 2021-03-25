@@ -13,6 +13,8 @@ public interface HomeAssistantService {
 
 	public void notifyCameraConnectionFailed(Camera camera);
 
+	public void notifyCameraStreamBehindSchedule(Camera camera);
+
 	public void notifyDiskOK();
 
 	public void notifyDiskFailed();

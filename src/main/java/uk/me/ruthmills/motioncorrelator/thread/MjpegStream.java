@@ -37,6 +37,8 @@ public class MjpegStream implements Runnable {
 	private ByteArrayOutputStream outputStream;
 	protected byte[] currentFrame = new byte[0];
 	private Thread streamReader;
+	private LocalDateTime startTime;
+	private int sequence;
 
 	private static final Logger logger = LoggerFactory.getLogger(MjpegStream.class);
 
@@ -56,6 +58,8 @@ public class MjpegStream implements Runnable {
 			try (InputStream inputStream = openConnection()) {
 				int prev = 0;
 				int cur = 0;
+				sequence = 0;
+				startTime = LocalDateTime.now();
 
 				// EOF is -1
 				while ((inputStream != null) && ((cur = inputStream.read()) >= 0)) {
@@ -110,7 +114,19 @@ public class MjpegStream implements Runnable {
 	}
 
 	private void handleNewFrame() {
-		Image image = new Image(LocalDateTime.now(), currentFrame);
+		sequence++;
+		LocalDateTime now = LocalDateTime.now();
+		long expectedMillisNow = (startTime.getNano() / 1000000L) + (sequence * 250);
+		long actualMillisNow = (now.getNano() / 1000000L);
+
+		// Do not allow it to get more than 2 seconds behind.
+		if (actualMillisNow - expectedMillisNow > 2000) {
+			homeAssistantService.notifyCameraStreamBehindSchedule(camera);
+			throw new RuntimeException(
+					"Camera stream is: " + (actualMillisNow - expectedMillisNow) + " milliseconds behind schedule");
+		}
+
+		Image image = new Image(now, currentFrame);
 		frameService.addCurrentFrame(camera.getName(), image);
 	}
 }

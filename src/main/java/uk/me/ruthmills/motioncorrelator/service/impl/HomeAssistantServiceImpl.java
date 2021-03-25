@@ -65,6 +65,12 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 				LocalDateTime.now().toString());
 	}
 
+	public void notifyCameraStreamBehindSchedule(Camera camera) {
+		logger.info(camera.getName() + " stream behind schedule");
+		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_stream_behind_schedule",
+				LocalDateTime.now().toString());
+	}
+
 	@Override
 	public void notifyDiskOK() {
 		logger.info("Disk OK");
