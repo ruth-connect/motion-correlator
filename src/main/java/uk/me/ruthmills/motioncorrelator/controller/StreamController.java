@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
 
 @Controller
@@ -32,18 +33,21 @@ public class StreamController {
 				long oldSequence = 0;
 				while (true) {
 					try {
-						long currentSequence = frameService.getLatestFrame(camera).getSequence();
+						Frame frame = frameService.getLatestFrame(camera);
+						long currentSequence = frame.getSequence();
 						if (currentSequence != oldSequence) {
-							byte[] image = frameService.getLatestFrame(camera).getImage().getBytes();
+							logger.info("About to write image with sequence: " + currentSequence);
+							byte[] image = frame.getImage().getBytes();
 							out.write(("--BoundaryString\r\n" + "Content-type: image/jpeg\r\n" + "Content-Length: "
 									+ image.length + "\r\n\r\n").getBytes());
 							out.write(image);
 							out.write("\r\n\r\n".getBytes());
 							out.flush();
 							logger.info("Wrote image with sequence: " + currentSequence);
+							oldSequence = currentSequence;
+						} else {
+							Thread.sleep(20);
 						}
-						oldSequence = currentSequence;
-						Thread.sleep(20);
 					} catch (InterruptedException ex) {
 					}
 				}
