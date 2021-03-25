@@ -25,6 +25,7 @@ import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 public class MjpegStream implements Runnable {
 
 	private static final int INPUT_BUFFER_SIZE = 16384;
+	private static final long ONE_MILLION = 1000000L;
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
@@ -116,8 +117,8 @@ public class MjpegStream implements Runnable {
 	private void handleNewFrame() {
 		sequence++;
 		LocalDateTime now = LocalDateTime.now();
-		long expectedMillisNow = (long) (startTime.getNano() / 1000000L) + (long) (sequence * 250L);
-		long actualMillisNow = (now.getNano() / 1000000L);
+		long expectedMillisNow = (long) (startTime.getNano() / ONE_MILLION) + (long) (sequence * 250L);
+		long actualMillisNow = (now.getNano() / ONE_MILLION);
 
 		// Do not allow it to get more than 2 seconds behind.
 		logger.info(camera.getLocationDescription() + " camera stream is: " + (actualMillisNow - expectedMillisNow)
