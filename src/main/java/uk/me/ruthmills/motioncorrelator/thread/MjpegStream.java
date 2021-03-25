@@ -96,7 +96,7 @@ public class MjpegStream implements Runnable {
 			}
 
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(250);
 			} catch (InterruptedException e) {
 				logger.error("Interrupted Exception", e);
 			}
