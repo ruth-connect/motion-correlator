@@ -29,9 +29,11 @@ public class StreamController {
 		ResponseBodyEmitter emitter = new ResponseBodyEmitter();
 		executor.execute(() -> {
 			try {
-				byte[] image = frameService.getLatestFrame(camera).getImage().getBytes();
-				emitter.send(image, MediaType.IMAGE_JPEG);
-				emitter.complete();
+				while (true) {
+					byte[] image = frameService.getLatestFrame(camera).getImage().getBytes();
+					emitter.send(image, MediaType.IMAGE_JPEG);
+					Thread.sleep(200);
+				}
 			} catch (Exception ex) {
 				emitter.completeWithError(ex);
 			}
