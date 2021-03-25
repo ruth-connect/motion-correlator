@@ -38,7 +38,7 @@ public class MjpegStream implements Runnable {
 	protected byte[] currentFrame = new byte[0];
 	private Thread streamReader;
 	private LocalDateTime startTime;
-	private int sequence;
+	private long sequence;
 
 	private static final Logger logger = LoggerFactory.getLogger(MjpegStream.class);
 
@@ -116,7 +116,7 @@ public class MjpegStream implements Runnable {
 	private void handleNewFrame() {
 		sequence++;
 		LocalDateTime now = LocalDateTime.now();
-		long expectedMillisNow = (startTime.getNano() / 1000000L) + (sequence * 250);
+		long expectedMillisNow = (long) (startTime.getNano() / 1000000L) + (long) (sequence * 250L);
 		long actualMillisNow = (now.getNano() / 1000000L);
 
 		// Do not allow it to get more than 2 seconds behind.
