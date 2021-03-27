@@ -2,6 +2,8 @@ package uk.me.ruthmills.motioncorrelator.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
 
@@ -12,6 +14,9 @@ public class Detection {
 	private LocalDateTime timestamp;
 	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
+
+	public Detection() {
+	}
 
 	public Detection(String camera, long sequence, LocalDateTime timestamp, VectorMotionDetection vectorMotionDetection,
 			PersonDetections personDetections) {
@@ -42,6 +47,7 @@ public class Detection {
 		return personDetections;
 	}
 
+	@JsonIgnore
 	public double getStrongestPersonDetectionWeight() {
 		return personDetections != null && personDetections.getStrongestPersonDetection() != null
 				? personDetections.getStrongestPersonDetection().getWeight()
