@@ -1,5 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.model.vector;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Vector extends VectorData {
 
 	private String region;
@@ -66,18 +68,22 @@ public class Vector extends VectorData {
 		return count;
 	}
 
+	@JsonIgnore
 	public int getStartX() {
 		return convertX(x, y);
 	}
 
+	@JsonIgnore
 	public int getStartY() {
 		return convertY(x, y);
 	}
 
+	@JsonIgnore
 	public int getEndX() {
 		return convertX(x + dx, y + dy);
 	}
 
+	@JsonIgnore
 	public int getEndY() {
 		return convertY(x + dx, y + dy);
 	}
