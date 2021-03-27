@@ -14,7 +14,7 @@
 		<div class="grid-x grid-padding-x">
 			<div class="large-12 cell">
 				<div class="grid-x grid-padding-x">
-					<div class="large-3 medium-3 small-3 cell" th:each="camera: ${cameras}">
+					<div class="large-3 medium-6 small-12 cell" th:each="camera: ${cameras}">
 						<div class="callout">
 							<h4 th:text="${camera.locationDescription}"></h4>
 							<a th:href="@{/camera/{name}(name=${camera.name})}">
