@@ -78,7 +78,7 @@ public class MjpegStream implements Runnable {
 							// the image is now available - read it
 							handleNewFrame();
 							if (!camera.isConnected()) {
-								logger.info("Connected to: " + camera.getUrl() + " successfully!");
+								logger.info("Connected to: " + camera.getStreamUrl() + " successfully!");
 								homeAssistantService.notifyCameraConnected(camera);
 								camera.setConnected(true);
 							}
@@ -105,8 +105,8 @@ public class MjpegStream implements Runnable {
 
 	private BufferedInputStream openConnection() throws IOException {
 		BufferedInputStream bufferedInputStream = null;
-		logger.info("Opening connection to: " + camera.getUrl());
-		URL url = new URL(camera.getUrl());
+		logger.info("Opening connection to: " + camera.getStreamUrl());
+		URL url = new URL(camera.getStreamUrl());
 		conn = url.openConnection();
 		conn.setReadTimeout(5000); // 5 seconds
 		conn.connect();

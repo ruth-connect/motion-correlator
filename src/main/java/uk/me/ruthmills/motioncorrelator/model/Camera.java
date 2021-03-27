@@ -3,7 +3,8 @@ package uk.me.ruthmills.motioncorrelator.model;
 public class Camera {
 
 	private String name;
-	private String url;
+	private String streamUrl;
+	private String adminUrl;
 	private String location;
 	private String locationDescription;
 	private boolean connected;
@@ -16,12 +17,20 @@ public class Camera {
 		this.name = name;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getStreamUrl() {
+		return streamUrl;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setStreamUrl(String url) {
+		this.streamUrl = url;
+	}
+
+	public String getAdminUrl() {
+		return adminUrl;
+	}
+
+	public void setAdminUrl(String adminUrl) {
+		this.adminUrl = adminUrl;
 	}
 
 	public String getLocation() {
@@ -51,7 +60,7 @@ public class Camera {
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("name: " + name);
-		stringBuilder.append(", url: " + url);
+		stringBuilder.append(", url: " + streamUrl);
 		stringBuilder.append(", location: " + location);
 		stringBuilder.append(", locationDescription: " + locationDescription);
 		stringBuilder.append(", connected: " + connected + "\n");
