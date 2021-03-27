@@ -17,7 +17,7 @@
 					<div class="large-6 medium-6 small-12 cell">
 						<div class="callout">
 							<h4>Camera</h4>
-							<img id="camera" th:src="@{/snapshot/{name}(name=${camera.name})}"/>
+							<img id="camera" th:src="@{/snapshot/{name}(name=${camera.name})}" style="width: 100%;"/>
 							<script th:inline="javascript">
 							/*<![CDATA[*/
 								setInterval(function() {
@@ -30,7 +30,7 @@
 					<div class="large-6 medium-6 small-12 cell">
 						<div class="callout">
 							<h4>Average Image</h4>
-							<img id="average" th:src="@{/averageFrame/{name}(name=${camera.name})}"/>
+							<img id="average" th:src="@{/averageFrame/{name}(name=${camera.name})}" style="width: 100%;"/>
 							<script th:inline="javascript">
 							/*<![CDATA[*/
 								setInterval(function() {
