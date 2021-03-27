@@ -55,6 +55,20 @@
 		<div class="grid-x grid-padding-x">
 			<div class="large-12 cell">
 				<h3>Detections</h3>
+				<table>
+					<thead>
+						<tr>
+							<th>Time</th>
+							<th>Weight</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="detection: ${detections}">
+							<td th:text="${detection.timestamp}"></td>
+							<td th:text="${detection.strongestPersonDetectionWeight}"></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>		
 	</div>
