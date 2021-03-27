@@ -11,6 +11,38 @@
 				<h1 th:text="${camera.locationDescription}"></h1>
 			</div>
 		</div>
+		<div class="grid-x grid-padding-x">
+			<div class="large-12 cell">
+				<div class="grid-x grid-padding-x">
+					<div class="large-6 medium-6 small-12 cell">
+						<div class="callout">
+							<h4>Camera</h4>
+							<img th:id="${camera.name}" th:src="@{/snapshot/{name}(name=${camera.name})}"/>
+							<script th:inline="javascript">
+							/*<![CDATA[*/
+								setInterval(function() {
+    								$([['#' + ${camera.name}]]).attr("src", [[@{/snapshot/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
+								}, 250);
+							/*]]>*/
+							</script>
+						</div>
+					</div>
+					<div class="large-6 medium-6 small-12 cell">
+						<div class="callout">
+							<h4>Average Image</h4>
+							<img th:id="${camera.name}" th:src="@{/averageFrame/{name}(name=${camera.name})}"/>
+							<script th:inline="javascript">
+							/*<![CDATA[*/
+								setInterval(function() {
+    								$([['#' + ${camera.name}]]).attr("src", [[@{/averageFrame/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
+								}, 250);
+							/*]]>*/
+							</script>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<script src="/js/vendor.js"></script>
 	<script src="/js/foundation.js"></script>
