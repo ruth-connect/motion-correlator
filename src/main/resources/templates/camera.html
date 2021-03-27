@@ -59,12 +59,24 @@
 					<thead>
 						<tr>
 							<th>Time</th>
+							<th>Magnitude</th>
+							<th>Count</th>
 							<th>Weight</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="detection: ${detections}">
 							<td th:text="${detection.timestamp}"></td>
+							<td>
+								<th:block th:if="${detection.vectorMotionDetection != null}">
+									<span th:text="${detection.vectorMotionDetection.frameVector.magnitude}"></span>
+								</th:block>
+							</td>
+							<td>
+								<th:block th:if="${detection.vectorMotionDetection != null}">
+									<span th:text="${detection.vectorMotionDetection.frameVector.count}"></span>
+								</th:block>
+							</td>
 							<td th:text="${detection.strongestPersonDetectionWeightString}"></td>
 						</tr>
 					</tbody>
