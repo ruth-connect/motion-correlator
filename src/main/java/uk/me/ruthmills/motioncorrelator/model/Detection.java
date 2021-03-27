@@ -51,7 +51,7 @@ public class Detection {
 	public double getStrongestPersonDetectionWeight() {
 		return personDetections != null && personDetections.getStrongestPersonDetection() != null
 				? personDetections.getStrongestPersonDetection().getWeight()
-				: null;
+				: 0d;
 	}
 
 	public String toString() {
