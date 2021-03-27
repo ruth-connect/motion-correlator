@@ -19,9 +19,11 @@
 							<h4 th:text="${camera.locationDescription}"></h4>
 							<img th:id="${camera.name}" th:src="@{/snapshot/{name}(name=${camera.name})}"/>
 							<script th:inline="javascript">
+							/*<![CDATA[*/
 								setInterval(function() {
     								$([['#' + ${camera.name}]]).attr("src", [[@{/snapshot/{name}(name=${camera.name})}]].replace('\', '') + new Date().getTime());
 								}, 1000);
+							/*]]>*/
 							</script>
 						</div>
 					</div>
