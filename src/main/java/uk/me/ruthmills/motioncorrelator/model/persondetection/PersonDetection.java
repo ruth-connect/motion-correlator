@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.opencv.core.Rect;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class PersonDetection {
 
 	private Rect location;
@@ -30,38 +32,47 @@ public class PersonDetection {
 		return weights;
 	}
 
+	@JsonIgnore
 	public int getCentreX() {
 		return (int) Math.round((convert(location.tl().x) + convert(location.br().x)) / 2d);
 	}
 
+	@JsonIgnore
 	public int getCentreY() {
 		return (int) Math.round((convert(location.tl().y) + convert(location.br().y)) / 2d);
 	}
 
+	@JsonIgnore
 	public int getLeft() {
 		return (int) Math.round(convert(location.tl().x));
 	}
 
+	@JsonIgnore
 	public int getTop() {
 		return (int) Math.round(convert(location.tl().y));
 	}
 
+	@JsonIgnore
 	public int getRight() {
 		return (int) Math.round(convert(location.br().x));
 	}
 
+	@JsonIgnore
 	public int getBottom() {
 		return (int) Math.round(convert(location.br().y));
 	}
 
+	@JsonIgnore
 	public int getWidth() {
 		return (int) Math.round(convert(location.width));
 	}
 
+	@JsonIgnore
 	public int getHeight() {
 		return (int) Math.round(convert(location.height));
 	}
 
+	@JsonIgnore
 	public double getWeight() {
 		return weights.get(0);
 	}
