@@ -1,6 +1,6 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-	<title>Heimdallr</title>
+	<title>CCTV Cameras</title>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<link href="css/foundation.css" rel="stylesheet" type="text/css"/>
@@ -8,7 +8,16 @@
 	<div class="grid-container">
 		<div class="grid-x grid-padding-x">
 			<div class="large-12 cell">
-				<h1>Heimdallr</h1>
+				<h1>CCTV Cameras</h1>
+			</div>
+		</div>
+		<div class="grid-x grid-padding-x">
+			<div class="large-12 cell">
+				<div class="grid-x grid-padding-x">
+					<div class="large-4 medium-4 small-4 cell" th:each="camera: ${cameras}">
+						<h3 th:text="${camera.locationDescription}"></h3>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
