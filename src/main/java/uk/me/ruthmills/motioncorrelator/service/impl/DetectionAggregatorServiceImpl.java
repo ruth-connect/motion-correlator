@@ -94,7 +94,11 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 								motionCorrelation.getVectorMotionDetection(), motionCorrelation.getPersonDetections());
 
 						// Write the detection to a JSON file.
-						detectionFileService.writeDetection(detection);
+						try {
+							detectionFileService.writeDetection(detection);
+						} catch (Exception ex) {
+							logger.error("Failed writing detection to file", ex);
+						}
 
 						// Add the detection to the list.
 						Detections detections = getDetectionsForCamera(detection.getCamera());
