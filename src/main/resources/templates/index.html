@@ -18,6 +18,11 @@
 						<div class="callout">
 							<h4 th:text="${camera.locationDescription}"></h4>
 							<img th:src="@{/snapshot/{name}(name=${camera.name})}"/>
+							<script>
+								setInterval(function(){
+    								$("#myimg").attr("src", "<th:text="@{/snapshot/{name}(name=${camera.name})}"/>" + new Date().getTime());
+								},1000);
+							</script>
 						</div>
 					</div>
 				</div>
