@@ -58,6 +58,7 @@
 				<table>
 					<thead>
 						<tr>
+							<th>Date</th>
 							<th>Time</th>
 							<th>Magnitude</th>
 							<th>Count</th>
@@ -67,7 +68,8 @@
 					</thead>
 					<tbody>
 						<tr th:each="detection: ${detections}">
-							<td th:text="${detection.timestamp}"></td>
+							<td th:text="${detection.date}"></td>
+							<td th:text="${detection.time}"></td>
 							<td>
 								<th:block th:if="${detection.vectorMotionDetection != null}">
 									<span th:text="${detection.vectorMotionDetection.frameVector.magnitude}"></span>

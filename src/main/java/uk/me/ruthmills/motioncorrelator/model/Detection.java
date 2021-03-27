@@ -3,6 +3,7 @@ package uk.me.ruthmills.motioncorrelator.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -10,6 +11,9 @@ import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
 
 public class Detection {
+
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
 	private String camera;
 	private long sequence;
@@ -39,6 +43,16 @@ public class Detection {
 
 	public LocalDateTime getTimestamp() {
 		return timestamp;
+	}
+
+	@JsonIgnore
+	public String getDate() {
+		return timestamp.format(DATE_FORMAT);
+	}
+
+	@JsonIgnore
+	public String getTime() {
+		return timestamp.format(TIME_FORMAT);
 	}
 
 	public VectorMotionDetection getVectorMotionDetection() {
