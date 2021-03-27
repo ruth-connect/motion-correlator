@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,9 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 public class DetectionFileServiceImpl implements DetectionFileService {
 
 	private static final String DETECTION_PATH_PREFIX = "/mnt/media/detections/";
+	private static final DateTimeFormatter YEAR_FORMAT = DateTimeFormatter.ofPattern("yyyy");
+	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("MM");
+	private static final DateTimeFormatter DAY_FORMAT = DateTimeFormatter.ofPattern("dd");
 
 	@Override
 	public void writeDetection(Detection detection) throws IOException, JsonMappingException, JsonGenerationException {
@@ -32,6 +36,15 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 				+ detection.getTimestamp() + "-" + detection.getSequence() + ".json";
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.writeValue(new File(detectionFilename), detection);
+	}
+
+	@Override
+	public List<Detection> readDetectionsForToday(String camera) throws IOException {
+		LocalDateTime now = LocalDateTime.now();
+		String year = now.format(YEAR_FORMAT);
+		String month = now.format(MONTH_FORMAT);
+		String day = now.format(DAY_FORMAT);
+		return readDetections(camera, year, month, day);
 	}
 
 	@Override

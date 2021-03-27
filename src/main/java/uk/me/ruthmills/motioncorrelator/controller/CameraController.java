@@ -13,13 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
+import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
 
 @Controller
 @RequestMapping("/")
 public class CameraController {
 
 	@Autowired
-	CameraService cameraService;
+	private CameraService cameraService;
+
+	@Autowired
+	private DetectionFileService detectionFileService;
 
 	@GetMapping(path = "/")
 	public String showHomePage(Model model) throws IOException {
@@ -31,6 +35,7 @@ public class CameraController {
 	@GetMapping(path = "/camera/{camera}")
 	public String showCameraPage(Model model, @PathVariable String camera) throws IOException {
 		model.addAttribute("camera", cameraService.getCamera(camera));
+		model.addAttribute("detections", detectionFileService.readDetectionsForToday(camera));
 		return "camera";
 	}
 }
