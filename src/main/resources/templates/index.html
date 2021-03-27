@@ -22,7 +22,7 @@
 							/*<![CDATA[*/
 								setInterval(function() {
     								$([['#' + ${camera.name}]]).attr("src", [[@{/snapshot/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
-								}, 1000);
+								}, 500);
 							/*]]>*/
 							</script>
 						</div>
