@@ -28,30 +28,26 @@
 						</script>
 					</div>
 					<div class="large-4 medium-6 small-12 cell">
-						<div class="callout">
-							<h4>Average</h4>
-							<img id="average" th:src="@{/averageFrame/{name}(name=${camera.name})}" style="width: 100%;"/>
-							<script th:inline="javascript">
-							/*<![CDATA[*/
-								setInterval(function() {
-    								$("#average").attr("src", [[@{/averageFrame/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
-								}, 250);
-							/*]]>*/
-							</script>
-						</div>
+						<h4>Average</h4>
+						<img id="average" th:src="@{/averageFrame/{name}(name=${camera.name})}" style="width: 100%;"/>
+						<script th:inline="javascript">
+						/*<![CDATA[*/
+							setInterval(function() {
+								$("#average").attr("src", [[@{/averageFrame/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
+							}, 250);
+						/*]]>*/
+						</script>
 					</div>
 					<div class="large-4 medium-6 small-12 cell">
-						<div class="callout">
-							<h4>Delta</h4>
-							<img id="delta" th:src="@{/frameDelta/{name}(name=${camera.name})}" style="width: 100%;"/>
-							<script th:inline="javascript">
-							/*<![CDATA[*/
-								setInterval(function() {
-    								$("#delta").attr("src", [[@{/frameDelta/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
-								}, 250);
-							/*]]>*/
-							</script>
-						</div>
+						<h4>Delta</h4>
+						<img id="delta" th:src="@{/frameDelta/{name}(name=${camera.name})}" style="width: 100%;"/>
+						<script th:inline="javascript">
+						/*<![CDATA[*/
+							setInterval(function() {
+								$("#delta").attr("src", [[@{/frameDelta/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
+							}, 250);
+						/*]]>*/
+						</script>
 					</div>
 				</div>
 			</div>
