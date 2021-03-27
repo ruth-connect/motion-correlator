@@ -17,14 +17,16 @@
 					<div class="large-4 medium-4 small-4 cell" th:each="camera: ${cameras}">
 						<div class="callout">
 							<h4 th:text="${camera.locationDescription}"></h4>
-							<img th:id="${camera.name}" th:src="@{/snapshot/{name}(name=${camera.name})}"/>
-							<script th:inline="javascript">
-							/*<![CDATA[*/
-								setInterval(function() {
-    								$([['#' + ${camera.name}]]).attr("src", [[@{/snapshot/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
-								}, 500);
-							/*]]>*/
-							</script>
+							<a th:href="@{/camera/{name}(name=${camera.name})}">
+								<img th:id="${camera.name}" th:src="@{/snapshot/{name}(name=${camera.name})}"/>
+								<script th:inline="javascript">
+								/*<![CDATA[*/
+									setInterval(function() {
+	    								$([['#' + ${camera.name}]]).attr("src", [[@{/snapshot/{name}(name=${camera.name})}]].replace('\\', '') + "?timestamp=" + new Date().getTime());
+									}, 500);
+								/*]]>*/
+								</script>
+							</a>
 						</div>
 					</div>
 				</div>
