@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
@@ -35,6 +36,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String detectionFilename = getDetectionPath(detection.getCamera(), detection.getTimestamp()) + "/"
 				+ detection.getTimestamp() + "-" + detection.getSequence() + ".json";
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
 		mapper.writeValue(new File(detectionFilename), detection);
 	}
 
@@ -61,12 +63,13 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private List<Detection> readDetections(String detectionPath) throws IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
 		List<Detection> detections = null;
 		try (Stream<Path> stream = Files.walk(Paths.get(detectionPath))) {
 			detections = stream.filter(Files::isReadable).filter(p -> !Files.isDirectory(p)).map(p -> {
 				try {
-					return objectMapper.readValue(p.toFile(), Detection.class);
+					return mapper.readValue(p.toFile(), Detection.class);
 				} catch (Exception ex) {
 					throw new RuntimeException(ex);
 				}
