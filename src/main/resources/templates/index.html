@@ -17,11 +17,13 @@
 					<div class="large-4 medium-4 small-4 cell" th:each="camera: ${cameras}">
 						<div class="callout">
 							<h4 th:text="${camera.locationDescription}"></h4>
-							<img th:src="@{/snapshot/{name}(name=${camera.name})}"/>
-							<script>
-								setInterval(function(){
-    								$("#myimg").attr("src", "<th:text="@{/snapshot/{name}(name=${camera.name})}"/>" + new Date().getTime());
-								},1000);
+							<img th:id="${camera.name}" th:src="@{/snapshot/{name}(name=${camera.name})}"/>
+							<script th:inline="javascript">
+							/*<![CDATA[*/
+								setInterval(function() {
+    								$("/*[[${camera.name}]]*/").attr("src", "/*[[@{/snapshot/{name}(name=${camera.name})}]]*/" + new Date().getTime());
+								}, 1000);
+							/*]]>*/
 							</script>
 						</div>
 					</div>
