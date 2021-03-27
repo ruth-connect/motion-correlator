@@ -7,11 +7,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -30,6 +33,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	private static final DateTimeFormatter YEAR_FORMAT = DateTimeFormatter.ofPattern("yyyy");
 	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("MM");
 	private static final DateTimeFormatter DAY_FORMAT = DateTimeFormatter.ofPattern("dd");
+
+	private static final Logger logger = LoggerFactory.getLogger(DetectionFileServiceImpl.class);
 
 	@Override
 	public void writeDetection(Detection detection) throws IOException, JsonMappingException, JsonGenerationException {
@@ -65,7 +70,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	private List<Detection> readDetections(String detectionPath) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		List<Detection> detections = null;
+		List<Detection> detections = new ArrayList<>();
 		try (Stream<Path> stream = Files.walk(Paths.get(detectionPath))) {
 			detections = stream.filter(Files::isReadable).filter(p -> !Files.isDirectory(p)).map(p -> {
 				try {
@@ -74,6 +79,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 					throw new RuntimeException(ex);
 				}
 			}).sorted(Comparator.comparing(Detection::getTimestamp).reversed()).collect(Collectors.toList());
+		} catch (Exception ex) {
+			logger.error("Failed to read detections", ex);
 		}
 		return detections;
 	}
