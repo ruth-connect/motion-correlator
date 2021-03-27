@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,7 +57,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 				} catch (Exception ex) {
 					throw new RuntimeException(ex);
 				}
-			}).collect(Collectors.toList());
+			}).sorted(Comparator.comparing(Detection::getTimestamp).reversed()).collect(Collectors.toList());
 		}
 		return detections;
 	}
