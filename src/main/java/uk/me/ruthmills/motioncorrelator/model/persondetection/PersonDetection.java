@@ -4,94 +4,124 @@ import java.util.List;
 
 import org.opencv.core.Rect;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class PersonDetection {
 
-	private Rect location;
-	private List<Double> weights;
-	private int imageWidthPixels;
+	private int centreX;
+	private int centreY;
+	private int left;
+	private int top;
+	private int right;
+	private int bottom;
+	private int width;
+	private int height;
 
-	public PersonDetection(int imageWidthPixels) {
-		this.imageWidthPixels = imageWidthPixels;
+	private double weight;
+
+	public PersonDetection() {
 	}
 
-	public void setLocation(Rect object) {
-		this.location = object;
+	public PersonDetection(int imageWidthPixels, Rect location, List<Double> weights) {
+		centreX = (int) Math
+				.round((convert(location.tl().x, imageWidthPixels) + convert(location.br().x, imageWidthPixels)) / 2d);
+		centreY = (int) Math
+				.round((convert(location.tl().y, imageWidthPixels) + convert(location.br().y, imageWidthPixels)) / 2d);
+		left = (int) Math.round(convert(location.tl().x, imageWidthPixels));
+		top = (int) Math.round(convert(location.tl().y, imageWidthPixels));
+		right = (int) Math.round(convert(location.br().x, imageWidthPixels));
+		bottom = (int) Math.round(convert(location.br().y, imageWidthPixels));
+		width = (int) Math.round(convert(location.width, imageWidthPixels));
+		height = (int) Math.round(convert(location.height, imageWidthPixels));
+
+		weight = weights.get(0);
 	}
 
-	public Rect getObject() {
-		return location;
-	}
-
-	public void setWeights(List<Double> weights) {
-		this.weights = weights;
-	}
-
-	public List<Double> getWeights() {
-		return weights;
-	}
-
-	@JsonIgnore
 	public int getCentreX() {
-		return (int) Math.round((convert(location.tl().x) + convert(location.br().x)) / 2d);
+		return centreX;
 	}
 
-	@JsonIgnore
+	public void setCentreX(int centreX) {
+		this.centreX = centreX;
+	}
+
 	public int getCentreY() {
-		return (int) Math.round((convert(location.tl().y) + convert(location.br().y)) / 2d);
+		return centreY;
 	}
 
-	@JsonIgnore
+	public void setCentreY(int centreY) {
+		this.centreY = centreY;
+	}
+
 	public int getLeft() {
-		return (int) Math.round(convert(location.tl().x));
+		return left;
 	}
 
-	@JsonIgnore
+	public void setLeft(int left) {
+		this.left = left;
+	}
+
 	public int getTop() {
-		return (int) Math.round(convert(location.tl().y));
+		return top;
 	}
 
-	@JsonIgnore
+	public void setTop(int top) {
+		this.top = top;
+	}
+
 	public int getRight() {
-		return (int) Math.round(convert(location.br().x));
+		return right;
 	}
 
-	@JsonIgnore
+	public void setRight(int right) {
+		this.right = right;
+	}
+
 	public int getBottom() {
-		return (int) Math.round(convert(location.br().y));
+		return bottom;
 	}
 
-	@JsonIgnore
+	public void setBottom(int bottom) {
+		this.bottom = bottom;
+	}
+
 	public int getWidth() {
-		return (int) Math.round(convert(location.width));
+		return width;
 	}
 
-	@JsonIgnore
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
 	public int getHeight() {
-		return (int) Math.round(convert(location.height));
+		return height;
 	}
 
-	@JsonIgnore
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
 	public double getWeight() {
-		return weights.get(0);
+		return weight;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("centre x: " + getCentreX());
-		stringBuilder.append(", centre y: " + getCentreY());
-		stringBuilder.append(", left: " + getLeft());
-		stringBuilder.append(", top: " + getTop());
-		stringBuilder.append(", right: " + getRight());
-		stringBuilder.append(", bottom: " + getBottom());
-		stringBuilder.append(", width: " + getWidth());
-		stringBuilder.append(", height: " + getHeight());
-		stringBuilder.append(", weight: " + getWeight() + "\n");
+		stringBuilder.append("centre x: " + centreX);
+		stringBuilder.append(", centre y: " + centreY);
+		stringBuilder.append(", left: " + left);
+		stringBuilder.append(", top: " + top);
+		stringBuilder.append(", right: " + right);
+		stringBuilder.append(", bottom: " + bottom);
+		stringBuilder.append(", width: " + width);
+		stringBuilder.append(", height: " + height);
+		stringBuilder.append(", weight: " + weight + "\n");
 		return stringBuilder.toString();
 	}
 
-	private double convert(double value) {
+	private double convert(double value, int imageWidthPixels) {
 		return value * 640d / (double) imageWidthPixels;
 	}
 }

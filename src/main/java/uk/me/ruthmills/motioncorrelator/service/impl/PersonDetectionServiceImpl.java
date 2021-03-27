@@ -99,14 +99,12 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		List<Rect> locations = foundLocations.toList();
 		List<PersonDetection> personDetections = new ArrayList<>();
 		for (int detectionIndex = 0; detectionIndex < locations.size(); detectionIndex++) {
-			PersonDetection personDetection = new PersonDetection(personDetectionParameters.getImageWidthPixels());
-			personDetection.setLocation(locations.get(detectionIndex));
 			List<Double> weights = new ArrayList<>();
 			for (int weightIndex = 0; weightIndex < foundWeights.cols(); weightIndex++) {
 				weights.add(foundWeights.get(detectionIndex, weightIndex)[0]);
 			}
-			personDetection.setWeights(weights);
-			personDetections.add(personDetection);
+			personDetections.add(new PersonDetection(personDetectionParameters.getImageWidthPixels(),
+					locations.get(detectionIndex), weights));
 		}
 		personDetections.sort(Comparator.comparing(PersonDetection::getWeight).reversed());
 		foundLocations.release();
