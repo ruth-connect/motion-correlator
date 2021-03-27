@@ -34,9 +34,19 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	@Override
+	public List<Detection> readDetections(String camera, String year, String month, String day) throws IOException {
+		String detectionPath = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day;
+		return readDetections(detectionPath);
+	}
+
+	@Override
 	public List<Detection> readDetections(String camera, String year, String month, String day, String hour)
 			throws IOException {
 		String detectionPath = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
+		return readDetections(detectionPath);
+	}
+
+	private List<Detection> readDetections(String detectionPath) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Detection> detections = null;
 		try (Stream<Path> stream = Files.walk(Paths.get(detectionPath))) {

@@ -12,6 +12,8 @@ public interface DetectionFileService {
 
 	public void writeDetection(Detection detection) throws IOException, JsonMappingException, JsonGenerationException;
 
+	public List<Detection> readDetections(String camera, String year, String month, String day) throws IOException;
+
 	public List<Detection> readDetections(String camera, String year, String month, String day, String hour)
 			throws IOException;
 }
