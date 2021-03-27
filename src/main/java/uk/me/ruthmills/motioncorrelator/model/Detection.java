@@ -1,5 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -52,6 +54,16 @@ public class Detection {
 		return personDetections != null && personDetections.getStrongestPersonDetection() != null
 				? personDetections.getStrongestPersonDetection().getWeight()
 				: 0d;
+	}
+
+	@JsonIgnore
+	public String getStrongestPersonDetectionWeightString() {
+		double strongestPersonDetectionWeight = getStrongestPersonDetectionWeight();
+		if (strongestPersonDetectionWeight == 0d) {
+			return "";
+		}
+		BigDecimal weight = new BigDecimal(strongestPersonDetectionWeight);
+		return weight.setScale(3, RoundingMode.HALF_UP).toString();
 	}
 
 	public String toString() {
