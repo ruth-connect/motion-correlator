@@ -8,6 +8,9 @@ public class VectorMotionDetection {
 	private Vector frameVector;
 	private boolean interpolated;
 
+	public VectorMotionDetection() {
+	}
+
 	public VectorMotionDetection(LocalDateTime timestamp, Vector frameVector) {
 		this.timestamp = timestamp;
 		this.frameVector = frameVector;
