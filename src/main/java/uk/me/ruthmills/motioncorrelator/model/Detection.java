@@ -13,7 +13,7 @@ import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
 public class Detection {
 
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS z");
+	private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS zzz");
 
 	private String camera;
 	private long sequence;
