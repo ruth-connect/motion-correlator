@@ -19,8 +19,9 @@ import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.PersonProbability;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
+import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
-import uk.me.ruthmills.motioncorrelator.service.ImageFileWritingService;
+import uk.me.ruthmills.motioncorrelator.service.ImageFileService;
 import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 
 @Service
@@ -30,10 +31,13 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 	private CameraService cameraService;
 
 	@Autowired
+	private DetectionFileService detectionFileService;
+
+	@Autowired
 	private ImageStampingService imageStampingService;
 
 	@Autowired
-	private ImageFileWritingService imageFileWritingService;
+	private ImageFileService imageFileService;
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
@@ -89,6 +93,9 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 								motionCorrelation.getFrame().getSequence(), motionCorrelation.getFrame().getTimestamp(),
 								motionCorrelation.getVectorMotionDetection(), motionCorrelation.getPersonDetections());
 
+						// Write the detection to a JSON file.
+						detectionFileService.writeDetection(detection);
+
 						// Add the detection to the list.
 						Detections detections = getDetectionsForCamera(detection.getCamera());
 						detections.addDetection(detection);
@@ -114,14 +121,12 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 		private void writeImages(MotionCorrelation motionCorrelation) {
 			try {
-				imageFileWritingService.writeImage(motionCorrelation.getCamera(),
-						motionCorrelation.getFrame().getImage());
-				imageFileWritingService.writeImage(motionCorrelation.getCamera(),
+				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
+				imageFileService.writeImage(motionCorrelation.getCamera(),
 						imageStampingService.stampImage(motionCorrelation), motionCorrelation.getPersonDetections());
-				imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getAverageFrame(),
+				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getAverageFrame(),
 						"-average");
-				imageFileWritingService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(),
-						"-delta");
+				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta");
 
 				if (!diskOK) {
 					homeAssistantService.notifyDiskOK();

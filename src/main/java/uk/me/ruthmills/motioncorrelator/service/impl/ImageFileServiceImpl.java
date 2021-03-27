@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
-import uk.me.ruthmills.motioncorrelator.service.ImageFileWritingService;
+import uk.me.ruthmills.motioncorrelator.service.ImageFileService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 @Service
-public class ImageFileWritingServiceImpl implements ImageFileWritingService {
+public class ImageFileServiceImpl implements ImageFileService {
 
 	private static final String IMAGE_PATH_PREFIX = "/mnt/media/images/";
 

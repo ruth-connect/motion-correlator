@@ -5,7 +5,7 @@ import java.io.IOException;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 
-public interface ImageFileWritingService {
+public interface ImageFileService {
 
 	public void writeImage(String camera, Image image) throws IOException;
 
