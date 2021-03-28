@@ -74,7 +74,7 @@ function displayNewDetections(detections) {
 				"</tr>";
 			
 			$("#new-detections-tbody").append(html).foundation();
-			$("#tr_" + id).find("img").lazyload();
+			$("#tr_" + id).find("img.lazyload").lazyload();
 		}
 	}
 }
