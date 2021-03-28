@@ -36,6 +36,8 @@ function displayNewDetections(detections) {
 				"</tr>";
 			
 			$("#new-detections-tbody").append(html);
+			$("#td_" + id).foundation();
+			$("#td_" + id).lazyload();
 		}
 	}
 }
