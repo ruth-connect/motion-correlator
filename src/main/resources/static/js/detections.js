@@ -1,4 +1,4 @@
-function getDetections() {
+function getNewDetections() {
 	$.ajax({
 		url: "/newDetections/" + camera,
 		context: document.body
@@ -10,5 +10,5 @@ function getDetections() {
 $(document).ready(function() {
 	$(document).foundation();
 	lazyload();
-	getDetections();
+	getNewDetections();
 });
