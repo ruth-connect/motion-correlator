@@ -13,7 +13,7 @@ function getDate(detection) {
 
 function getTime(detection) {
 	return detection.timestamp.substring(11, 20) +
-		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.substring.length));
+		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length));
 }
 
 function getImagePath(detection) {
@@ -25,15 +25,15 @@ function getStampedImagePath(detection) {
 	var detections = detection.personDetections && detection.personDetections.personDetections.length > 0 ?
 		"-" + detection.personDetections.personDetections.length +
 		"-" + detection.personDetections.personDetections[0].weight.toFixed(3) : "";
-	return getImagePath(detection) + formatTimestamp(timestamp) + "-" + sequence + "-stamped" + detections + ".jpg";
+	return getImagePath(detection) + formatTimestamp(detection.timestamp) + "-" + detection.sequence + "-stamped" + detections + ".jpg";
 }
 
 function getAverageImagePath(detection) {
-	return getImagePath(detection) + formatTimestamp(timestamp) + "-" + sequence + "-average.jpg";
+	return getImagePath(detection) + formatTimestamp(detection.timestamp) + "-" + detection.sequence + "-average.jpg";
 }
 
 function getDeltaImagePath(detection) {
-	return getImagePath(detection) + formatTimestamp(timestamp) + "-" + sequence + "-delta.jpg";
+	return getImagePath(detection) + formatTimestamp(detection.timestamp) + "-" + detection.sequence + "-delta.jpg";
 }
 
 function displayNewDetections(detections) {
