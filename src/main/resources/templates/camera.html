@@ -53,81 +53,85 @@
 			</div>
 		</div>
 		<div class="grid-x grid-padding-x">
-			<ul class="tabs" data-tabs id="detection-tabs">
-				<li class="tabs-title is-active"><a href="#new-detections" aria-selected="true">New Detections</a></li>
-				<li class="tabs-title"><a data-tabs-target="previous-detections" href="#panel2">Previous Detections</a></li>
-			</ul>
-			<div class="tabs-content" data-tabs-content="detection-tabs">
-				<div class="tabs-panel is-active" id="new-detections">
-					<div class="large-12 cell">
-						<h3>New Detections</h3>
+			<div class="large-12 cell">
+				<ul class="tabs" data-tabs id="detection-tabs">
+					<li class="tabs-title is-active"><a href="#new-detections" aria-selected="true">New Detections</a></li>
+					<li class="tabs-title"><a data-tabs-target="previous-detections" href="#panel2">Previous Detections</a></li>
+				</ul>
+			</div>
+			<div class="large-12 cell">
+				<div class="tabs-content" data-tabs-content="detection-tabs">
+					<div class="tabs-panel is-active" id="new-detections">
+						<div class="large-12 cell">
+							<h3>New Detections</h3>
+						</div>
 					</div>
-				</div>
-				<div class="tabs-panel" id="previous-detections">
-					<div class="large-12 cell">
-						<h3>Previous Detections</h3>
-						<table>
-							<thead>
-								<tr>
-									<th></th>
-									<th>Date</th>
-									<th>Time</th>
-									<th>Magnitude</th>
-									<th>Count</th>
-									<th>Interpolated</th>
-									<th>Weight</th>
-									<th>Speed</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="detection: ${detections}">
-									<td style="margin-bottom: -3px;">
-										<button class="button" type="button" th:attr="data-toggle=${detection.timestamp}" style="margin-bottom: 0px;">View</button>
-										<div class="dropdown-pane" th:id="${detection.timestamp}" data-dropdown data-hover="true" data-hover-pane="true" data-position="right" data-alignment="top" style="width: 85%;">
-											<div class="large-12 cell">
-												<div class="grid-x grid-padding-x">
-													<div class="large-4 medium-6 small-12 cell">
-														<h4>Camera</h4>
-														<img class="lazyload" th:attr="data-src=@{/images/{stampedImagePath}(stampedImagePath=${detection.stampedImagePath})}" style="width: 100%;"/>
-													</div>
-													<div class="large-4 medium-6 small-12 cell">
-														<h4>Average</h4>
-														<img class="lazyload" th:attr="data-src=@{/images/{averageImagePath}(averageImagePath=${detection.averageImagePath})}" style="width: 100%;"/>
-													</div>
-													<div class="large-4 medium-6 small-12 cell">
-														<h4>Delta</h4>
-														<img class="lazyload" th:attr="data-src=@{/images/{deltaImagePath}(deltaImagePath=${detection.deltaImagePath})}" style="width: 100%;"/>
+					<div class="tabs-panel" id="previous-detections">
+						<div class="large-12 cell">
+							<h3>Previous Detections</h3>
+							<table>
+								<thead>
+									<tr>
+										<th></th>
+										<th>Date</th>
+										<th>Time</th>
+										<th>Magnitude</th>
+										<th>Count</th>
+										<th>Interpolated</th>
+										<th>Weight</th>
+										<th>Speed</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="detection: ${detections}">
+										<td style="margin-bottom: -3px;">
+											<button class="button" type="button" th:attr="data-toggle=${detection.timestamp}" style="margin-bottom: 0px;">View</button>
+											<div class="dropdown-pane" th:id="${detection.timestamp}" data-dropdown data-hover="true" data-hover-pane="true" data-position="right" data-alignment="top" style="width: 85%;">
+												<div class="large-12 cell">
+													<div class="grid-x grid-padding-x">
+														<div class="large-4 medium-6 small-12 cell">
+															<h4>Camera</h4>
+															<img class="lazyload" th:attr="data-src=@{/images/{stampedImagePath}(stampedImagePath=${detection.stampedImagePath})}" style="width: 100%;"/>
+														</div>
+														<div class="large-4 medium-6 small-12 cell">
+															<h4>Average</h4>
+															<img class="lazyload" th:attr="data-src=@{/images/{averageImagePath}(averageImagePath=${detection.averageImagePath})}" style="width: 100%;"/>
+														</div>
+														<div class="large-4 medium-6 small-12 cell">
+															<h4>Delta</h4>
+															<img class="lazyload" th:attr="data-src=@{/images/{deltaImagePath}(deltaImagePath=${detection.deltaImagePath})}" style="width: 100%;"/>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									</td>
-									<td th:text="${detection.date}"></td>
-									<td th:text="${detection.time}"></td>
-									<td>
-										<th:block th:if="${detection.vectorMotionDetection != null}">
-											<span th:text="${detection.vectorMotionDetection.frameVector.magnitude}"></span>
-										</th:block>
-									</td>
-									<td>
-										<th:block th:if="${detection.vectorMotionDetection != null}">
-											<span th:text="${detection.vectorMotionDetection.frameVector.count}"></span>
-										</th:block>
-									</td>
-									<td>
-										<th:block th:if="${detection.vectorMotionDetection != null && detection.vectorMotionDetection.interpolated}">
-											<span>Y</span>
-										</th:block>
-									</td>
-									<td th:text="${detection.strongestPersonDetectionWeightString}"></td>
-									<td>
-										<th:block th:if="${detection.personDetections != null}">
-											<span th:text="${detection.personDetections.detectionTimeMilliseconds} + 'ms'"></span>
-										</th:block>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+										</td>
+										<td th:text="${detection.date}"></td>
+										<td th:text="${detection.time}"></td>
+										<td>
+											<th:block th:if="${detection.vectorMotionDetection != null}">
+												<span th:text="${detection.vectorMotionDetection.frameVector.magnitude}"></span>
+											</th:block>
+										</td>
+										<td>
+											<th:block th:if="${detection.vectorMotionDetection != null}">
+												<span th:text="${detection.vectorMotionDetection.frameVector.count}"></span>
+											</th:block>
+										</td>
+										<td>
+											<th:block th:if="${detection.vectorMotionDetection != null && detection.vectorMotionDetection.interpolated}">
+												<span>Y</span>
+											</th:block>
+										</td>
+										<td th:text="${detection.strongestPersonDetectionWeightString}"></td>
+										<td>
+											<th:block th:if="${detection.personDetections != null}">
+												<span th:text="${detection.personDetections.detectionTimeMilliseconds} + 'ms'"></span>
+											</th:block>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
