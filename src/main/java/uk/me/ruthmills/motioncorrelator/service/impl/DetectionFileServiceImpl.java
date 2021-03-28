@@ -76,9 +76,11 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 				try {
 					return mapper.readValue(p.toFile(), Detection.class);
 				} catch (Exception ex) {
-					throw new RuntimeException(ex);
+					logger.error("Failed to read detection from JSON file: " + p.toString(), ex);
+					return null;
 				}
-			}).sorted(Comparator.comparing(Detection::getTimestamp).reversed()).collect(Collectors.toList());
+			}).filter(p -> p != null).sorted(Comparator.comparing(Detection::getTimestamp).reversed())
+					.collect(Collectors.toList());
 		} catch (Exception ex) {
 			logger.error("Failed to read detections", ex);
 		}
