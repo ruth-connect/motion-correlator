@@ -80,11 +80,11 @@
 											</div>
 											<div class="large-4 medium-6 small-12 cell">
 												<h4>Average</h4>
-												<img th:src="@{/images/{averageImagePath}(stampedImagePath=${detection.averageImagePath})}" style="width: 100%;"/>
+												<img th:src="@{/images/{averageImagePath}(averageImagePath=${detection.averageImagePath})}" style="width: 100%;"/>
 											</div>
 											<div class="large-4 medium-6 small-12 cell">
 												<h4>Delta</h4>
-												<img th:src="@{/images/{deltaImagePath}(stampedImagePath=${detection.deltaImagePath})}" style="width: 100%;"/>
+												<img th:src="@{/images/{deltaImagePath}(deltaImagePath=${detection.deltaImagePath})}" style="width: 100%;"/>
 											</div>
 										</div>
 									</div>
