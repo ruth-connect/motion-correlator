@@ -69,7 +69,8 @@ function displayNewDetections(detections) {
 					"<td>" + (detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.magnitude : "") + "</td>" +
 					"<td>" + (detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.count : "") + "</td>" +
 					"<td>" + (detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? "Y" : "") + "</td>" +
-					"<td>" + (detection.personDetections && detection.personDetections.length > 0 ? new String(detection.personDetections.personDetections[0].weight).padEnd(5, "0") : "") + "</td>" +
+					"<td>" + (detection.personDetections && detection.personDetections.personDetections && detection.personDetections.personDetections.length > 0 ?
+						new String(detection.personDetections.personDetections[0].weight).padEnd(5, "0") : "") + "</td>" +
 					"<td>" + (detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "") + "</td>" +
 				"</tr>";
 			
