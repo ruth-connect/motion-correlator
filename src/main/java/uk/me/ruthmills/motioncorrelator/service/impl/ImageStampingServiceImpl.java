@@ -18,6 +18,8 @@ import java.time.format.DateTimeFormatter;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
@@ -45,6 +47,8 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 
 	private Font font;
 
+	private static final Logger logger = LoggerFactory.getLogger(ImageStampingServiceImpl.class);
+
 	@PostConstruct
 	public void initialise() {
 		font = new Font("Arial", Font.BOLD, 18);
@@ -58,9 +62,14 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		Graphics2D graphics2D = bufferedImage.createGraphics();
 		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
 		drawFrameVector(graphics2D, motionCorrelation.getVectorMotionDetection());
-		drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
-		drawDetectionTime(graphics2D, motionCorrelation.getPersonDetections().getDetectionTimeMilliseconds());
-		drawTimestamp(graphics2D, motionCorrelation.getFrame().getTimestamp(), 0, Color.WHITE);
+		if (motionCorrelation.getPersonDetections() != null) {
+			drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
+			drawDetectionTime(graphics2D, motionCorrelation.getPersonDetections().getDetectionTimeMilliseconds());
+			drawTimestamp(graphics2D, motionCorrelation.getFrame().getTimestamp(), 0, Color.WHITE);
+		} else {
+			logger.warn("Null person detections for motion correlation for camera: " + motionCorrelation.getCamera()
+					+ " with timestamp: " + motionCorrelation.getFrameTimestamp());
+		}
 		drawVectorText(graphics2D, motionCorrelation.getVectorMotionDetection());
 		graphics2D.dispose();
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
