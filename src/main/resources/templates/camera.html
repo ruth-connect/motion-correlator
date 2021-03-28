@@ -57,29 +57,33 @@
 				<ul class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
 					<li class="accordion-item" data-accordion-item th:each="detection: ${detections}">
 						<a href="#" class="accordion-title">
-							<div class="large-2 medium-2 small-2 cell">
-								<p th:text="${detection.date}"></p>
-							</div>
-							<div class="large-2 medium-2 small-2 cell">
-								<p th:text="${detection.time}"></p>
-							</div>
-							<div class="large-2 medium-2 small-2 cell">
-								<th:block th:if="${detection.vectorMotionDetection != null}">
-									<p th:text="${detection.vectorMotionDetection.frameVector.magnitude}"></p>
-								</th:block>
-							</div>
-							<div class="large-2 medium-2 small-2 cell">
-								<th:block th:if="${detection.vectorMotionDetection != null}">
-									<p th:text="${detection.vectorMotionDetection.frameVector.count}"></p>
-								</th:block>
-							</div>
-							<div class="large-2 medium-2 small-2 cell">
-								<th:block th:if="${detection.vectorMotionDetection != null && detection.vectorMotionDetection.interpolated}">
-									<p>Y</p>
-								</th:block>
-							</div>
-							<div class="large-2 medium-2 small-2 cell">
-								<p th:text="${detection.strongestPersonDetectionWeightString}"></p>
+							<div class="large-12 cell">
+								<div class="grid-x grid-padding-x">
+									<div class="large-2 medium-2 small-2 cell">
+										<p th:text="${detection.date}"></p>
+									</div>
+									<div class="large-2 medium-2 small-2 cell">
+										<p th:text="${detection.time}"></p>
+									</div>
+									<div class="large-2 medium-2 small-2 cell">
+										<th:block th:if="${detection.vectorMotionDetection != null}">
+											<p th:text="${detection.vectorMotionDetection.frameVector.magnitude}"></p>
+										</th:block>
+									</div>
+									<div class="large-2 medium-2 small-2 cell">
+										<th:block th:if="${detection.vectorMotionDetection != null}">
+											<p th:text="${detection.vectorMotionDetection.frameVector.count}"></p>
+										</th:block>
+									</div>
+									<div class="large-2 medium-2 small-2 cell">
+										<th:block th:if="${detection.vectorMotionDetection != null && detection.vectorMotionDetection.interpolated}">
+											<p>Y</p>
+										</th:block>
+									</div>
+									<div class="large-2 medium-2 small-2 cell">
+										<p th:text="${detection.strongestPersonDetectionWeightString}"></p>
+									</div>
+								</div>
 							</div>
 						</a>
 						<div class="accordion-content" data-tab-content>
