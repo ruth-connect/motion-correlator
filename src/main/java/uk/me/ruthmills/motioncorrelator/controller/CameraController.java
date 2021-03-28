@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.Detection;
@@ -49,6 +50,7 @@ public class CameraController {
 	}
 
 	@GetMapping(path = "/newDetections/{camera}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
 	public List<Detection> getNewDetections(@PathVariable String camera) {
 		Detections detections = detectionAggregatorService.getDetections(camera);
 		return (detections != null) ? detections.getDetections() : new ArrayList<Detection>();
