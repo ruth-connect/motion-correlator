@@ -45,7 +45,7 @@ function displayNewDetections(detections) {
 				"<tr id=\"tr_" + id + "\">" +
 					"<td>" +
 						"<button class=\"button\" type=\"button\" data-toggle=\"div_" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
-						"<div class=\"dropdown-pane\" id=\"div_" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
+						"<div class=\"dropdown-pane\" id=\"div_" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"bottom\" style=\"width: 79%;\">" +
 							"<div class=\"large-12 cell\">" +
 								"<div class=\"grid-x grid-padding-x\">" +
 									"<div class=\"large-4 medium-6 small-12 cell\">" +
