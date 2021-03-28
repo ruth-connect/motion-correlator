@@ -165,8 +165,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 					// Send to the detection aggregator service if this is not a speculative round
 					// robin - i.e. we have an actual or recent detection.
-					if (!speculativeRoundRobin
-							|| motionCorrelation.getPersonDetections().getPersonDetections().size() > 0) {
+					if (!speculativeRoundRobin || (motionCorrelation.getPersonDetections() != null
+							&& motionCorrelation.getPersonDetections().getPersonDetections() != null
+							&& motionCorrelation.getPersonDetections().getPersonDetections().size() > 0)) {
 						detectionAggregatorService.addDetection(motionCorrelation);
 					}
 				}
