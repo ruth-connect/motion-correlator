@@ -1,14 +1,20 @@
+function displayNewDetections(detections) {
+	
+}
+
 function getNewDetections() {
 	$.ajax({
 		url: "/newDetections/" + camera,
 		context: document.body
-	}).done(function(data) {
-		alert(JSON.stringify(data));
+	}).done(function(detections) {
+		if (detections.length > 0) {
+			displayNewDetections(detections);
+		}
 	});
 }
 
 $(document).ready(function() {
 	$(document).foundation();
 	lazyload();
-	getNewDetections();
+	setInterval(getNewDetections, 500);
 });
