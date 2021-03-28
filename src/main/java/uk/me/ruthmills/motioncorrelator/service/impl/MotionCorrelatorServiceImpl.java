@@ -344,8 +344,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					currentDetection = new MotionCorrelation(camera, frame);
 					performMotionCorrelation(currentDetection, true);
 
-					logger.info("Running ROUND ROBIN for camera: " + camera);
-
 					// Is there a person detection?
 					if (currentDetection.getPersonDetections() != null
 							&& currentDetection.getPersonDetections().getPersonDetections().size() > 0) {
