@@ -35,9 +35,7 @@ function displayNewDetections(detections) {
 					"<td>" + (detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "") + "</td>" +
 				"</tr>";
 			
-			$("#new-detections-tbody").append(html);
-			$("#tr_" + id).foundation();
-			$("#tr_" + id).lazyload();
+			$("#new-detections-tbody").append(html).foundation().lazyload();
 		}
 	}
 }
