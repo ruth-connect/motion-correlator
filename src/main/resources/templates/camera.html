@@ -57,6 +57,7 @@
 				<table>
 					<thead>
 						<tr>
+							<th></th>
 							<th>Date</th>
 							<th>Time</th>
 							<th>Magnitude</th>
@@ -67,6 +68,12 @@
 					</thead>
 					<tbody>
 						<tr th:each="detection: ${detections}">
+							<td>
+								<button class="button" type="button" th:attr="data-toggle=${detection.timestamp}">View</button>
+								<div class="dropdown-pane" th:id="${detection.timestamp}" data-dropdown data-hover="true" data-hover-pane="true">
+									Images will go here.
+								</div>
+							</td>
 							<td th:text="${detection.date}"></td>
 							<td th:text="${detection.time}"></td>
 							<td>
