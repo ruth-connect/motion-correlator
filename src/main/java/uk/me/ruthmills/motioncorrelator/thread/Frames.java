@@ -96,7 +96,7 @@ public class Frames implements Runnable {
 				logger.error("Failed to process average image for camera: " + camera.getName(), ex);
 			} catch (UnsatisfiedLinkError ex) {
 				logger.error("Unsatisfied link error for Frame processor thread for camera: " + camera.getName()
-						+ ". Should only ever happen on start up", ex);
+						+ " - should only ever happen on start up!", ex);
 			}
 		}
 	}
