@@ -63,6 +63,7 @@
 							<th>Magnitude</th>
 							<th>Count</th>
 							<th>Interpolated</th>
+							<th>Speed</th>
 							<th>Weight</th>
 						</tr>
 					</thead>
@@ -89,6 +90,11 @@
 							<td>
 								<th:block th:if="${detection.vectorMotionDetection != null && detection.vectorMotionDetection.interpolated}">
 									<span>Y</span>
+								</th:block>
+							</td>
+							<td>
+								<th:block th:if="${detection.personDetections != null}">
+									<span th:text="${detection.personDetections.detectionTimeMilliseconds} + 'ms'"></span>
 								</th:block>
 							</td>
 							<td th:text="${detection.strongestPersonDetectionWeightString}"></td>
