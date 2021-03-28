@@ -2,9 +2,9 @@ function displayNewDetections(detections) {
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
 		var id = detection.timestamp + "_" + detection.sequence;
-		if (!$("#td_" + id).length) {
+		if (!$("#tr_" + id).length) {
 			var html =
-				"<tr id=\"" + id + "\">" +
+				"<tr id=\"tr_" + id + "\">" +
 					"<td>" +
 						"<button class=\"button\" type=\"button\" data-toggle=\"div_" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
 						"<div class=\"dropdown-pane\" id=\"div_" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
@@ -36,8 +36,8 @@ function displayNewDetections(detections) {
 				"</tr>";
 			
 			$("#new-detections-tbody").append(html);
-			$("#td_" + id).foundation();
-			$("#td_" + id).lazyload();
+			$("#tr_" + id).foundation();
+			$("#tr_" + id).lazyload();
 		}
 	}
 }
