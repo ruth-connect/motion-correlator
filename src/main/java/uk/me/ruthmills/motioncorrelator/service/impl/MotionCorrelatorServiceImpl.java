@@ -108,8 +108,12 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						// Get the detection for this frame.
 						MotionCorrelation currentMotionDetection = frame.getMotionCorrelation();
 						if (currentMotionDetection == null) {
+							logger.info("Vector detection. Creating new motion correlation for camera: " + camera
+									+ " and frame timestamp: " + frame.getTimestamp());
 							currentMotionDetection = new MotionCorrelation(camera, frame, vectorMotionDetection);
 						} else {
+							logger.info("Vector detection. Adding vector to existing motion correlation for camera: "
+									+ camera + " and frame timestamp: " + currentMotionDetection.getFrameTimestamp());
 							currentMotionDetection.setVectorMotionDetection(vectorMotionDetection);
 						}
 

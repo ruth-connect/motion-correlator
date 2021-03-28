@@ -16,6 +16,8 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.objdetect.HOGDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
@@ -31,6 +33,8 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 	private HOGDescriptor hogDescriptor;
+
+	private static final Logger logger = LoggerFactory.getLogger(PersonDetectionServiceImpl.class);
 
 	@PostConstruct
 	public void initialise() throws IOException {
@@ -58,7 +62,16 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 
 		// Only detect if there is an average frame to compare with, and we haven't run
 		// person detection before for this frame.
-		if (frame != null && frame.getPreviousFrame() != null && motionCorrelation.getPersonDetections() == null) {
+		if (frame == null) {
+			logger.warn("Cannot run person detection. Frame is null");
+		} else if (frame.getPreviousFrame() == null) {
+			logger.warn("Cannot run person detection for camera: " + motionCorrelation.getCamera()
+					+ " and frame timestamp: " + motionCorrelation.getFrameTimestamp() + " - Previous frame is null");
+		} else if (motionCorrelation.getPersonDetections() != null) {
+			logger.warn("Not running person detection for camera: " + motionCorrelation.getCamera()
+					+ " and frame timestamp: " + motionCorrelation.getFrameTimestamp()
+					+ "- Has already been run for this frame");
+		} else {
 			Mat averageFrame = frame.getPreviousFrame().getAverageFrame();
 			PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
 			Mat blurredFrame = frame.getBlurredFrame();
