@@ -55,18 +55,34 @@
 		<div class="grid-x grid-padding-x">
 			<div class="large-12 cell">
 				<ul class="tabs" data-tabs id="detection-tabs">
-					<li class="tabs-title is-active"><a href="#new-detections" aria-selected="true">New Detections</a></li>
-					<li class="tabs-title"><a data-tabs-target="previous-detections" href="#panel2">Previous Detections</a></li>
+					<li class="tabs-title is-active"><a href="#new-detections-tab" aria-selected="true">New Detections</a></li>
+					<li class="tabs-title"><a data-tabs-target="previous-detections-tab" href="#panel2">Previous Detections</a></li>
 				</ul>
 			</div>
 			<div class="large-12 cell">
 				<div class="tabs-content" data-tabs-content="detection-tabs">
-					<div class="tabs-panel is-active" id="new-detections">
+					<div class="tabs-panel is-active" id="new-detections-tab">
 						<div class="large-12 cell">
 							<h3>New Detections</h3>
+							<table>
+								<thead>
+									<tr>
+										<th></th>
+										<th>Date</th>
+										<th>Time</th>
+										<th>Magnitude</th>
+										<th>Count</th>
+										<th>Interpolated</th>
+										<th>Weight</th>
+										<th>Speed</th>
+									</tr>
+								</thead>
+								<tbody id="new-detections-tbody">
+								</tbody>
+							</table>
 						</div>
 					</div>
-					<div class="tabs-panel" id="previous-detections">
+					<div class="tabs-panel" id="previous-detections-tab">
 						<div class="large-12 cell">
 							<h3>Previous Detections</h3>
 							<table>
