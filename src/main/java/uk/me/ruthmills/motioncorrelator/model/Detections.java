@@ -47,16 +47,18 @@ public class Detections {
 		ReverseListIterator<Detection> iterator = new ReverseListIterator<>(detections);
 		while (iterator.hasNext()) {
 			Detection detection = iterator.next();
-			PersonDetection personDetection = detection.getPersonDetections().getStrongestPersonDetection();
-			if (personDetection != null) {
-				numPersonDetectionFrames++;
-				cumulativePersonDetectionWeights += personDetection.getWeight();
-				if (detection.getVectorMotionDetection() != null) {
-					numBothDetectionFrames++;
-				}
-				if (strongestPersonDetection == null
-						|| personDetection.getWeight() > strongestPersonDetection.getStrongestPersonDetectionWeight()) {
-					strongestPersonDetection = detection;
+			if (detection.getPersonDetections() != null) {
+				PersonDetection personDetection = detection.getPersonDetections().getStrongestPersonDetection();
+				if (personDetection != null) {
+					numPersonDetectionFrames++;
+					cumulativePersonDetectionWeights += personDetection.getWeight();
+					if (detection.getVectorMotionDetection() != null) {
+						numBothDetectionFrames++;
+					}
+					if (strongestPersonDetection == null || personDetection.getWeight() > strongestPersonDetection
+							.getStrongestPersonDetectionWeight()) {
+						strongestPersonDetection = detection;
+					}
 				}
 			}
 			if (detection.getVectorMotionDetection() != null) {
