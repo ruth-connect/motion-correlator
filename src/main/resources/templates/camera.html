@@ -69,8 +69,8 @@
 					</thead>
 					<tbody>
 						<tr th:each="detection: ${detections}">
-							<td>
-								<button class="button" type="button" th:attr="data-toggle=${detection.timestamp}" vertical-align="middle">View</button>
+							<td vertical-align="middle">
+								<button class="button" type="button" th:attr="data-toggle=${detection.timestamp}">View</button>
 								<div class="dropdown-pane" th:id="${detection.timestamp}" data-dropdown data-hover="true" data-hover-pane="true" data-position="right" data-alignment="top" style="width: 85%;">
 									<div class="large-12 cell">
 										<div class="grid-x grid-padding-x">
