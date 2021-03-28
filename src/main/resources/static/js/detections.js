@@ -50,15 +50,15 @@ function displayNewDetections(detections) {
 								"<div class=\"grid-x grid-padding-x\">" +
 									"<div class=\"large-4 medium-6 small-12 cell\">" +
 										"<h4>Camera</h4>" +
-										"<img class=\"lazyload\" data-src=\"" + detection.stampedImagePath + "\" style=\"width: 100%;\"/>" +
+										"<img class=\"lazyload\" data-src=\"" + getStampedImagePath(detection) + "\" style=\"width: 100%;\"/>" +
 									"</div>" +
 									"<div class=\"large-4 medium-6 small-12 cell\">" +
 										"<h4>Average</h4>" +
-										"<img class=\"lazyload\" data-src=\"" + detection.averageImagePath + "\" style=\"width: 100%;\"/>" +
+										"<img class=\"lazyload\" data-src=\"" + getAverageImagePath(detection) + "\" style=\"width: 100%;\"/>" +
 									"</div>" +
 									"<div class=\"large-4 medium-6 small-12 cell\">" +
 										"<h4>Delta</h4>" +
-										"<img class=\"lazyload\" data-src=\"" + detection.deltaImagePath + "\" style=\"width: 100%;\"/>" +
+										"<img class=\"lazyload\" data-src=\"" + getDeltaImagePath(detection) + "\" style=\"width: 100%;\"/>" +
 									"</div>" +
 								"</div>" +
 							"</div>" +
