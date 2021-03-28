@@ -62,7 +62,8 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		Graphics2D graphics2D = bufferedImage.createGraphics();
 		drawPersonDetections(graphics2D, motionCorrelation.getPersonDetections());
 		drawFrameVector(graphics2D, motionCorrelation.getVectorMotionDetection());
-		if (motionCorrelation.getPersonDetections() != null) {
+		if (motionCorrelation.getPersonDetections() != null
+				&& motionCorrelation.getPersonDetections().getPersonDetections() != null) {
 			drawPersonDetectionWeights(graphics2D, motionCorrelation.getPersonDetections());
 			drawDetectionTime(graphics2D, motionCorrelation.getPersonDetections().getDetectionTimeMilliseconds());
 			drawTimestamp(graphics2D, motionCorrelation.getFrame().getTimestamp(), 0, Color.WHITE);
