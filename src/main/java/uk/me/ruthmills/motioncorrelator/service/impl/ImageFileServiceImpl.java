@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
@@ -18,6 +20,8 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 public class ImageFileServiceImpl implements ImageFileService {
 
 	private static final String IMAGE_PATH_PREFIX = "/mnt/media/images/";
+
+	private static final Logger logger = LoggerFactory.getLogger(ImageFileServiceImpl.class);
 
 	@Override
 	public void writeImage(String camera, Image image) throws IOException {
@@ -46,7 +50,8 @@ public class ImageFileServiceImpl implements ImageFileService {
 	public byte[] readImage(String camera, String year, String month, String day, String hour, String filename)
 			throws IOException {
 		String imagePath = IMAGE_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
-		return Files.readAllBytes(FileSystems.getDefault().getPath(imagePath, filename + ".jpg"));
+		logger.info("Image path: " + imagePath + "/" + filename);
+		return Files.readAllBytes(FileSystems.getDefault().getPath(imagePath, filename));
 	}
 
 	private String getImagePath(String camera, LocalDateTime timestamp) {
