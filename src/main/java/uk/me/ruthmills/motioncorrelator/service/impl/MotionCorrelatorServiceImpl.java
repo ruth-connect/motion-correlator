@@ -378,6 +378,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			}
 			while (cameraIndex != currentIndex) {
 				getNextCameraIndex();
+				camera = cameras.get(cameraIndex);
 				if (camera.isConnected()) {
 					return camera.getName();
 				}
