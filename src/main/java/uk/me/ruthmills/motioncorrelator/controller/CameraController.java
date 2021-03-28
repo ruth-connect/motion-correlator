@@ -1,6 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.Detection;
+import uk.me.ruthmills.motioncorrelator.model.Detections;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
@@ -48,6 +50,7 @@ public class CameraController {
 
 	@GetMapping(path = "/newDetections/{camera}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Detection> getNewDetections(@PathVariable String camera) {
-		return detectionAggregatorService.getDetections(camera).getDetections();
+		Detections detections = detectionAggregatorService.getDetections(camera);
+		return (detections != null) ? detections.getDetections() : new ArrayList<Detection>();
 	}
 }
