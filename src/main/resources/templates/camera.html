@@ -63,8 +63,8 @@
 							<th>Magnitude</th>
 							<th>Count</th>
 							<th>Interpolated</th>
-							<th>Speed</th>
 							<th>Weight</th>
+							<th>Speed</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -92,12 +92,12 @@
 									<span>Y</span>
 								</th:block>
 							</td>
+							<td th:text="${detection.strongestPersonDetectionWeightString}"></td>
 							<td>
 								<th:block th:if="${detection.personDetections != null}">
 									<span th:text="${detection.personDetections.detectionTimeMilliseconds} + 'ms'"></span>
 								</th:block>
 							</td>
-							<td th:text="${detection.strongestPersonDetectionWeightString}"></td>
 						</tr>
 					</tbody>
 				</table>
