@@ -80,6 +80,18 @@ public class Detection {
 		return weight.setScale(3, RoundingMode.HALF_UP).toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof Detection)) {
+			return false;
+		} else {
+			Detection detection = (Detection) obj;
+			return this.getTimestamp().equals(detection.getTimestamp())
+					&& this.getSequence() == detection.getSequence();
+		}
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Camera: " + camera + ", Sequence: " + sequence + ", Timestamp: " + timestamp + "\n");
