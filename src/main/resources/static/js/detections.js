@@ -73,7 +73,9 @@ function displayNewDetections(detections) {
 					"<td>" + (detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "") + "</td>" +
 				"</tr>";
 			
-			$("#new-detections-tbody").append(html).foundation().find("img.lazyload").lazyload();
+			var newNode = $("#new-detections-tbody").append(html);
+			newNode.foundation();
+			newNode.find("img.lazyload").lazyload();
 		}
 	}
 }
