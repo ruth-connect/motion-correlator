@@ -13,7 +13,6 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 public class Detection {
 
-	private static final String IMAGE_PATH_PREFIX = "/mnt/media/images/";
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
@@ -85,24 +84,21 @@ public class Detection {
 	@JsonIgnore
 	public String getStampedImagePath() {
 		if (personDetections != null) {
-			return IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, timestamp) + "/"
+			return ImageUtils.getImagePath(camera, timestamp) + "/"
 					+ personDetections.getDetectionsFilename(sequence, timestamp);
 		} else {
-			return IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence
-					+ ".jpg";
+			return ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence + ".jpg";
 		}
 	}
 
 	@JsonIgnore
 	public String getAverageImagePath() {
-		return IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence
-				+ "-average.jpg";
+		return ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence + "-average.jpg";
 	}
 
 	@JsonIgnore
 	public String getDeltaImagePath() {
-		return IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence
-				+ "-delta.jpg";
+		return ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence + "-delta.jpg";
 	}
 
 	@Override
