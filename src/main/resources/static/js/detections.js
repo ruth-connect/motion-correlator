@@ -1,5 +1,5 @@
 function formatMilliseconds(milliseconds) {
-	return "000".substring(0, 3 - new String(milliseconds).length) + milliseconds;
+	return milliseconds.padStart(3, "0");
 }
 
 function formatTimestamp(timestamp) {
@@ -69,7 +69,7 @@ function displayNewDetections(detections) {
 					"<td>" + (detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.magnitude : "") + "</td>" +
 					"<td>" + (detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.count : "") + "</td>" +
 					"<td>" + (detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? "Y" : "") + "</td>" +
-					"<td>" + detection.strongestPersonDetectionWeightString + "</td>" +
+					"<td>" + (detection.personDetections ? new String(detection.personDetections.personDetections[0].weight).padEnd(5, "0") : "") + "</td>" +
 					"<td>" + (detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "") + "</td>" +
 				"</tr>";
 			
