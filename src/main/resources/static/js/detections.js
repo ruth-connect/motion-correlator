@@ -1,3 +1,32 @@
+function getDate(detection) {
+	return detection.timestamp.substring(8, 10) + "/" + detection.timestamp.substring(5, 7) + "/" +
+		detection.timestamp.substring(0, 4);
+}
+
+function getTime(detection) {
+	return detection.timestamp.substring(14, 22);
+}
+
+function getImagePath(detection) {
+	return '/images/' + detection.camera + "/" + detection.timestamp.substring(0, 4) + '/' + detection.timestamp.substring(5, 7) + '/' +
+		detection.timestamp.substring(8, 10) + '/' + detection.timestamp.substring(11, 13) + '/';
+}
+
+function getStampedImagePath(detection) {
+	var detections = detection.personDetections && detection.personDetections.personDetections.length > 0 ?
+		"-" + detection.personDetections.personDetections.length +
+		"-" + detection.personDetections.personDetections[0].weight.toFixed(3) : "";
+	return getImagePath(detection) + timestamp + "-" + sequence + "-stamped" + detections + ".jpg";
+}
+
+function getAverageImagePath(detection) {
+	return getImagePath(detection) + timestamp + "-" + sequence + "-average.jpg";
+}
+
+function getDeltaImagePath(detection) {
+	return getImagePath(detection) + timestamp + "-" + sequence + "-delta.jpg";
+}
+
 function displayNewDetections(detections) {
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
@@ -26,8 +55,8 @@ function displayNewDetections(detections) {
 							"</div>" +
 						"</div>" +
 					"</td>" +
-					"<td>" + detection.date + "</td>" +
-					"<td>" + detection.time + "</td>" +
+					"<td>" + getDate(detection) + "</td>" +
+					"<td>" + getTime(detection) + "</td>" +
 					"<td>" + (detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.magnitude : "") + "</td>" +
 					"<td>" + (detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.count : "") + "</td>" +
 					"<td>" + (detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? "Y" : "") + "</td>" +
