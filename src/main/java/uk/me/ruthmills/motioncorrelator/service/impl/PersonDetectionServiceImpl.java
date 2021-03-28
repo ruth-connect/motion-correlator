@@ -70,7 +70,7 @@ public class PersonDetectionServiceImpl implements PersonDetectionService {
 		} else if (motionCorrelation.getPersonDetections() != null) {
 			logger.warn("Not running person detection for camera: " + motionCorrelation.getCamera()
 					+ " and frame timestamp: " + motionCorrelation.getFrameTimestamp()
-					+ "- Has already been run for this frame");
+					+ " - Has already been run for this frame");
 		} else {
 			Mat averageFrame = frame.getPreviousFrame().getAverageFrame();
 			PersonDetectionParameters personDetectionParameters = new PersonDetectionParameters();
