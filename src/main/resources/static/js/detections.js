@@ -3,7 +3,7 @@ function formatMilliseconds(milliseconds) {
 }
 
 function formatTimestamp(timestamp) {
-	return timestamp.substring(0, 20) + formatMilliseconds(timestamp.substring(20, timestamp.substring.length));
+	return timestamp.substring(0, 20) + formatMilliseconds(timestamp.substring(20, timestamp.length));
 }
 
 function getDate(detection) {
