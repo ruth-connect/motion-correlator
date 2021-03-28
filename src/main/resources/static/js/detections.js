@@ -1,5 +1,5 @@
 function formatMilliseconds(milliseconds) {
-	return milliseconds.padStart(3, "0");
+	return milliseconds.padEnd(3, "0");
 }
 
 function formatTimestamp(timestamp) {
