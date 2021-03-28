@@ -1,7 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +68,8 @@ public class VectorDataServiceImpl implements VectorDataService {
 						* 100 * 1000 * 1000 // tenths of seconds converted to nanoseconds
 				: 0);
 		logger.info("Seconds: " + seconds + ", Nanos: " + nanos);
-		LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(seconds, nanos, ZoneOffset.UTC);
+		LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(seconds, nanos,
+				ZoneId.of("Europe/London").getRules().getOffset(LocalDateTime.now())); // TODO - get from locale.
 		logger.info("Local Date Time: " + localDateTime);
 		Timestamp timestamp = new Timestamp();
 		timestamp.setTimestamp(localDateTime);
