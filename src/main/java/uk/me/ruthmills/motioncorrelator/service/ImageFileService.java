@@ -12,4 +12,7 @@ public interface ImageFileService {
 	public void writeImage(String camera, Image image, PersonDetections personDetections) throws IOException;
 
 	public void writeImage(String camera, Image image, String suffix) throws IOException;
+
+	public byte[] readImage(String camera, String year, String month, String day, String hour, String filename)
+			throws IOException;
 }

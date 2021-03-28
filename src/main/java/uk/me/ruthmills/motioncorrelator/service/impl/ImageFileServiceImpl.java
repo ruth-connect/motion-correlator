@@ -42,6 +42,13 @@ public class ImageFileServiceImpl implements ImageFileService {
 		}
 	}
 
+	@Override
+	public byte[] readImage(String camera, String year, String month, String day, String hour, String filename)
+			throws IOException {
+		String imagePath = IMAGE_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
+		return Files.readAllBytes(FileSystems.getDefault().getPath(imagePath, filename));
+	}
+
 	private String getImagePath(String camera, LocalDateTime timestamp) {
 		String path = IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, timestamp);
 		File file = new File(path);
