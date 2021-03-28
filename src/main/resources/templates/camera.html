@@ -72,7 +72,22 @@
 							<td>
 								<button class="button" type="button" th:attr="data-toggle=${detection.timestamp}">View</button>
 								<div class="dropdown-pane" th:id="${detection.timestamp}" data-dropdown data-hover="true" data-hover-pane="true">
-									Images will go here.
+									<div class="large-12 cell">
+										<div class="grid-x grid-padding-x">
+											<div class="large-4 medium-6 small-12 cell">
+												<h4>Camera</h4>
+												<img th:src="@{/images/{stampedImagePath}(stampedImagePath=${detection.stampedImagePath})}" style="width: 100%;"/>
+											</div>
+											<div class="large-4 medium-6 small-12 cell">
+												<h4>Average</h4>
+												<img th:src="@{/images/{averageImagePath}(stampedImagePath=${detection.averageImagePath})}" style="width: 100%;"/>
+											</div>
+											<div class="large-4 medium-6 small-12 cell">
+												<h4>Delta</h4>
+												<img th:src="@{/images/{deltaImagePath}(stampedImagePath=${detection.deltaImagePath})}" style="width: 100%;"/>
+											</div>
+										</div>
+									</div>
 								</div>
 							</td>
 							<td th:text="${detection.date}"></td>
