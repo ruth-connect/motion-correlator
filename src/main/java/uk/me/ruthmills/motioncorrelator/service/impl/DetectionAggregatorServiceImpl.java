@@ -59,6 +59,10 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 		detectionAggregator.addDetection(motionCorrelation);
 	}
 
+	public Detections getDetections(String camera) {
+		return detectionAggregator.detectionsForCameraMap.get(camera);
+	}
+
 	private class DetectionAggregator implements Runnable {
 
 		private BlockingDeque<MotionCorrelation> detectionQueue = new LinkedBlockingDeque<>();

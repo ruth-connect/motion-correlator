@@ -21,6 +21,7 @@ public class Detection {
 	private LocalDateTime timestamp;
 	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
+	private LocalDateTime processTime;
 
 	public Detection() {
 	}
@@ -32,6 +33,7 @@ public class Detection {
 		this.timestamp = timestamp;
 		this.vectorMotionDetection = vectorMotionDetection;
 		this.personDetections = personDetections;
+		this.processTime = LocalDateTime.now();
 	}
 
 	public String getCamera() {
@@ -54,6 +56,11 @@ public class Detection {
 	@JsonIgnore
 	public String getTime() {
 		return timestamp.format(TIME_FORMAT);
+	}
+
+	@JsonIgnore
+	public LocalDateTime getProcessTime() {
+		return processTime;
 	}
 
 	public VectorMotionDetection getVectorMotionDetection() {

@@ -3,6 +3,7 @@ package uk.me.ruthmills.motioncorrelator.model;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.collections4.iterators.ReverseListIterator;
 import org.slf4j.Logger;
@@ -24,6 +25,10 @@ public class Detections {
 	public void addDetection(Detection detection) {
 		detections.addLast(detection);
 		detections.sort(Comparator.comparing(Detection::getSequence));
+	}
+
+	public List<Detection> getDetections() {
+		return detections;
 	}
 
 	public void removeExpiredDetections() {
