@@ -2,7 +2,7 @@ function displayNewDetections(detections) {
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
 		var id = detection.timestamp + "_" + detection.sequence;
-		if ($("#tr_" + id).length == 0) {
+		if (!document.getElementById("tr_" + id).length == 0) {
 			var html =
 				"<tr id=\"tr_" + id + "\">" +
 					"<td>" +
