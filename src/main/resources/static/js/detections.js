@@ -1,9 +1,9 @@
 function formatMilliseconds(milliseconds) {
-	return "00".substring(0, 3 - new String(milliseconds).length) + milliseconds;
+	return "000".substring(0, 3 - new String(milliseconds).length) + milliseconds;
 }
 
 function formatTimestamp(timestamp) {
-	return timestamp.substring(0, 20) + formatMilliseconds(timestamp.substring(20, timestamp.length));
+	return timestamp.substring(0, 19) + "." + formatMilliseconds(timestamp.substring(20, timestamp.length));
 }
 
 function getDate(detection) {
@@ -12,7 +12,7 @@ function getDate(detection) {
 }
 
 function getTime(detection) {
-	return detection.timestamp.substring(11, 20) +
+	return detection.timestamp.substring(11, 19) + "." +
 		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length));
 }
 
