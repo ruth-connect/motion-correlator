@@ -165,7 +165,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 					} else if (!closestHour.equals(hour)) {
 						return getPreviousHour(camera, year, month, day, hour);
 					} else {
-						return DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day;
+						return DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
 					}
 				}
 			}
