@@ -132,7 +132,7 @@ public class Vector extends VectorData {
 				ratioX = 640f / (640f - (float) convertedX);
 			}
 
-			int convertedY = Math.round(480f - (((float) y) * 480f / 100f));
+			int convertedY = Math.round(((float) y) * 480f / 100f);
 			float ratioY = 1f;
 			if (convertedY > 479) {
 				ratioY = (float) 480f / convertedY;
@@ -149,7 +149,7 @@ public class Vector extends VectorData {
 				convertedX = 0;
 			}
 
-			convertedY = Math.round(480f - (((float) y) * ratio * 480f / 100f));
+			convertedY = Math.round(((float) y) * ratio * 480f / 100f);
 			if (convertedY > 479) {
 				convertedY = 479;
 			} else if (convertedY < 0) {
