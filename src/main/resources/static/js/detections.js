@@ -121,6 +121,7 @@ function getDetections() {
 		context: document.body
 	}).done(function(detections) {
 		if (detections.length > 0) {
+			alert('got ' + detections.length + ' detections');
 			displayDetections(detections, 'previous');
 		}
 	});
