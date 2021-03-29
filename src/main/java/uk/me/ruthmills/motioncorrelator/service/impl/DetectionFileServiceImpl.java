@@ -172,8 +172,6 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 					String closestHour = getClosestHour(camera, year, month, day, hour);
 					if (closestHour == null) {
 						return getPreviousDay(camera, year, month, day);
-					} else if (!closestHour.equals(hour)) {
-						return getPreviousHour(camera, year, month, day, hour);
 					} else {
 						return year + "/" + month + "/" + day + "/" + hour;
 					}
