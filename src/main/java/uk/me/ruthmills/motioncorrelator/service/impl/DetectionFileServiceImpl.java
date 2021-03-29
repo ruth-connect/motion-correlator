@@ -31,7 +31,7 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 public class DetectionFileServiceImpl implements DetectionFileService {
 
 	private static final String DETECTION_PATH_PREFIX = "/mnt/media/detections/";
-	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'THH:mm:ss.SSS");
+	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
 	private static final Logger logger = LoggerFactory.getLogger(DetectionFileServiceImpl.class);
 
