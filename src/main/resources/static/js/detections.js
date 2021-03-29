@@ -81,6 +81,7 @@ function displayDetections(detections, prefix) {
 		var id = detection.timestamp + "-" + detection.sequence;
 		if (!document.getElementById(prefix + "-tr-" + id)) {
 			var html = displayDetectionRow(detection, prefix, id);
+			alert(html);
 			var rows = document.getElementById(prefix + "-detections-tbody").children;
 			var newNode = undefined;
 			if (rows.length == 0) {
@@ -130,5 +131,5 @@ $(document).ready(function() {
 	$(document).foundation();
 	lazyload();
 	getDetections();
-	setInterval(getNewDetections, 500);
+//	setInterval(getNewDetections, 500);
 });
