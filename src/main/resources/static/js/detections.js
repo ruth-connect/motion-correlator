@@ -130,5 +130,5 @@ $(document).ready(function() {
 	$(document).foundation();
 	lazyload();
 	getDetections();
-//	setInterval(getNewDetections, 500);
+	setInterval(getNewDetections, 500);
 });
