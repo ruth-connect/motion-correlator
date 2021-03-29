@@ -24,6 +24,7 @@ function getProcessTime(detection) {
 function getRegions(detection) {
 	return detection.vectorMotionDetection && detection.vectorMotionDetection.regionVectors ?
 		detection.vectorMotionDetection.regionVectors.join(", ") : "";
+}
 
 function getMagnitude(detection) {
 	return detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.magnitude : "";
