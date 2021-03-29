@@ -57,8 +57,7 @@ public class CameraController {
 
 	@GetMapping(path = "/detections/{camera}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public List<Detection> getDetections(@PathVariable String camera, @PathVariable String timestamp)
-			throws IOException {
+	public List<Detection> getDetections(@PathVariable String camera) throws IOException {
 		return detectionFileService.readDetections(camera, 50);
 	}
 
