@@ -64,7 +64,7 @@ function displayImage(title, imagePath) {
 			"</div>";
 }
 
-function displayDetectionRow(detection) {
+function displayDetectionRow(detection, id) {
 	return	"<tr id=\"tr_" + id + "\">" +
 				"<td>" +
 					"<button class=\"button\" type=\"button\" data-toggle=\"div_" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
@@ -93,8 +93,24 @@ function displayNewDetections(detections) {
 		var detection = detections[i];
 		var id = detection.timestamp + "_" + detection.sequence;
 		if (!document.getElementById("tr_" + id)) {
-			var html = displayDetectionRow(detection);
-			var newNode = $("#new-detections-tbody").append(html);
+			var html = displayDetectionRow(detection, id);
+			var rows = document.getElementById("new-detections-tbody").children;
+			var newNode = undefined;
+			if (rows.length == 0) {
+				newNode = $("#new-detections-tbody").append(html);
+			} else {
+				var inserted = false;
+				for (var j = 0; j < rows.length && !inserted; j++) {
+					var row = rows[j];
+					if (row.id > "tr_" + id) {
+						$(html).insertBefore($(row));
+						inserted = true;
+					}
+				}
+				if (!inserted) {
+					newNode = $("#new-detections-tbody").append(html);
+				}
+			}
 			newNode.foundation();
 			newNode.find("img.lazyload").lazyload();
 		}
