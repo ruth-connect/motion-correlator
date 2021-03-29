@@ -1,20 +1,13 @@
 package uk.me.ruthmills.motioncorrelator.model;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
-import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 public class Detection {
-
-	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
 	private String camera;
 	private long sequence;
@@ -47,16 +40,6 @@ public class Detection {
 		return timestamp;
 	}
 
-	@JsonIgnore
-	public String getDate() {
-		return timestamp.format(DATE_FORMAT);
-	}
-
-	@JsonIgnore
-	public String getTime() {
-		return timestamp.format(TIME_FORMAT);
-	}
-
 	public LocalDateTime getProcessTime() {
 		return processTime;
 	}
@@ -78,36 +61,6 @@ public class Detection {
 		return personDetections != null && personDetections.getStrongestPersonDetection() != null
 				? personDetections.getStrongestPersonDetection().getWeight()
 				: 0d;
-	}
-
-	@JsonIgnore
-	public String getStrongestPersonDetectionWeightString() {
-		double strongestPersonDetectionWeight = getStrongestPersonDetectionWeight();
-		if (strongestPersonDetectionWeight == 0d) {
-			return "";
-		}
-		BigDecimal weight = new BigDecimal(strongestPersonDetectionWeight);
-		return weight.setScale(3, RoundingMode.HALF_UP).toString();
-	}
-
-	@JsonIgnore
-	public String getStampedImagePath() {
-		if (personDetections != null) {
-			return ImageUtils.getImagePath(camera, timestamp) + "/"
-					+ personDetections.getDetectionsFilename(sequence, timestamp);
-		} else {
-			return ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence + ".jpg";
-		}
-	}
-
-	@JsonIgnore
-	public String getAverageImagePath() {
-		return ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence + "-average.jpg";
-	}
-
-	@JsonIgnore
-	public String getDeltaImagePath() {
-		return ImageUtils.getImagePath(camera, timestamp) + "/" + timestamp + "-" + sequence + "-delta.jpg";
 	}
 
 	@Override
