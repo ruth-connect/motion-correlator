@@ -53,9 +53,19 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		List<Detection> detections = new ArrayList<>();
 		String path = getDetectionPath(camera, year, month, day, hour);
 		logger.info("Detection Path: " + path);
-		LocalDateTime dateTime = LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT);
-		detections.addAll(readDetections(camera, year, month, day, hour).stream()
-				.filter(detection -> detection.getTimestamp().isBefore(dateTime)).collect(Collectors.toList()));
+		while (path != null && detections.size() < 50) {
+			String[] parts = path.split("/");
+			year = parts[0];
+			month = parts[1];
+			day = parts[2];
+			hour = parts[3];
+			LocalDateTime dateTime = LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT);
+			detections.addAll(readDetections(camera, year, month, day, hour).stream()
+					.filter(detection -> detection.getTimestamp().isBefore(dateTime)).collect(Collectors.toList()));
+			if (detections.size() < 50) {
+				path = getPreviousHour(camera, year, month, day, hour);
+			}
+		}
 		if (detections.size() > maxDetections) {
 			detections = new ArrayList<Detection>(detections.subList(0, maxDetections));
 		}
@@ -165,7 +175,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 					} else if (!closestHour.equals(hour)) {
 						return getPreviousHour(camera, year, month, day, hour);
 					} else {
-						return DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
+						return year + "/" + month + "/" + day + "/" + hour;
 					}
 				}
 			}
