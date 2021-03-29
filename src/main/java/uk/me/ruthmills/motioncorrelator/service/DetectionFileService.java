@@ -12,12 +12,7 @@ public interface DetectionFileService {
 
 	public void writeDetection(Detection detection) throws IOException, JsonMappingException, JsonGenerationException;
 
-	public List<Detection> readDetectionsForToday(String camera) throws IOException;
-
-	public List<Detection> readDetections(String camera, String year, String month, String day) throws IOException;
-
-	public List<Detection> readDetections(String camera, String year, String month, String day, String hour)
-			throws IOException;
+	public List<Detection> readDetections(String camera, String timestamp, int maxDetections) throws IOException;
 
 	public Detection readDetection(String camera, String year, String month, String day, String hour, String timestamp,
 			String sequence) throws IOException;

@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,9 +31,7 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 public class DetectionFileServiceImpl implements DetectionFileService {
 
 	private static final String DETECTION_PATH_PREFIX = "/mnt/media/detections/";
-	private static final DateTimeFormatter YEAR_FORMAT = DateTimeFormatter.ofPattern("yyyy");
-	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("MM");
-	private static final DateTimeFormatter DAY_FORMAT = DateTimeFormatter.ofPattern("dd");
+	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ss.SSS");
 
 	private static final Logger logger = LoggerFactory.getLogger(DetectionFileServiceImpl.class);
 
@@ -46,25 +45,25 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	@Override
-	public List<Detection> readDetectionsForToday(String camera) throws IOException {
-		LocalDateTime now = LocalDateTime.now();
-		String year = now.format(YEAR_FORMAT);
-		String month = now.format(MONTH_FORMAT);
-		String day = now.format(DAY_FORMAT);
-		return readDetections(camera, year, month, day);
-	}
-
-	@Override
-	public List<Detection> readDetections(String camera, String year, String month, String day) throws IOException {
-		String detectionPath = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day;
-		return readDetections(detectionPath);
-	}
-
-	@Override
-	public List<Detection> readDetections(String camera, String year, String month, String day, String hour)
-			throws IOException {
-		String detectionPath = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
-		return readDetections(detectionPath);
+	public List<Detection> readDetections(String camera, String timestamp, int maxDetections) throws IOException {
+		String year = timestamp.substring(0, 4);
+		String month = timestamp.substring(5, 7);
+		String day = timestamp.substring(8, 10);
+		String hour = timestamp.substring(11, 13);
+		List<Detection> detections = new ArrayList<>();
+		String path = getDetectionPath(camera, year, month, day, hour);
+		LocalDateTime dateTime = LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT);
+		while (path != null && detections.size() < maxDetections) {
+			detections.addAll(readDetections(camera, year, month, day, hour).stream()
+					.filter(detection -> detection.getTimestamp().isBefore(dateTime)).collect(Collectors.toList()));
+			if (detections.size() < maxDetections) {
+				path = getPreviousHour(camera, year, month, day, hour);
+			}
+		}
+		if (detections.size() > maxDetections) {
+			detections = new ArrayList<Detection>(detections.subList(0, maxDetections));
+		}
+		return detections;
 	}
 
 	@Override
@@ -75,6 +74,112 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String filename = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour + "/"
 				+ timestamp + "-" + sequence + ".json";
 		return mapper.readValue(new File(filename), Detection.class);
+	}
+
+	private String getClosestMatch(String path, String match) {
+		File directory = new File(path);
+		List<String> matches = Arrays.asList(directory.list()).stream().sorted(Comparator.reverseOrder())
+				.filter(m -> Integer.parseInt(m) <= Integer.parseInt(match)).collect(Collectors.toList());
+		if (matches.size() > 0) {
+			return matches.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	private String getClosestYear(String camera, String year) {
+		String path = DETECTION_PATH_PREFIX + camera;
+		return getClosestMatch(path, year);
+	}
+
+	private String getClosestMonth(String camera, String year, String month) {
+		String path = DETECTION_PATH_PREFIX + camera + "/" + year;
+		return getClosestMatch(path, month);
+	}
+
+	private String getClosestDay(String camera, String year, String month, String day) {
+		String path = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month;
+		return getClosestMatch(path, day);
+	}
+
+	private String getClosestHour(String camera, String year, String month, String day, String hour) {
+		String path = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day;
+		return getClosestMatch(path, day);
+	}
+
+	private String getPreviousYear(String camera, String year) {
+		return getDetectionPath(camera, Integer.toString(Integer.parseInt(year) - 1), "12", "31", "23");
+	}
+
+	private String getPreviousMonth(String camera, String year, String month) {
+		int previousMonth = Integer.parseInt(month) - 1;
+		if (previousMonth == 0) {
+			return getPreviousYear(camera, year);
+		} else if (previousMonth < 10) {
+			return getDetectionPath(camera, year, "0" + Integer.toString(previousMonth), "31", "23");
+		} else {
+			return getDetectionPath(camera, year, Integer.toString(previousMonth), "31", "23");
+		}
+	}
+
+	private String getPreviousDay(String camera, String year, String month, String day) {
+		int previousDay = Integer.parseInt(day) - 1;
+		if (previousDay == 0) {
+			return getPreviousMonth(camera, year, month);
+		} else if (previousDay < 10) {
+			return getDetectionPath(camera, year, month, "0" + Integer.toString(previousDay), "23");
+		} else {
+			return getDetectionPath(camera, year, month, Integer.toString(previousDay), "23");
+		}
+	}
+
+	private String getPreviousHour(String camera, String year, String month, String day, String hour) {
+		int previousHour = Integer.parseInt(hour) - 1;
+		if (previousHour < 0) {
+			return getPreviousDay(camera, year, month, day);
+		} else if (previousHour < 10) {
+			return getDetectionPath(camera, year, month, day, "0" + Integer.toString(previousHour));
+		} else {
+			return getDetectionPath(camera, year, month, day, Integer.toString(previousHour));
+		}
+	}
+
+	private String getDetectionPath(String camera, String year, String month, String day, String hour) {
+		String closestYear = getClosestYear(camera, year);
+		if (closestYear == null) {
+			return null;
+		} else if (!closestYear.equals(year)) {
+			return getPreviousYear(camera, year);
+		} else {
+			String closestMonth = getClosestMonth(camera, year, month);
+			if (closestMonth == null) {
+				return getPreviousYear(camera, year);
+			} else if (!closestMonth.equals(month)) {
+				return getPreviousMonth(camera, year, month);
+			} else {
+				String closestDay = getClosestDay(camera, year, month, day);
+				if (closestDay == null) {
+					return getPreviousMonth(camera, year, month);
+				} else if (!closestDay.equals(day)) {
+					return getPreviousDay(camera, year, month, day);
+				} else {
+					String closestHour = getClosestHour(camera, year, month, day, hour);
+					if (closestHour == null) {
+						return getPreviousDay(camera, year, month, day);
+					} else if (!closestHour.equals(hour)) {
+						return getPreviousHour(camera, year, month, day, hour);
+					} else {
+						return DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day;
+					}
+				}
+			}
+		}
+	}
+
+	private List<Detection> readDetections(String camera, String year, String month, String day, String hour)
+			throws IOException {
+		String detectionPath = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
+		return readDetections(detectionPath);
 	}
 
 	private List<Detection> readDetections(String detectionPath) throws IOException {
