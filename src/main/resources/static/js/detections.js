@@ -81,11 +81,10 @@ function displayDetections(detections, prefix) {
 		var id = detection.timestamp + "-" + detection.sequence;
 		if (!document.getElementById(prefix + "-tr-" + id)) {
 			var html = displayDetectionRow(detection, prefix, id);
-			alert(html);
 			var rows = document.getElementById(prefix + "-detections-tbody").children;
 			var newNode = undefined;
 			if (rows.length == 0) {
-				newNode = $(prefix + "-detections-tbody").append(html);
+				newNode = $("#" + prefix + "-detections-tbody").append(html);
 			} else {
 				var inserted = false;
 				for (var j = 0; j < rows.length && !inserted; j++) {
