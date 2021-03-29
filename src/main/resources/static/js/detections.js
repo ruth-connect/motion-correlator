@@ -16,6 +16,11 @@ function getTime(detection) {
 		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length));
 }
 
+function getProcessTime(detection) {
+	return detection.processTime ? (detection.processTime.substring(11, 19) + "." +
+		formatMilliseconds(detection.processTime.substring(20, detection.processTime.length))) : "";
+}
+
 function getMagnitude(detection) {
 	return detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.magnitude : "";
 }
@@ -71,6 +76,7 @@ function displayDetectionRow(detection, prefix, id) {
 				"</td>" +
 				"<td>" + getDate(detection) + "</td>" +
 				"<td>" + getTime(detection) + "</td>" +
+				"<td>" + getProcessTime(detection) + "</td>" +
 				"<td>" + getMagnitude(detection) + "</td>" +
 				"<td>" + getCount(detection) + "</td>" +
 				"<td>" + getBurst(detection) + "</td>" +
