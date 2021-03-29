@@ -32,9 +32,9 @@ public class StampedImageController {
 	@ResponseBody
 	public byte[] getImage(@PathVariable String camera, @PathVariable String year, @PathVariable String month,
 			@PathVariable String day, @PathVariable String hour, @PathVariable String filename) throws IOException {
-		String[] filenameParts = filename.split("_");
-		String timestamp = filenameParts[0];
-		String sequence = filenameParts[1];
+		String[] filenameParts = filename.split("-");
+		String timestamp = filenameParts[0] + "-" + filenameParts[1] + "-" + filenameParts[2];
+		String sequence = filenameParts[3];
 		Detection detection = detectionFileService.readDetection(camera, year, month, day, hour, timestamp, sequence);
 		byte[] jpeg = imageFileService.readImage(camera, year, month, day, hour, filename);
 		return imageStampingService.stampImage(detection, jpeg);
