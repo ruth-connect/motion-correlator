@@ -58,9 +58,9 @@ function displayDetectionRow(detection, prefix, id) {
 					"<div class=\"dropdown-pane\" id=\"" + prefix + "-div-" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
-								displayImage("Camera", getImagePath(detection, "/images/", "")) +
-								displayImage("Average", getImagePath(detection, "/images/", "-average")) +
-								displayImage("Delta", getImagePath(detection, "/images/", "-delta")) +
+								displayImage("Camera", getImagePath(detection, "/stamped/", "")) +
+								displayImage("Average", getImagePath(detection, "/stamped/", "-average")) +
+								displayImage("Delta", getImagePath(detection, "/stamped/", "-delta")) +
 							"</div>" +
 						"</div>" +
 					"</div>" +
