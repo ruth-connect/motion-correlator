@@ -86,6 +86,15 @@ public class VectorMotionDetection {
 		if (frameVector != null) {
 			stringBuilder.append("Frame Vector: " + frameVector + "\n");
 		}
+		if (regionVectors != null) {
+			stringBuilder.append("Region Vectors: " + regionVectors + "\n");
+		}
+		if (burst != null) {
+			stringBuilder.append("Burst: " + burst + "\n");
+		}
+		if (externalTrigger != null) {
+			stringBuilder.append("External Trigger: " + externalTrigger + "\n");
+		}
 		return stringBuilder.toString();
 	}
 }
