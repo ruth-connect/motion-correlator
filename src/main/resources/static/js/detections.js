@@ -16,6 +16,27 @@ function getTime(detection) {
 		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length));
 }
 
+function getMagnitude(detection) {
+	return detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.magnitude : "";
+}
+
+function getCount(detection) {
+	return detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.count : "";
+}
+
+function getInterpolated(detection) {
+	return detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? "Y" : "";
+}
+
+function getWeight(detection) {
+	return detection.personDetections && detection.personDetections.personDetections && detection.personDetections.personDetections.length > 0 ?
+		detection.personDetections.personDetections[0].weight.toFixed(3).padEnd(5, "0") : "";
+}
+
+function getSpeed(detection) {
+	return detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "";
+}
+
 function getImagePath(detection) {
 	return '/images/' + detection.camera + "/" + detection.timestamp.substring(0, 4) + '/' + detection.timestamp.substring(5, 7) + '/' +
 		detection.timestamp.substring(8, 10) + '/' + detection.timestamp.substring(11, 13) + '/';
@@ -36,44 +57,43 @@ function getDeltaImagePath(detection) {
 	return getImagePath(detection) + formatTimestamp(detection.timestamp) + "-" + detection.sequence + "-delta.jpg";
 }
 
+function displayImage(title, imagePath) {
+	return	"<div class=\"large-4 medium-6 small-12 cell\">" +
+				"<h4>" + title + "</h4>" +
+				"<img class=\"lazyload\" data-src=\"" + imagePath + "\" style=\"width: 100%;\"/>" +
+			"</div>";
+}
+
+function displayDetectionRow(detection) {
+	return	"<tr id=\"tr_" + id + "\">" +
+				"<td>" +
+					"<button class=\"button\" type=\"button\" data-toggle=\"div_" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
+					"<div class=\"dropdown-pane\" id=\"div_" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"bottom\" style=\"width: 79%;\">" +
+						"<div class=\"large-12 cell\">" +
+							"<div class=\"grid-x grid-padding-x\">" +
+								displayImage("Camera", getStampedImagePath(detection)) +
+								displayImage("Average", getAverageImagePath(detection)) +
+								displayImage("Delta", getDeltaImagePath(detection)) +
+							"</div>" +
+						"</div>" +
+					"</div>" +
+				"</td>" +
+				"<td>" + getDate(detection) + "</td>" +
+				"<td>" + getTime(detection) + "</td>" +
+				"<td>" + getMagnitude(detection) + "</td>" +
+				"<td>" + getCount(detection) + "</td>" +
+				"<td>" + getInterpolated(detection) + "</td>" +
+				"<td>" + getWeight(detection) + "</td>" +
+				"<td>" + getSpeed(detection) + "</td>" +
+			"</tr>";
+}
+
 function displayNewDetections(detections) {
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
 		var id = detection.timestamp + "_" + detection.sequence;
 		if (!document.getElementById("tr_" + id)) {
-			var html =
-				"<tr id=\"tr_" + id + "\">" +
-					"<td>" +
-						"<button class=\"button\" type=\"button\" data-toggle=\"div_" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
-						"<div class=\"dropdown-pane\" id=\"div_" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"bottom\" style=\"width: 79%;\">" +
-							"<div class=\"large-12 cell\">" +
-								"<div class=\"grid-x grid-padding-x\">" +
-									"<div class=\"large-4 medium-6 small-12 cell\">" +
-										"<h4>Camera</h4>" +
-										"<img class=\"lazyload\" data-src=\"" + getStampedImagePath(detection) + "\" style=\"width: 100%;\"/>" +
-									"</div>" +
-									"<div class=\"large-4 medium-6 small-12 cell\">" +
-										"<h4>Average</h4>" +
-										"<img class=\"lazyload\" data-src=\"" + getAverageImagePath(detection) + "\" style=\"width: 100%;\"/>" +
-									"</div>" +
-									"<div class=\"large-4 medium-6 small-12 cell\">" +
-										"<h4>Delta</h4>" +
-										"<img class=\"lazyload\" data-src=\"" + getDeltaImagePath(detection) + "\" style=\"width: 100%;\"/>" +
-									"</div>" +
-								"</div>" +
-							"</div>" +
-						"</div>" +
-					"</td>" +
-					"<td>" + getDate(detection) + "</td>" +
-					"<td>" + getTime(detection) + "</td>" +
-					"<td>" + (detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.magnitude : "") + "</td>" +
-					"<td>" + (detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.count : "") + "</td>" +
-					"<td>" + (detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? "Y" : "") + "</td>" +
-					"<td>" + (detection.personDetections && detection.personDetections.personDetections && detection.personDetections.personDetections.length > 0 ?
-						detection.personDetections.personDetections[0].weight.toFixed(3).padEnd(5, "0") : "") + "</td>" +
-					"<td>" + (detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "") + "</td>" +
-				"</tr>";
-			
+			var html = displayDetectionRow(detection);
 			var newNode = $("#new-detections-tbody").append(html);
 			newNode.foundation();
 			newNode.find("img.lazyload").lazyload();
