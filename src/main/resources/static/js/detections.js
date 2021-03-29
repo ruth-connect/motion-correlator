@@ -37,24 +37,11 @@ function getSpeed(detection) {
 	return detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "";
 }
 
-function getImagePath(detection) {
-	return '/images/' + detection.camera + "/" + detection.timestamp.substring(0, 4) + '/' + detection.timestamp.substring(5, 7) + '/' +
-		detection.timestamp.substring(8, 10) + '/' + detection.timestamp.substring(11, 13) + '/';
-}
-
-function getStampedImagePath(detection) {
-	var detections = detection.personDetections && detection.personDetections.personDetections.length > 0 ?
-		"-" + detection.personDetections.personDetections.length +
-		"-" + detection.personDetections.personDetections[0].weight.toFixed(3) : "";
-	return getImagePath(detection) + formatTimestamp(detection.timestamp) + "-" + detection.sequence + "-stamped" + detections + ".jpg";
-}
-
-function getAverageImagePath(detection) {
-	return getImagePath(detection) + formatTimestamp(detection.timestamp) + "-" + detection.sequence + "-average.jpg";
-}
-
-function getDeltaImagePath(detection) {
-	return getImagePath(detection) + formatTimestamp(detection.timestamp) + "-" + detection.sequence + "-delta.jpg";
+function getImagePath(detection, prefix, suffix) {
+	return prefix + detection.camera + "/" + detection.timestamp.substring(0, 4) + '/' +
+		detection.timestamp.substring(5, 7) + '/' + detection.timestamp.substring(8, 10) + '/' +
+		detection.timestamp.substring(11, 13) + '/' + formatTimestamp(detection.timestamp) + '-' +
+		detection.sequence + suffix + ".jpg";
 }
 
 function displayImage(title, imagePath) {
@@ -71,9 +58,9 @@ function displayDetectionRow(detection, id) {
 					"<div class=\"dropdown-pane\" id=\"div_" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
-								displayImage("Camera", getStampedImagePath(detection)) +
-								displayImage("Average", getAverageImagePath(detection)) +
-								displayImage("Delta", getDeltaImagePath(detection)) +
+								displayImage("Camera", getImagePath(detection, "/images/", "")) +
+								displayImage("Average", getImagePath(detection, "/images/", "-average")) +
+								displayImage("Delta", getImagePath(detection, "/images/", "-delta")) +
 							"</div>" +
 						"</div>" +
 					"</div>" +
