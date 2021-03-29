@@ -1,5 +1,6 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -22,7 +23,6 @@ import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.service.ImageFileService;
-import uk.me.ruthmills.motioncorrelator.service.ImageStampingService;
 
 @Service
 public class DetectionAggregatorServiceImpl implements DetectionAggregatorService {
@@ -32,9 +32,6 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 	@Autowired
 	private DetectionFileService detectionFileService;
-
-	@Autowired
-	private ImageStampingService imageStampingService;
 
 	@Autowired
 	private ImageFileService imageFileService;
@@ -114,6 +111,7 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 						// Add the detection to the list.
 						Detections detections = getDetectionsForCamera(detection.getCamera());
+						detection.setProcessTime(LocalDateTime.now());
 						detections.addDetection(detection);
 
 						// Get the person probability.
@@ -138,8 +136,6 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 		private void writeImages(MotionCorrelation motionCorrelation) {
 			try {
 				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
-				imageFileService.writeImage(motionCorrelation.getCamera(),
-						imageStampingService.stampImage(motionCorrelation), motionCorrelation.getPersonDetections());
 				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getAverageFrame(),
 						"-average");
 				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta");
