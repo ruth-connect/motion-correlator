@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetection;
@@ -78,6 +79,35 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		Image stampedImage = new Image(motionCorrelation.getFrame().getSequence(),
 				motionCorrelation.getFrame().getTimestamp(), byteArrayOutputStream.toByteArray());
 		return stampedImage;
+	}
+
+	public byte[] stampImage(Detection detection, byte[] jpeg) throws IOException {
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(jpeg);
+		BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
+		Graphics2D graphics2D = null;
+		if (bufferedImage.getWidth() == 320) { // resize to 640 x 480.
+			BufferedImage resizedImage = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
+			graphics2D = resizedImage.createGraphics();
+			graphics2D.drawImage(bufferedImage, 0, 0, 640, 480, null);
+			bufferedImage = resizedImage;
+		} else {
+			graphics2D = bufferedImage.createGraphics();
+		}
+		drawPersonDetections(graphics2D, detection.getPersonDetections());
+		drawFrameVector(graphics2D, detection.getVectorMotionDetection());
+		if (detection.getPersonDetections() != null && detection.getPersonDetections().getPersonDetections() != null) {
+			drawPersonDetectionWeights(graphics2D, detection.getPersonDetections());
+			drawDetectionTime(graphics2D, detection.getPersonDetections().getDetectionTimeMilliseconds());
+			drawTimestamp(graphics2D, detection.getTimestamp(), 0, Color.WHITE);
+		} else {
+			logger.warn("Null person detections for detection for camera: " + detection.getCamera()
+					+ " with timestamp: " + detection.getTimestamp());
+		}
+		drawVectorText(graphics2D, detection.getVectorMotionDetection());
+		graphics2D.dispose();
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+		return byteArrayOutputStream.toByteArray();
 	}
 
 	private void drawPersonDetections(Graphics2D graphics2D, PersonDetections personDetections) {

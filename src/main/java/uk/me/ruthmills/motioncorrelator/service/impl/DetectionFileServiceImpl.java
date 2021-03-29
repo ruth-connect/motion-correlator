@@ -67,6 +67,16 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		return readDetections(detectionPath);
 	}
 
+	@Override
+	public Detection readDetection(String camera, String year, String month, String day, String hour, String timestamp,
+			String sequence) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		String filename = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour + "/"
+				+ timestamp + "_" + sequence + ".json";
+		return mapper.readValue(new File(filename), Detection.class);
+	}
+
 	private List<Detection> readDetections(String detectionPath) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());

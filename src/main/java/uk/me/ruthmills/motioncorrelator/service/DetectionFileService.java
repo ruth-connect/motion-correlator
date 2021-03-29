@@ -18,4 +18,7 @@ public interface DetectionFileService {
 
 	public List<Detection> readDetections(String camera, String year, String month, String day, String hour)
 			throws IOException;
+
+	public Detection readDetection(String camera, String year, String month, String day, String hour, String timestamp,
+			String sequence) throws IOException;
 }
