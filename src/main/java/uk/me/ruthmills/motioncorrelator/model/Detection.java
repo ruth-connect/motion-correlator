@@ -26,6 +26,7 @@ public class Detection {
 		this.timestamp = timestamp;
 		this.vectorMotionDetection = vectorMotionDetection;
 		this.personDetections = personDetections;
+		processTime = LocalDateTime.now();
 	}
 
 	public String getCamera() {

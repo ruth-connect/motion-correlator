@@ -1,6 +1,5 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -111,7 +110,6 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 						// Add the detection to the list.
 						Detections detections = getDetectionsForCamera(detection.getCamera());
-						detection.setProcessTime(LocalDateTime.now());
 						detections.addDetection(detection);
 
 						// Get the person probability.
