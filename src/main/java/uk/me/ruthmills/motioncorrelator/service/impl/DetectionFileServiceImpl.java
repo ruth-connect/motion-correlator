@@ -52,14 +52,10 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String hour = timestamp.substring(11, 13);
 		List<Detection> detections = new ArrayList<>();
 		String path = getDetectionPath(camera, year, month, day, hour);
+		logger.info("Detection Path: " + path);
 		LocalDateTime dateTime = LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT);
-		while (path != null && detections.size() < maxDetections) {
-			detections.addAll(readDetections(camera, year, month, day, hour).stream()
-					.filter(detection -> detection.getTimestamp().isBefore(dateTime)).collect(Collectors.toList()));
-			if (detections.size() < maxDetections) {
-				path = getPreviousHour(camera, year, month, day, hour);
-			}
-		}
+		detections.addAll(readDetections(camera, year, month, day, hour).stream()
+				.filter(detection -> detection.getTimestamp().isBefore(dateTime)).collect(Collectors.toList()));
 		if (detections.size() > maxDetections) {
 			detections = new ArrayList<Detection>(detections.subList(0, maxDetections));
 		}
