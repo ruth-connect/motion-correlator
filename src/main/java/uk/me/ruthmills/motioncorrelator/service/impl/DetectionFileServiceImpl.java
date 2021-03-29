@@ -73,7 +73,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		String filename = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour + "/"
-				+ timestamp + "_" + sequence + ".json";
+				+ timestamp + "-" + sequence + ".json";
 		return mapper.readValue(new File(filename), Detection.class);
 	}
 
