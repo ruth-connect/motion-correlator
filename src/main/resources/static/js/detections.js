@@ -103,7 +103,7 @@ function displayNewDetections(detections) {
 				for (var j = 0; j < rows.length && !inserted; j++) {
 					var row = rows[j];
 					if (row.id < "tr_" + id) {
-						$(html).insertBefore($(row));
+						newNode = $(html).insertBefore($(row));
 						inserted = true;
 					}
 				}
