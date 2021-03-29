@@ -51,11 +51,11 @@ function displayImage(title, imagePath) {
 			"</div>";
 }
 
-function displayDetectionRow(detection, id) {
-	return	"<tr id=\"tr_" + id + "\">" +
+function displayDetectionRow(detection, prefix, id) {
+	return	"<tr id=\"" + prefix + "-tr-" + id + "\">" +
 				"<td>" +
-					"<button class=\"button\" type=\"button\" data-toggle=\"div_" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
-					"<div class=\"dropdown-pane\" id=\"div_" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
+					"<button class=\"button\" type=\"button\" data-toggle=\"" + prefix + "-div-" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
+					"<div class=\"dropdown-pane\" id=\"" + prefix + "-div-" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
 								displayImage("Camera", getImagePath(detection, "/images/", "")) +
@@ -78,24 +78,24 @@ function displayDetectionRow(detection, id) {
 function displayNewDetections(detections) {
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
-		var id = detection.timestamp + "_" + detection.sequence;
-		if (!document.getElementById("tr_" + id)) {
-			var html = displayDetectionRow(detection, id);
-			var rows = document.getElementById("new-detections-tbody").children;
+		var id = detection.timestamp + "-" + detection.sequence;
+		if (!document.getElementById("latest-tr-" + id)) {
+			var html = displayDetectionRow(detection, 'latest', id);
+			var rows = document.getElementById("latest-detections-tbody").children;
 			var newNode = undefined;
 			if (rows.length == 0) {
-				newNode = $("#new-detections-tbody").append(html);
+				newNode = $("latest-detections-tbody").append(html);
 			} else {
 				var inserted = false;
 				for (var j = 0; j < rows.length && !inserted; j++) {
 					var row = rows[j];
-					if (row.id < "tr_" + id) {
+					if (row.id < "latest-tr-" + id) {
 						newNode = $(html).insertBefore($(row));
 						inserted = true;
 					}
 				}
 				if (!inserted) {
-					newNode = $("#new-detections-tbody").append(html);
+					newNode = $("#latest-detections-tbody").append(html);
 				}
 			}
 			newNode.foundation();
