@@ -24,6 +24,10 @@ function getCount(detection) {
 	return detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.count : "";
 }
 
+function getBurst(detection) {
+	return detection.vectorMotionDetection && detection.vectorMotionDetection.burst ? detection.vectorMotionDetection.burst.burstCount : "";
+}
+
 function getInterpolated(detection) {
 	return detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? "Y" : "";
 }
@@ -69,6 +73,7 @@ function displayDetectionRow(detection, prefix, id) {
 				"<td>" + getTime(detection) + "</td>" +
 				"<td>" + getMagnitude(detection) + "</td>" +
 				"<td>" + getCount(detection) + "</td>" +
+				"<td>" + getBurst(detection) + "</td>" +
 				"<td>" + getInterpolated(detection) + "</td>" +
 				"<td>" + getWeight(detection) + "</td>" +
 				"<td>" + getSpeed(detection) + "</td>" +
