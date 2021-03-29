@@ -75,27 +75,27 @@ function displayDetectionRow(detection, prefix, id) {
 			"</tr>";
 }
 
-function displayNewDetections(detections) {
+function displayDetections(detections, prefix) {
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
 		var id = detection.timestamp + "-" + detection.sequence;
-		if (!document.getElementById("latest-tr-" + id)) {
-			var html = displayDetectionRow(detection, 'latest', id);
-			var rows = document.getElementById("latest-detections-tbody").children;
+		if (!document.getElementById(prefix + "-tr-" + id)) {
+			var html = displayDetectionRow(detection, prefix, id);
+			var rows = document.getElementById(prefix + "-detections-tbody").children;
 			var newNode = undefined;
 			if (rows.length == 0) {
-				newNode = $("latest-detections-tbody").append(html);
+				newNode = $(prefix + "-detections-tbody").append(html);
 			} else {
 				var inserted = false;
 				for (var j = 0; j < rows.length && !inserted; j++) {
 					var row = rows[j];
-					if (row.id < "latest-tr-" + id) {
+					if (row.id < prefix + "-tr-" + id) {
 						newNode = $(html).insertBefore($(row));
 						inserted = true;
 					}
 				}
 				if (!inserted) {
-					newNode = $("#latest-detections-tbody").append(html);
+					newNode = $("#" + prefix + "-detections-tbody").append(html);
 				}
 			}
 			newNode.foundation();
@@ -110,7 +110,18 @@ function getNewDetections() {
 		context: document.body
 	}).done(function(detections) {
 		if (detections.length > 0) {
-			displayNewDetections(detections);
+			displayDetections(detections, 'latest');
+		}
+	});
+}
+
+function getDetections() {
+	$.ajax({
+		url: "/detections/" + camera,
+		context: document.body
+	}).done(function(detections) {
+		if (detections.length > 0) {
+			displayDetections(detections, 'previous');
 		}
 	});
 }
@@ -118,5 +129,6 @@ function getNewDetections() {
 $(document).ready(function() {
 	$(document).foundation();
 	lazyload();
+	getDetections();
 	setInterval(getNewDetections, 500);
 });

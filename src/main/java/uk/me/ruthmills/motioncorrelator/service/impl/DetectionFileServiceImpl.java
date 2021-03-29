@@ -45,6 +45,11 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	@Override
+	public List<Detection> readDetections(String camera, int maxDetections) throws IOException {
+		return readDetections(camera, LocalDateTime.now().format(TIMESTAMP_FORMAT), maxDetections);
+	}
+
+	@Override
 	public List<Detection> readDetections(String camera, String timestamp, int maxDetections) throws IOException {
 		String year = timestamp.substring(0, 4);
 		String month = timestamp.substring(5, 7);

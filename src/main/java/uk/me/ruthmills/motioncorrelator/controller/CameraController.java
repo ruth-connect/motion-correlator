@@ -55,9 +55,16 @@ public class CameraController {
 		return (detections != null) ? detections.getDetections() : new ArrayList<Detection>();
 	}
 
-	@GetMapping(path = "/detections/{camera}/{timestamp}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/detections/{camera}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<Detection> getDetections(@PathVariable String camera, @PathVariable String timestamp)
+			throws IOException {
+		return detectionFileService.readDetections(camera, 50);
+	}
+
+	@GetMapping(path = "/detections/{camera}/{timestamp}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Detection> getDetectionsForTimestamp(@PathVariable String camera, @PathVariable String timestamp)
 			throws IOException {
 		return detectionFileService.readDetections(camera, timestamp, 50);
 	}
