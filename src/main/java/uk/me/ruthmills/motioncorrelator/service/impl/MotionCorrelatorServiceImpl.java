@@ -99,7 +99,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						logger.info("NEW VECTOR DETECTION for camera: " + vectorDataList.getCamera()
 								+ " with VECTOR timestamp: " + vectorDataList.getTimestamp());
 						VectorMotionDetection vectorMotionDetection = new VectorMotionDetection(
-								vectorDataList.getTimestamp(), vectorDataList.getFrameVector());
+								vectorDataList.getTimestamp(), vectorDataList.getFrameVector(),
+								vectorDataList.getRegionVectors(), vectorDataList.getBurst(),
+								vectorDataList.getExternalTrigger());
 						String camera = vectorDataList.getCamera();
 
 						// Get the frame for this vector detection.
