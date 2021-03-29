@@ -21,6 +21,10 @@ function getProcessTime(detection) {
 		formatMilliseconds(detection.processTime.substring(20, detection.processTime.length))) : "";
 }
 
+function getRegions(detection) {
+	return detection.vectorMotionDetection && detection.vectorMotionDetection.regionVectors ?
+		detection.vectorMotionDetection.regionVectors.join(", ") : "";
+
 function getMagnitude(detection) {
 	return detection.vectorMotionDetection ? detection.vectorMotionDetection.frameVector.magnitude : "";
 }
@@ -77,6 +81,7 @@ function displayDetectionRow(detection, prefix, id) {
 				"<td>" + getDate(detection) + "</td>" +
 				"<td>" + getTime(detection) + "</td>" +
 				"<td>" + getProcessTime(detection) + "</td>" +
+				"<td>" + getRegions(detection) + "</td>" + 
 				"<td>" + getMagnitude(detection) + "</td>" +
 				"<td>" + getCount(detection) + "</td>" +
 				"<td>" + getBurst(detection) + "</td>" +
