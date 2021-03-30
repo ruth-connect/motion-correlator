@@ -115,7 +115,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	private String getClosestHour(String camera, String year, String month, String day, String hour) {
 		String path = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day;
-		return getClosestMatch(path, day);
+		return getClosestMatch(path, hour);
 	}
 
 	private String getPreviousYear(String camera, String year) {
