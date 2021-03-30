@@ -47,7 +47,7 @@ function getInterpolated(detection) {
 
 function getVectorData(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
-		return "<td colspan=\"5\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replace("_", " ") + "</b></td>";
+		return "<td colspan=\"5\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("_", " ") + "</b></td>";
 	} else {
 		return	"<td>" + getRegions(detection) + "</td>" + 
 				"<td>" + getMagnitude(detection) + "</td>" +
