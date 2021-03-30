@@ -79,6 +79,11 @@ function displayDetectionRow(detection, prefix, id) {
 								displayImage("Delta", getImagePath(detection, "/stamped/", "-delta")) +
 							"</div>" +
 						"</div>" +
+						"<div class=\"large-12 cell\">" +
+							"<div class=\"grid-x grid-padding-x\">" +
+								"<h5>Vectors</h5>" +
+							"</div>" +
+						"</div>" +
 					"</div>" +
 				"</td>" +
 				"<td>" + getDate(detection) + "</td>" +
