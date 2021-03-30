@@ -45,6 +45,18 @@ function getInterpolated(detection) {
 	return detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? "Y" : "";
 }
 
+function getVectorData(detection) {
+	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
+		return "<td colspan=\"5\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replace("_", " ") + "</b></td>";
+	} else {
+		return	"<td>" + getRegions(detection) + "</td>" + 
+				"<td>" + getMagnitude(detection) + "</td>" +
+				"<td>" + getCount(detection) + "</td>" +
+				"<td>" + getBurst(detection) + "</td>" +
+				"<td>" + getInterpolated(detection) + "</td>";
+	}
+}
+
 function getWeight(detection) {
 	return detection.personDetections && detection.personDetections.personDetections && detection.personDetections.personDetections.length > 0 ?
 		detection.personDetections.personDetections[0].weight.toFixed(3).padEnd(5, "0") : "";
@@ -136,11 +148,7 @@ function displayDetectionRow(detection, prefix, id) {
 				"<td>" + getDate(detection) + "</td>" +
 				"<td>" + getTime(detection) + "</td>" +
 				"<td>" + getVectorTime(detection) + "</td>" +
-				"<td>" + getRegions(detection) + "</td>" + 
-				"<td>" + getMagnitude(detection) + "</td>" +
-				"<td>" + getCount(detection) + "</td>" +
-				"<td>" + getBurst(detection) + "</td>" +
-				"<td>" + getInterpolated(detection) + "</td>" +
+				getVectorData(detection) +
 				"<td>" + getWeight(detection) + "</td>" +
 				"<td>" + getDetectionTimeMilliseconds(detection) + "</td>" +
 			"</tr>";
