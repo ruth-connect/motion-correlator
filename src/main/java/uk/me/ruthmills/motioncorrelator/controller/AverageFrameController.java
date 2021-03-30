@@ -1,5 +1,12 @@
 package uk.me.ruthmills.motioncorrelator.controller;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -19,14 +26,20 @@ public class AverageFrameController {
 	@Autowired
 	private FrameService frameService;
 
+	private static final Logger logger = LoggerFactory.getLogger(AverageFrameController.class);
+
 	@GetMapping(value = "/{camera}", produces = MediaType.IMAGE_JPEG_VALUE)
 	@ResponseBody
-	public byte[] getAverageFrame(@PathVariable String camera) {
-		Frame frame = frameService.getLatestFrame(camera);
-		if (frame != null) {
-			return ImageUtils.encodeImage(frame.getAverageFrame());
-		} else {
-			return null;
+	public byte[] getAverageFrame(@PathVariable String camera) throws IOException {
+		try {
+			Frame frame = frameService.getLatestFrame(camera);
+			if (frame != null) {
+				return ImageUtils.encodeImage(frame.getAverageFrame());
+			}
+		} catch (Exception ex) {
+			logger.error("Failed to get average frame", ex);
 		}
+		Path path = FileSystems.getDefault().getPath("src/main/resources", "image-not-available.jpg");
+		return Files.readAllBytes(path);
 	}
 }
