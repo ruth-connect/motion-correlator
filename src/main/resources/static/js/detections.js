@@ -216,6 +216,7 @@ function getDetectionsForTimestamp(timestamp) {
 		if (detections.length > 0) {
 			displayDetections(detections, 'previous');
 			$("#load-more").removeAttr("disabled");
+			$("#load-more").removeClass("disabled");
 		}
 	});
 }
@@ -223,9 +224,10 @@ function getDetectionsForTimestamp(timestamp) {
 function loadMore(event) {
 	event.preventDefault();
 	$("#load-more").attr("disabled", "disabled");
+	$("#load-more").addClass("disabled");
 	var id = $("#previous-detections-tbody").children("tr").last().attr("id");
 	var timestamp = id.substring(12, id.lastIndexOf("-"));
-	alert("Timestamp: " + timestamp);
+	getDetectionsForTimestamp(timestamp);
 }
 
 function clearAll(event) {
