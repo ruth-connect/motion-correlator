@@ -77,7 +77,7 @@ public class FrameServiceImpl implements FrameService {
 				}
 				long timestampMillis = TimeUtils.toMilliseconds(timestamp);
 				long currentMillis = TimeUtils.toMilliseconds(currentFrame.getTimestamp());
-				long previousMillis = TimeUtils.toMilliseconds(currentFrame.getTimestamp());
+				long previousMillis = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
 				long timeDifferenceCurrent = Math.abs(timestampMillis - currentMillis);
 				long timeDifferencePrevious = Math.abs(timestampMillis - previousMillis);
 				if (timeDifferenceCurrent <= timeDifferencePrevious) {
