@@ -67,6 +67,55 @@ function displayImage(title, imagePath) {
 			"</div>";
 }
 
+function displayVector(vector) {
+	return	"<tr>" +
+				"<td>" + vector.region + "</td>" +
+				"<td>" + vector.x + "</td>" + 
+				"<td>" + vector.y + "</td>" +
+				"<td>" + vector.dx + "</td>" +
+				"<td>" + vector.dy + "</td>" +
+				"<td>" + vector.magnitude + "</td>" +
+				"<td>" + vector.count + "</td>" +
+			"</tr>";
+}
+
+function displayRegionVectors(regionVectors) {
+	var html = "";
+	if (regionVectors) {
+		for (i = 0; i < regionVectors.length; i++ ) {
+			html += displayVector(regionVectors[i]);
+		}
+	}
+	return html;
+}
+
+function displayVectors(detection) {
+	if (detection.vectorMotionDetection && detection.vectorMotionDetection.frameVector) {
+		return	"<div class=\"large-12 cell\">" +
+					"<div class=\"grid-x grid-padding-x\">" +
+						"<div class=\"large-12 cell\">" +
+							"<h5 style=\"margin-top: 20px;\">Vectors</h5>" +
+							"<table>" +
+								"<thead>" +
+									"<th>Region</th>" +
+									"<th>x</th>" +
+									"<th>y</th>" +
+									"<th>dx</th>" +
+									"<th>dy</th>" +
+									"<th>Mag</th>" +
+									"<th>Count</th>" +
+								"</thead>" +
+								"<tbody>" +
+									displayVector(detection.vectorMotionDetection.frameVector) +
+									displayRegionVectors(detection.vectorMotionDetection.regionVectors) +
+								"</tbody>" +
+							"</table>" +
+						"</div>" +
+					"</div>" +
+				"</div>";
+	}
+}
+
 function displayDetectionRow(detection, prefix, id) {
 	return	"<tr id=\"" + prefix + "-tr-" + id + "\">" +
 				"<td>" +
@@ -79,13 +128,7 @@ function displayDetectionRow(detection, prefix, id) {
 								displayImage("Delta", getImagePath(detection, "/stamped/", "-delta")) +
 							"</div>" +
 						"</div>" +
-						"<div class=\"large-12 cell\">" +
-							"<div class=\"grid-x grid-padding-x\">" +
-								"<div class=\"large-12 cell\">" +
-									"<h5 style=\"margin-top: 20px;\">Vectors</h5>" +
-								"</div>" +
-							"</div>" +
-						"</div>" +
+						displayVectors(detection) +
 					"</div>" +
 				"</td>" +
 				"<td>" + getDate(detection) + "</td>" +
