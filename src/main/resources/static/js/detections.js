@@ -181,13 +181,13 @@ function displayDetections(detections, prefix) {
 	}
 }
 
-function getNewDetections() {
+function getLiveDetections() {
 	$.ajax({
-		url: "/newDetections/" + camera,
+		url: "/liveDetections/" + camera,
 		context: document.body
 	}).done(function(detections) {
 		if (detections.length > 0) {
-			displayDetections(detections, 'latest');
+			displayDetections(detections, 'live');
 		}
 	});
 }
@@ -207,5 +207,5 @@ $(document).ready(function() {
 	$(document).foundation();
 	lazyload();
 	getDetections();
-	setInterval(getNewDetections, 500);
+	setInterval(getLiveDetections, 500);
 });

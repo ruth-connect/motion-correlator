@@ -55,37 +55,12 @@
 		<div class="grid-x grid-padding-x" style="margin-bottom: 500px;">
 			<div class="large-12 cell">
 				<ul class="tabs" data-tabs id="detection-tabs">
-					<li class="tabs-title is-active"><a data-tabs-target="latest-detections-tab" href="#latest-detections-tab" aria-selected="true">Latest Detections</a></li>
-					<li class="tabs-title"><a data-tabs-target="previous-detections-tab" href="#previous-detections-tab">Previous Detections</a></li>
+					<li class="tabs-title is-active"><a data-tabs-target="previous-detections-tab" href="#previous-detections-tab" aria-selected="true">Previous Detections</a></li>
+					<li class="tabs-title"><a data-tabs-target="live-detections-tab" href="#live-detections-tab">Live Detections</a></li>
 				</ul>
 			</div>
 			<div class="large-12 cell">
 				<div class="tabs-content" data-tabs-content="detection-tabs">
-					<div class="tabs-panel is-active" id="latest-detections-tab">
-						<div class="large-12 cell">
-							<h3>Latest Detections</h3>
-							<table>
-								<thead>
-									<tr>
-										<th></th>
-										<th>Date</th>
-										<th>Frame</th>
-										<th>Vector</th>
-										<th>Process</th>
-										<th>Region</th>
-										<th>Mag</th>
-										<th>Count</th>
-										<th>Burst</th>
-										<th>Int</th>
-										<th>Weight</th>
-										<th>Speed</th>
-									</tr>
-								</thead>
-								<tbody id="latest-detections-tbody">
-								</tbody>
-							</table>
-						</div>
-					</div>
 					<div class="tabs-panel" id="previous-detections-tab">
 						<div class="large-12 cell">
 							<h3>Previous Detections</h3>
@@ -107,6 +82,31 @@
 									</tr>
 								</thead>
 								<tbody id="previous-detections-tbody">
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="tabs-panel is-active" id="live-detections-tab">
+						<div class="large-12 cell">
+							<h3>Live Detections</h3>
+							<table>
+								<thead>
+									<tr>
+										<th></th>
+										<th>Date</th>
+										<th>Frame</th>
+										<th>Vector</th>
+										<th>Process</th>
+										<th>Region</th>
+										<th>Mag</th>
+										<th>Count</th>
+										<th>Burst</th>
+										<th>Int</th>
+										<th>Weight</th>
+										<th>Speed</th>
+									</tr>
+								</thead>
+								<tbody id="live-detections-tbody">
 								</tbody>
 							</table>
 						</div>

@@ -48,9 +48,9 @@ public class CameraController {
 		return "camera";
 	}
 
-	@GetMapping(path = "/newDetections/{camera}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/liveDetections/{camera}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public List<Detection> getNewDetections(@PathVariable String camera) {
+	public List<Detection> getLiveDetections(@PathVariable String camera) {
 		Detections detections = detectionAggregatorService.getDetections(camera);
 		return (detections != null) ? detections.getDetections() : new ArrayList<Detection>();
 	}
