@@ -89,10 +89,14 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	private String getClosestMatch(String path, String match) {
 		File directory = new File(path);
-		List<String> matches = Arrays.asList(directory.list()).stream().sorted(Comparator.reverseOrder())
-				.filter(m -> Integer.parseInt(m) <= Integer.parseInt(match)).collect(Collectors.toList());
-		if (matches.size() > 0) {
-			return matches.get(0);
+		if (directory.exists()) {
+			List<String> matches = Arrays.asList(directory.list()).stream().sorted(Comparator.reverseOrder())
+					.filter(m -> Integer.parseInt(m) <= Integer.parseInt(match)).collect(Collectors.toList());
+			if (matches.size() > 0) {
+				return matches.get(0);
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}
