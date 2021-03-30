@@ -126,6 +126,18 @@ public class Vector extends VectorData {
 		public VectorCoordinates convert() {
 			int convertedX = x * 10;
 			int convertedY = y * 10;
+			if (convertedX < 0) {
+				convertedX = 0;
+			}
+			if (convertedX > 639) {
+				convertedX = 639;
+			}
+			if (convertedY < 0) {
+				convertedY = 0;
+			}
+			if (convertedY > 479) {
+				convertedY = 479;
+			}
 			return new VectorCoordinates(convertedX, convertedY);
 		}
 	}
