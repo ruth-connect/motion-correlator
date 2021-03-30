@@ -203,6 +203,19 @@ function getDetections() {
 	}).done(function(detections) {
 		if (detections.length > 0) {
 			displayDetections(detections, 'previous');
+			$("#load-more").prop("disabled", false);
+		}
+	});
+}
+
+function getDetectionsForTimestamp(timestamp) {
+	$.ajax({
+		url: "/detections/" + camera + "/" + timestamp,
+		context: document.body
+	}).done(function(detections) {
+		if (detections.length > 0) {
+			displayDetections(detections, 'previous');
+			$("#load-more").prop("disabled", false);
 		}
 	});
 }
@@ -210,6 +223,8 @@ function getDetections() {
 function loadMore(event) {
 	event.preventDefault();
 	$("#load-more").prop("disabled", true);
+	var id = $("#previous-detections-tbody").children("tr").last().attr("id");
+	alert("id: " + id);
 }
 
 function clearAll(event) {
