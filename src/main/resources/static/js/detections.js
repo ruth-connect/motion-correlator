@@ -50,7 +50,7 @@ function getWeight(detection) {
 		detection.personDetections.personDetections[0].weight.toFixed(3).padEnd(5, "0") : "";
 }
 
-function getSpeed(detection) {
+function getDetectionTimeMilliseconds(detection) {
 	return detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "";
 }
 
@@ -142,7 +142,7 @@ function displayDetectionRow(detection, prefix, id) {
 				"<td>" + getBurst(detection) + "</td>" +
 				"<td>" + getInterpolated(detection) + "</td>" +
 				"<td>" + getWeight(detection) + "</td>" +
-				"<td>" + getSpeed(detection) + "</td>" +
+				"<td>" + getDetectionTimeMilliseconds(detection) + "</td>" +
 			"</tr>";
 }
 
