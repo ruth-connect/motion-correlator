@@ -207,9 +207,19 @@ function getDetections() {
 	});
 }
 
+function loadMore() {
+	$("#load-more").prop("disabled", true);
+}
+
+function clearAll() {
+	$("#live-detections-tbody").empty();
+}
+
 $(document).ready(function() {
 	$(document).foundation();
 	lazyload();
 	getDetections();
+	$("#load-more").click(loadMore);
+	$("#clear-all").click(clearAll)
 	setInterval(getLiveDetections, 500);
 });
