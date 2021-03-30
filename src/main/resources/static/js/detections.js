@@ -162,7 +162,7 @@ function displayDetectionRow(detection, prefix, id) {
 			"</tr>";
 }
 
-function displayDetections(detections, prefix) {
+function displayLiveDetections(detections, prefix) {
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
 		var id = detection.timestamp + "-" + detection.sequence;
@@ -191,13 +191,24 @@ function displayDetections(detections, prefix) {
 	}
 }
 
+function displayDetections(detections, prefix) {
+	for (var i = 0; i < detections.length; i++) {
+		var detection = detections[i];
+		var id = detection.timestamp + "-" + detection.sequence;
+		var html = displayDetectionRow(detection, prefix, id);
+		var newNode = $("#" + prefix + "-detections-tbody").append(html);
+		newNode.foundation();
+		newNode.find("img.lazyload").lazyload();
+	}
+}
+
 function getLiveDetections() {
 	$.ajax({
 		url: "/liveDetections/" + camera,
 		context: document.body
 	}).done(function(detections) {
 		if (detections.length > 0) {
-			displayDetections(detections, 'live');
+			displayLiveDetections(detections, 'live');
 		}
 	});
 }
