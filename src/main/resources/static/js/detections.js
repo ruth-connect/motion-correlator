@@ -69,7 +69,7 @@ function displayImage(title, imagePath) {
 
 function displayVector(vector) {
 	return	"<tr>" +
-				"<td>" + vector.region + "</td>" +
+				"<td>" + (vector.region === "f" ? "Frame" : vector.region) + "</td>" +
 				"<td>" + vector.x + "</td>" + 
 				"<td>" + vector.y + "</td>" +
 				"<td>" + vector.dx + "</td>" +
