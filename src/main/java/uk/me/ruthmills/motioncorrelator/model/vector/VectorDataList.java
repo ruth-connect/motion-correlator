@@ -2,6 +2,7 @@ package uk.me.ruthmills.motioncorrelator.model.vector;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class VectorDataList extends ArrayList<VectorData> {
 				}
 			}
 		}
-		return regionVectors.stream().sorted().collect(Collectors.toList());
+		return regionVectors.stream().sorted(Comparator.comparing(Vector::getRegion)).collect(Collectors.toList());
 	}
 
 	public Burst getBurst() {
