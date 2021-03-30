@@ -215,14 +215,14 @@ function getDetectionsForTimestamp(timestamp) {
 	}).done(function(detections) {
 		if (detections.length > 0) {
 			displayDetections(detections, 'previous');
-			$("#load-more").prop("disabled", false);
+			$("#load-more").removeAttr("disabled");
 		}
 	});
 }
 
 function loadMore(event) {
 	event.preventDefault();
-	$("#load-more").prop("disabled", true);
+	$("#load-more").attr("disabled", "disabled");
 	var id = $("#previous-detections-tbody").children("tr").last().attr("id");
 	alert("id: " + id);
 }
