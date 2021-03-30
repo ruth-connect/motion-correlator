@@ -224,7 +224,8 @@ function loadMore(event) {
 	event.preventDefault();
 	$("#load-more").attr("disabled", "disabled");
 	var id = $("#previous-detections-tbody").children("tr").last().attr("id");
-	alert("id: " + id);
+	var timestamp = id.substring(12, id.lastIndexOf("-"));
+	alert("Timestamp: " + timestamp);
 }
 
 function clearAll(event) {
