@@ -233,7 +233,7 @@ function loadMore(event) {
 	$("#load-more").attr("disabled", "disabled");
 	$("#load-more").addClass("disabled");
 	var id = $("#previous-detections-tbody").children("tr").last().attr("id");
-	var timestamp = id.substring(12, id.lastIndexOf("-"));
+	var timestamp = formatTimestamp(id.substring(12, id.lastIndexOf("-")));
 	getDetectionsForTimestamp(timestamp);
 }
 
