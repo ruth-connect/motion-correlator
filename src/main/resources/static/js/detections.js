@@ -209,7 +209,8 @@ function getDetections() {
 	}).done(function(detections) {
 		if (detections.length > 0) {
 			displayDetections(detections, 'previous');
-			$("#load-more").prop("disabled", false);
+			$("#load-more").removeAttr("disabled");
+			$("#load-more").removeClass("disabled");
 		}
 	});
 }
