@@ -46,7 +46,9 @@ function getInterpolated(detection) {
 }
 
 function getVectorData(detection) {
-	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
+	if (!detection.vectorMotionDetection && detection.roundRobin) {
+		return "<td colspan=\"5\"><i>Round Robin</i></td>";
+	} else if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
 		return "<td colspan=\"5\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("_", " ") + "</b></td>";
 	} else {
 		return	"<td>" + getRegions(detection) + "</td>" + 
