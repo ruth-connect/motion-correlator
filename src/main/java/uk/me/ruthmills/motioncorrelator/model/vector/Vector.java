@@ -124,8 +124,8 @@ public class Vector extends VectorData {
 		}
 
 		public VectorCoordinates convert() {
-			int convertedX = x * 16;
-			int convertedY = y * 16;
+			int convertedX = x * 10;
+			int convertedY = y * 10;
 			return new VectorCoordinates(convertedX, convertedY);
 		}
 	}
