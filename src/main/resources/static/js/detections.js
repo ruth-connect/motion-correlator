@@ -59,6 +59,11 @@ function getVectorData(detection) {
 	}
 }
 
+function getNumPersonDetections(detection) {
+	return detection.personDetections && detection.personDetections.personDetections && detection.personDetections.personDetections.length > 0 ?
+		detection.personDetections.personDetections.length : "";
+}
+
 function getWeight(detection) {
 	return detection.personDetections && detection.personDetections.personDetections && detection.personDetections.personDetections.length > 0 ?
 		detection.personDetections.personDetections[0].weight.toFixed(3).padEnd(5, "0") : "";
@@ -151,6 +156,7 @@ function displayDetectionRow(detection, prefix, id) {
 				"<td>" + getTime(detection) + "</td>" +
 				"<td>" + getVectorTime(detection) + "</td>" +
 				getVectorData(detection) +
+				"<td>" + getNumPersonDetections(detection) + "</td>" +
 				"<td>" + getWeight(detection) + "</td>" +
 				"<td>" + getDetectionTimeMilliseconds(detection) + "</td>" +
 			"</tr>";
