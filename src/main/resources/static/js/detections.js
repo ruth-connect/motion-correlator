@@ -22,11 +22,6 @@ function getTime(detection) {
 		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length));
 }
 
-function getProcessTime(detection) {
-	return detection.processTime ? (detection.processTime.substring(11, 19) + "." +
-		formatMilliseconds(detection.processTime.substring(20, detection.processTime.length))) : "";
-}
-
 function getRegions(detection) {
 	return detection.vectorMotionDetection && detection.vectorMotionDetection.regionVectors ?
 		detection.vectorMotionDetection.regionVectors.map(function(vector) {
@@ -141,7 +136,6 @@ function displayDetectionRow(detection, prefix, id) {
 				"<td>" + getDate(detection) + "</td>" +
 				"<td>" + getTime(detection) + "</td>" +
 				"<td>" + getVectorTime(detection) + "</td>" +
-				"<td>" + getProcessTime(detection) + "</td>" +
 				"<td>" + getRegions(detection) + "</td>" + 
 				"<td>" + getMagnitude(detection) + "</td>" +
 				"<td>" + getCount(detection) + "</td>" +
