@@ -11,6 +11,12 @@ function getDate(detection) {
 		detection.timestamp.substring(0, 4);
 }
 
+function getVectorTime(detection) {
+	return detection.vectorMotionDetection && detection.vectorMotionDetection.timestamp ?
+		detection.vectorMotionDetection.timestamp.substring(11, 19) + "." +
+			formatMilliseconds(detection.vectorMotionDetection.timestamp.substring(20, detection.vectorMotionDetection.timestamp.length)) : "";
+}
+
 function getTime(detection) {
 	return detection.timestamp.substring(11, 19) + "." +
 		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length));
@@ -134,6 +140,7 @@ function displayDetectionRow(detection, prefix, id) {
 				"</td>" +
 				"<td>" + getDate(detection) + "</td>" +
 				"<td>" + getTime(detection) + "</td>" +
+				"<td>" + getVectorTime(detection) + "</td>" +
 				"<td>" + getProcessTime(detection) + "</td>" +
 				"<td>" + getRegions(detection) + "</td>" + 
 				"<td>" + getMagnitude(detection) + "</td>" +
