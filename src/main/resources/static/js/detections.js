@@ -114,6 +114,7 @@ function displayVectors(detection) {
 					"</div>" +
 				"</div>";
 	}
+	return "";
 }
 
 function displayDetectionRow(detection, prefix, id) {
