@@ -125,19 +125,37 @@ public class Vector extends VectorData {
 
 		public VectorCoordinates convert() {
 			int convertedX = x * 10;
-			int convertedY = y * 10;
-			if (convertedX < 0) {
-				convertedX = 0;
+			float ratioX = 1f;
+			if (convertedX > 639) {
+				ratioX = 640f / (float) convertedX;
+			} else if (convertedX < 0) {
+				ratioX = 640f / (640f - (float) convertedX);
 			}
+
+			int convertedY = y * 10;
+			float ratioY = 1f;
+			if (convertedY > 479) {
+				ratioY = (float) 480f / convertedY;
+			} else if (convertedY < 0) {
+				ratioY = 480f / (480f - (float) convertedY);
+			}
+
+			float ratio = ratioX < ratioY ? ratioX : ratioY;
+
+			convertedX = Math.round(((float) x) * ratio * 640f / 100f);
 			if (convertedX > 639) {
 				convertedX = 639;
+			} else if (convertedX < 0) {
+				convertedX = 0;
 			}
-			if (convertedY < 0) {
-				convertedY = 0;
-			}
+
+			convertedY = Math.round(((float) y) * ratio * 480f / 100f);
 			if (convertedY > 479) {
 				convertedY = 479;
+			} else if (convertedY < 0) {
+				convertedY = 0;
 			}
+
 			return new VectorCoordinates(convertedX, convertedY);
 		}
 	}
