@@ -81,7 +81,9 @@ function displayDetectionRow(detection, prefix, id) {
 						"</div>" +
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
-								"<h5>Vectors</h5>" +
+								"<div class=\"large-12 cell\">" +
+									"<h5 style=\"margin-top: 20px;\">Vectors</h5>" +
+								"</div>" +
 							"</div>" +
 						"</div>" +
 					"</div>" +
