@@ -14,18 +14,20 @@ public class Detection {
 	private LocalDateTime timestamp;
 	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
+	private boolean roundRobin;
 	private LocalDateTime processTime;
 
 	public Detection() {
 	}
 
 	public Detection(String camera, long sequence, LocalDateTime timestamp, VectorMotionDetection vectorMotionDetection,
-			PersonDetections personDetections) {
+			PersonDetections personDetections, boolean roundRobin) {
 		this.camera = camera;
 		this.sequence = sequence;
 		this.timestamp = timestamp;
 		this.vectorMotionDetection = vectorMotionDetection;
 		this.personDetections = personDetections;
+		this.roundRobin = roundRobin;
 		processTime = LocalDateTime.now();
 	}
 
@@ -41,12 +43,12 @@ public class Detection {
 		return timestamp;
 	}
 
-	public LocalDateTime getProcessTime() {
-		return processTime;
+	public boolean isRoundRobin() {
+		return roundRobin;
 	}
 
-	public void setProcessTime(LocalDateTime processTime) {
-		this.processTime = processTime;
+	public LocalDateTime getProcessTime() {
+		return processTime;
 	}
 
 	public VectorMotionDetection getVectorMotionDetection() {

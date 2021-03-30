@@ -297,7 +297,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					while (previousFrame != null && imageTimeDifferenceMilliseconds <= 3000) {
 						if (previousFrame.getMotionCorrelation() == null) {
 							previousFrame.setMotionCorrelation(
-									new MotionCorrelation(currentDetection.getCamera(), previousFrame));
+									new MotionCorrelation(currentDetection.getCamera(), previousFrame, false));
 						}
 
 						previousFrame = previousFrame.getPreviousFrame();
@@ -343,7 +343,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 				// Is there a frame, and no motion correlation for this frame?
 				if (frame != null && frame.getMotionCorrelation() == null) {
-					currentDetection = new MotionCorrelation(camera, frame);
+					currentDetection = new MotionCorrelation(camera, frame, true);
 					performMotionCorrelation(currentDetection, true);
 
 					// Is there a person detection?

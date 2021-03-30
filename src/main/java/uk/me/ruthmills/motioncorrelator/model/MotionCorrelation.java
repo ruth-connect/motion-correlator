@@ -15,14 +15,16 @@ public class MotionCorrelation {
 	private PersonDetections personDetections;
 	private Image averageFrame;
 	private Image delta;
+	private boolean roundRobin;
 	private boolean processed;
 
 	public MotionCorrelation() {
 	}
 
-	public MotionCorrelation(String camera, Frame frame) {
+	public MotionCorrelation(String camera, Frame frame, boolean roundRobin) {
 		this.camera = camera;
 		this.frame = frame;
+		this.roundRobin = roundRobin;
 		frame.setMotionCorrelation(this);
 	}
 
@@ -80,6 +82,14 @@ public class MotionCorrelation {
 
 	public void setDelta(Image delta) {
 		this.delta = delta;
+	}
+
+	public boolean isRoundRobin() {
+		return roundRobin;
+	}
+
+	public void setRoundRobin(boolean roundRobin) {
+		this.roundRobin = roundRobin;
 	}
 
 	public boolean isProcessed() {
