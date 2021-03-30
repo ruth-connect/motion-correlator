@@ -207,11 +207,13 @@ function getDetections() {
 	});
 }
 
-function loadMore() {
+function loadMore(event) {
+	event.preventDefault();
 	$("#load-more").prop("disabled", true);
 }
 
-function clearAll() {
+function clearAll(event) {
+	event.preventDefault();
 	$("#live-detections-tbody").empty();
 }
 
