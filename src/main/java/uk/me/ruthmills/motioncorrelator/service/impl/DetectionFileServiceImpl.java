@@ -53,6 +53,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	@Override
 	public List<Detection> readDetections(String camera, String timestamp, int maxDetections) throws IOException {
+		logger.info("Read Detections. Camera: " + camera + ", Timestamp: " + timestamp + ", Max Detections: "
+				+ maxDetections);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		String year = timestamp.substring(0, 4);
