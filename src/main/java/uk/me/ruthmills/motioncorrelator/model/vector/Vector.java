@@ -88,6 +88,11 @@ public class Vector extends VectorData {
 		return convertY(x + dx, y + dy);
 	}
 
+	@JsonIgnore
+	public boolean isZeroVector() {
+		return x == 0 && y == 0 && dx == 0 && dy == 0 && magnitude == 0 && count == 0;
+	}
+
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Region: " + region + ", x: " + x + ", y: " + y + ", dx: " + dx + ", dy: " + dy

@@ -31,7 +31,7 @@ public class VectorDataList extends ArrayList<VectorData> {
 		for (VectorData vectorData : this) {
 			if (vectorData instanceof Vector) {
 				Vector vector = (Vector) vectorData;
-				if (vector.getRegion().equals("f")) {
+				if (vector.getRegion().equals("f") && !vector.isZeroVector()) {
 					return vector;
 				}
 			}
