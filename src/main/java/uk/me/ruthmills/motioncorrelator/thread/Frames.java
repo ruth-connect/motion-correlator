@@ -43,7 +43,7 @@ public class Frames implements Runnable {
 
 	public void addCurrentFrame(Image image) {
 		if (!unprocessedImages.offer(image)) {
-			logger.info("Frame dropped. Camera: " + camera.getName() + ", Timestamp: " + image.getTimestamp());
+			logger.warn("Frame dropped. Camera: " + camera.getName() + ", Timestamp: " + image.getTimestamp());
 		}
 	}
 
