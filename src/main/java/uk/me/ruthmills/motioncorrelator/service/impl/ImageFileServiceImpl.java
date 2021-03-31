@@ -33,8 +33,11 @@ public class ImageFileServiceImpl implements ImageFileService {
 		if (image != null) {
 			Path path = FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp()),
 					image.getTimestamp() + "-" + image.getSequence() + suffix + ".jpg");
-			if (!path.toFile().exists()) {
+			File file = path.toFile();
+			if (!file.exists()) {
 				Files.write(path, image.getBytes(), StandardOpenOption.CREATE);
+			} else {
+				logger.info("Image: " + file.getAbsolutePath() + " exists so not writing it again");
 			}
 		}
 	}
