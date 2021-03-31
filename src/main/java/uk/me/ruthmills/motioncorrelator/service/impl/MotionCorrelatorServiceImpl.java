@@ -196,6 +196,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection,
 							vectorTimeDifferenceMilliseconds);
 				} else {
+					logger.info("Vector time difference is: " + vectorTimeDifferenceMilliseconds
+							+ " - not interpolating vectors");
+
 					// add motion correlations with no frame vector for the last 3 seconds.
 					addEmptyMotionCorrelationsForLast3Seconds(currentMotionDetection);
 				}
