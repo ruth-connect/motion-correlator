@@ -24,8 +24,9 @@ public class Detections {
 
 	public void addDetection(Detection detection) {
 		if (detections.contains(detection)) {
-			logger.info("List already contains detection with timestamp: " + detection.getTimestamp()
-					+ " and sequence: " + detection.getSequence() + " so removing the old one");
+			logger.info("List already contains detection for camera: " + detection.getCamera() + " with timestamp: "
+					+ detection.getTimestamp() + " and sequence: " + detection.getSequence()
+					+ " so removing the old one");
 			detections.remove(detection);
 		}
 		detections.addLast(detection);
