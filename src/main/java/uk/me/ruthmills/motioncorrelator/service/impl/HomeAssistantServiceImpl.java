@@ -87,9 +87,8 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections) {
 		logger.info(camera.getName() + " person detected");
-		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_person_detected",
-				ImageUtils.getImagePath(camera.getName(), timestamp)
-						+ personDetections.getDetectionsFilename(sequence, timestamp));
+		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_person_detected", "stamped/"
+				+ ImageUtils.getImagePath(camera.getName(), timestamp) + timestamp + "-" + sequence + ".jpg");
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {

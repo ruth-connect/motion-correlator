@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
-import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.service.ImageFileService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
@@ -26,14 +25,6 @@ public class ImageFileServiceImpl implements ImageFileService {
 	@Override
 	public void writeImage(String camera, Image image) throws IOException {
 		writeImage(camera, image, "");
-	}
-
-	@Override
-	public void writeImage(String camera, Image image, PersonDetections personDetections) throws IOException {
-		Files.write(
-				FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp()),
-						personDetections.getDetectionsFilename(image.getSequence(), image.getTimestamp())),
-				image.getBytes(), StandardOpenOption.CREATE);
 	}
 
 	@Override
