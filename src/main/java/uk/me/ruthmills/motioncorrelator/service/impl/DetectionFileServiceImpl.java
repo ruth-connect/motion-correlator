@@ -197,7 +197,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		try (Stream<Path> stream = Files.walk(Paths.get(detectionPath))) {
 			detections = stream.filter(Files::isReadable).filter(p -> !Files.isDirectory(p)).filter(p -> {
 				String fileTimestamp = p.toFile().getName().substring(0, 23);
-				return timestamp.compareTo(fileTimestamp) < 0;
+				return timestamp.compareTo(fileTimestamp) > 0;
 			}).limit(maxDetections).map(p -> {
 				try {
 					return mapper.readValue(p.toFile(), Detection.class);
