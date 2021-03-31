@@ -215,7 +215,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		List<Detection> detections = new ArrayList<>();
 		try (Stream<Path> stream = Files.walk(Paths.get(detectionPath))) {
 			detections = stream.filter(Files::isReadable).filter(p -> !Files.isDirectory(p))
-					.sorted((p1, p2) -> (p1.toFile().getName().compareTo(p2.toFile().getName()))).filter(p -> {
+					.sorted((p1, p2) -> (p2.toFile().getName().compareTo(p1.toFile().getName()))).filter(p -> {
 						String fileTimestamp = p.toFile().getName().substring(0, 23);
 						return timestamp.compareTo(fileTimestamp) > 0;
 					}).limit(maxDetections).map(p -> {
