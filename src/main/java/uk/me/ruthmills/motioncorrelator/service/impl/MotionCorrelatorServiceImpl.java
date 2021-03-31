@@ -117,6 +117,10 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							logger.info("Vector detection. Adding vector to existing motion correlation for camera: "
 									+ camera + " and frame timestamp: " + currentMotionDetection.getFrameTimestamp());
 							currentMotionDetection.setVectorMotionDetection(vectorMotionDetection);
+							if (currentMotionDetection.isProcessed()) {
+								// Re-add the detection to the Detection Aggregator Service.
+								detectionAggregatorService.addDetection(currentMotionDetection);
+							}
 						}
 
 						// Perform the motion correlation.
@@ -266,6 +270,10 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 								vectorMotionDetection);
 					} else {
 						frame.getMotionCorrelation().setVectorMotionDetection(vectorMotionDetection);
+						if (frame.getMotionCorrelation().isProcessed()) {
+							// Re-add the detection to the Detection Aggregator Service.
+							detectionAggregatorService.addDetection(motionCorrelation);
+						}
 					}
 
 					logger.info("Interpolated data for image with timestamp: " + frame.getTimestamp() + " and camera: "
