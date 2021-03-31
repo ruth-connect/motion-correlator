@@ -61,8 +61,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String hour = timestamp.substring(11, 13);
 		List<Detection> detections = new ArrayList<>();
 		String path = getDetectionPath(camera, year, month, day, hour);
-		logger.info("Detection Path: " + path);
 		while (path != null && detections.size() < 50) {
+			logger.info("Detection Path: " + path);
 			String[] parts = path.split("/");
 			year = parts[0];
 			month = parts[1];
