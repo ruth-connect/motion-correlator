@@ -65,14 +65,13 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 			day = parts[2];
 			hour = parts[3];
 			LocalDateTime dateTime = LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT);
-			detections.addAll(readDetections(camera, year, month, day, hour).stream()
-					.filter(detection -> detection.getTimestamp().isBefore(dateTime)).collect(Collectors.toList()));
+			detections
+					.addAll(readDetections(camera, year, month, day, hour, timestamp, maxDetections - detections.size())
+							.stream().filter(detection -> detection.getTimestamp().isBefore(dateTime))
+							.collect(Collectors.toList()));
 			if (detections.size() < 50) {
 				path = getPreviousHour(camera, year, month, day, hour);
 			}
-		}
-		if (detections.size() > maxDetections) {
-			detections = new ArrayList<Detection>(detections.subList(0, maxDetections));
 		}
 		return detections;
 	}
@@ -189,18 +188,17 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		}
 	}
 
-	private List<Detection> readDetections(String camera, String year, String month, String day, String hour)
-			throws IOException {
+	private List<Detection> readDetections(String camera, String year, String month, String day, String hour,
+			String timestamp, int maxDetections) throws IOException {
 		String detectionPath = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
-		return readDetections(detectionPath);
-	}
-
-	private List<Detection> readDetections(String detectionPath) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		List<Detection> detections = new ArrayList<>();
 		try (Stream<Path> stream = Files.walk(Paths.get(detectionPath))) {
-			detections = stream.filter(Files::isReadable).filter(p -> !Files.isDirectory(p)).map(p -> {
+			detections = stream.filter(Files::isReadable).filter(p -> !Files.isDirectory(p)).filter(p -> {
+				String fileTimestamp = p.toFile().getName().substring(0, 23);
+				return timestamp.compareTo(fileTimestamp) < 0;
+			}).limit(maxDetections).map(p -> {
 				try {
 					return mapper.readValue(p.toFile(), Detection.class);
 				} catch (Exception ex) {
