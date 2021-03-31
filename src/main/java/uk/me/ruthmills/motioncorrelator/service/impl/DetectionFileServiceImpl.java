@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -51,6 +53,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	@Override
 	public List<Detection> readDetections(String camera, String timestamp, int maxDetections) throws IOException {
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		String year = timestamp.substring(0, 4);
 		String month = timestamp.substring(5, 7);
 		String day = timestamp.substring(8, 10);
@@ -73,6 +77,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 				path = getPreviousHour(camera, year, month, day, hour);
 			}
 		}
+		stopWatch.stop();
+		logger.info("Read time: " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms");
 		return detections;
 	}
 
