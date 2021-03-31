@@ -113,16 +113,25 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getClosestMonth(String camera, String year, String month) {
+		if (month.length() < 2) {
+			month = "0" + month;
+		}
 		String path = DETECTION_PATH_PREFIX + camera + "/" + year;
 		return getClosestMatch(path, month);
 	}
 
 	private String getClosestDay(String camera, String year, String month, String day) {
+		if (day.length() < 2) {
+			day = "0" + day;
+		}
 		String path = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month;
 		return getClosestMatch(path, day);
 	}
 
 	private String getClosestHour(String camera, String year, String month, String day, String hour) {
+		if (hour.length() < 2) {
+			hour = "0" + hour;
+		}
 		String path = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day;
 		return getClosestMatch(path, hour);
 	}
@@ -135,10 +144,9 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		int previousMonth = Integer.parseInt(month) - 1;
 		if (previousMonth == 0) {
 			return getPreviousYear(camera, year);
-		} else if (previousMonth < 10) {
-			return getDetectionPath(camera, year, "0" + Integer.toString(previousMonth), "31", "23");
 		} else {
-			return getDetectionPath(camera, year, Integer.toString(previousMonth), "31", "23");
+			return getDetectionPath(camera, year, getClosestMonth(camera, year, Integer.toString(previousMonth)), "31",
+					"23");
 		}
 	}
 
@@ -146,10 +154,9 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		int previousDay = Integer.parseInt(day) - 1;
 		if (previousDay == 0) {
 			return getPreviousMonth(camera, year, month);
-		} else if (previousDay < 10) {
-			return getDetectionPath(camera, year, month, "0" + Integer.toString(previousDay), "23");
 		} else {
-			return getDetectionPath(camera, year, month, Integer.toString(previousDay), "23");
+			return getDetectionPath(camera, year, month,
+					getClosestDay(camera, year, month, Integer.toString(previousDay)), "23");
 		}
 	}
 
@@ -157,10 +164,9 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		int previousHour = Integer.parseInt(hour) - 1;
 		if (previousHour < 0) {
 			return getPreviousDay(camera, year, month, day);
-		} else if (previousHour < 10) {
-			return getDetectionPath(camera, year, month, day, "0" + Integer.toString(previousHour));
 		} else {
-			return getDetectionPath(camera, year, month, day, Integer.toString(previousHour));
+			return getDetectionPath(camera, year, month, day,
+					getClosestHour(camera, year, month, day, Integer.toString(previousHour)));
 		}
 	}
 
@@ -187,7 +193,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 					if (closestHour == null) {
 						return getPreviousDay(camera, year, month, day);
 					} else {
-						return year + "/" + month + "/" + day + "/" + hour;
+						return year + "/" + month + "/" + day + "/" + closestHour;
 					}
 				}
 			}
