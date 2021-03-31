@@ -108,11 +108,13 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getClosestYear(String camera, String year) {
+		logger.info("getClosestYear: " + camera + "/" + year);
 		String path = DETECTION_PATH_PREFIX + camera;
 		return getClosestMatch(path, year);
 	}
 
 	private String getClosestMonth(String camera, String year, String month) {
+		logger.info("getClosestMonth: " + camera + "/" + year + "/" + month);
 		if (month.length() < 2) {
 			month = "0" + month;
 		}
@@ -121,6 +123,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getClosestDay(String camera, String year, String month, String day) {
+		logger.info("getClosestDay: " + camera + "/" + year + "/" + month + "/" + day);
 		if (day.length() < 2) {
 			day = "0" + day;
 		}
@@ -129,6 +132,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getClosestHour(String camera, String year, String month, String day, String hour) {
+		logger.info("getClosestHour: " + camera + "/" + year + "/" + month + "/" + day + "/" + hour);
 		if (hour.length() < 2) {
 			hour = "0" + hour;
 		}
