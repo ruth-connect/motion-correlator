@@ -100,6 +100,10 @@ public class MotionCorrelation {
 		this.processed = processed;
 	}
 
+	public boolean hasFrameVector() {
+		return vectorMotionDetection != null && vectorMotionDetection.getFrameVector() != null;
+	}
+
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		if (vectorMotionDetection != null) {

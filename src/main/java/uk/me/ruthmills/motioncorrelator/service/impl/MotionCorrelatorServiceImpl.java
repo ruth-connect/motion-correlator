@@ -182,16 +182,13 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 		private void interpolateVectorsOverTime(MotionCorrelation currentMotionDetection,
 				MotionCorrelation previousMotionDetection) throws IOException {
-			if (currentMotionDetection.getVectorMotionDetection() != null
-					&& previousMotionDetection.getVectorMotionDetection() != null) {
+			if (currentMotionDetection.hasFrameVector() && previousMotionDetection.hasFrameVector()) {
 				// if both detections have frame vectors, and previous motion detection was
 				// within 3 seconds, interpolate the vectors over time.
 				long vectorTimeDifferenceMilliseconds = TimeUtils
 						.toMilliseconds(currentMotionDetection.getVectorMotionDetection().getTimestamp())
 						- TimeUtils.toMilliseconds(previousMotionDetection.getVectorMotionDetection().getTimestamp());
-				if ((currentMotionDetection.getVectorMotionDetection().getFrameVector() != null)
-						&& (previousMotionDetection.getVectorMotionDetection().getFrameVector() != null)
-						&& (vectorTimeDifferenceMilliseconds > 0) && (vectorTimeDifferenceMilliseconds <= 3000)) {
+				if ((vectorTimeDifferenceMilliseconds > 0) && (vectorTimeDifferenceMilliseconds <= 3000)) {
 					interpolateVectorsOverTime(currentMotionDetection, previousMotionDetection,
 							vectorTimeDifferenceMilliseconds);
 				} else {
