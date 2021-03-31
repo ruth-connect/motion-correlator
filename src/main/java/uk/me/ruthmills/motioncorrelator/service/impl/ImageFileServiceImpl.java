@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 
@@ -30,10 +31,11 @@ public class ImageFileServiceImpl implements ImageFileService {
 	@Override
 	public void writeImage(String camera, Image image, String suffix) throws IOException {
 		if (image != null) {
-			Files.write(
-					FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp()),
-							image.getTimestamp() + "-" + image.getSequence() + suffix + ".jpg"),
-					image.getBytes(), StandardOpenOption.CREATE);
+			Path path = FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp()),
+					image.getTimestamp() + "-" + image.getSequence() + suffix + ".jpg");
+			if (!path.toFile().exists()) {
+				Files.write(path, image.getBytes(), StandardOpenOption.CREATE);
+			}
 		}
 	}
 
