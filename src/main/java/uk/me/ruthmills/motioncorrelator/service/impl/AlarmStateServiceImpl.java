@@ -66,6 +66,11 @@ public class AlarmStateServiceImpl implements AlarmStateService {
 		logger.info("Alarm State set to triggered");
 	}
 
+	@Override
+	public void invalidCode() {
+		logger.info("Invalid Code entered");
+	}
+
 	public AlarmState getAlarmState() {
 		return alarmState;
 	}

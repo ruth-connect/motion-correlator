@@ -49,4 +49,10 @@ public class AlarmStateController {
 	public void triggered() {
 		alarmStateService.triggered();
 	}
+
+	@PostMapping(value = "/invalid_code")
+	@ResponseStatus(value = HttpStatus.OK)
+	public void invalidCode() {
+		alarmStateService.invalidCode();
+	}
 }
