@@ -1,3 +1,7 @@
+String.prototype.toTitleCase = function () {
+    return this.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+};
+
 function formatMilliseconds(milliseconds) {
 	return milliseconds.padEnd(3, "0");
 }
@@ -43,6 +47,10 @@ function getBurst(detection) {
 
 function getInterpolated(detection) {
 	return detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? "Y" : "";
+}
+
+function getAlarmState(detection) {
+	return detection.alarmState && detection.alarmState !== "UNKNOWN" ? detection.alarmState.replaceAll("_", " ").toTitleCase() : "";
 }
 
 function getVectorData(detection) {
@@ -96,6 +104,7 @@ function displayVector(vector) {
 				"<td>" + vector.dy + "</td>" +
 				"<td>" + vector.magnitude + "</td>" +
 				"<td>" + vector.count + "</td>" +
+				"<td>" + (vector.interpolated ? "Y" : "") + "</td>" +
 			"</tr>";
 }
 
@@ -114,6 +123,7 @@ function displayVectors(detection) {
 		return	"<div class=\"large-12 cell\">" +
 					"<div class=\"grid-x grid-padding-x\">" +
 						"<div class=\"large-12 cell\">" +
+							"<div style=\"float: right;\"><h5>Burglar Alarm: " + getAlarmState(detection) + "</h5>" +
 							"<h5 style=\"margin-top: 20px;\">Vectors</h5>" +
 							"<table>" +
 								"<thead>" +
@@ -124,6 +134,7 @@ function displayVectors(detection) {
 									"<th>dy</th>" +
 									"<th>Mag</th>" +
 									"<th>Count</th>" +
+									"<th>Int</th>" +
 								"</thead>" +
 								"<tbody>" +
 									displayVector(detection.vectorMotionDetection.frameVector) +
