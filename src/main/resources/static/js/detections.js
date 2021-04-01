@@ -2,12 +2,12 @@ String.prototype.toTitleCase = function () {
     return this.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
 };
 
-function formatMilliseconds(milliseconds) {
-	return (milliseconds && milliseconds != "0") ? "." + milliseconds.padEnd(3, "0") : "";
+function formatMilliseconds(milliseconds, display) {
+	return (display || (milliseconds && milliseconds != "0")) ? "." + milliseconds.padEnd(3, "0") : "";
 }
 
 function formatTimestamp(timestamp) {
-	return timestamp.substring(0, 19) + formatMilliseconds(timestamp.substring(20, timestamp.length));
+	return timestamp.substring(0, 19) + formatMilliseconds(timestamp.substring(20, timestamp.length), false);
 }
 
 function getDate(detection) {
@@ -18,12 +18,12 @@ function getDate(detection) {
 function getVectorTime(detection) {
 	return detection.vectorMotionDetection && detection.vectorMotionDetection.timestamp ?
 		detection.vectorMotionDetection.timestamp.substring(11, 19) +
-			formatMilliseconds(detection.vectorMotionDetection.timestamp.substring(20, detection.vectorMotionDetection.timestamp.length)) : "";
+			formatMilliseconds(detection.vectorMotionDetection.timestamp.substring(20, detection.vectorMotionDetection.timestamp.length), true) : "";
 }
 
 function getTime(detection) {
 	return detection.timestamp.substring(11, 19) +
-		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length));
+		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length), true);
 }
 
 function getRegions(detection) {
