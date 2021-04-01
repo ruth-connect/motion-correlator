@@ -118,12 +118,21 @@ function displayRegionVectors(regionVectors) {
 	return html;
 }
 
+function displayAlarmState(detection) {
+	return	"<div class=\"large-12 cell\">" +
+				"<div class=\"grid-x grid-padding-x\">" +
+					"<div class=\"large-12 cell\">" +
+						"<h5>Burglar Alarm: " + getAlarmState(detection) + "</h5>" +
+					"</div>" +
+				"</div>" +
+			"</div>";
+}
+
 function displayVectors(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.frameVector) {
 		return	"<div class=\"large-12 cell\">" +
 					"<div class=\"grid-x grid-padding-x\">" +
 						"<div class=\"large-12 cell\">" +
-							"<div style=\"float: right;\"><h5>Burglar Alarm: " + getAlarmState(detection) + "</h5>" +
 							"<h5 style=\"margin-top: 20px;\">Vectors</h5>" +
 							"<table>" +
 								"<thead>" +
@@ -160,6 +169,7 @@ function displayDetectionRow(detection, prefix, id) {
 								displayImage("Delta", getImagePath(detection, "/stamped/", "-delta")) +
 							"</div>" +
 						"</div>" +
+						displayAlarmState(detection) +
 						displayVectors(detection) +
 					"</div>" +
 				"</td>" +
