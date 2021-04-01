@@ -123,7 +123,7 @@ function displayAlarmState(detection) {
 
 function displayVectors(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.frameVector) {
-		return	"<h5>Vectors</h5>" +
+		return	"<h5 style=\"margin-top: 20px;\">Vectors</h5>" +
 				"<table>" +
 					"<thead>" +
 						"<th>Region</th>" +
