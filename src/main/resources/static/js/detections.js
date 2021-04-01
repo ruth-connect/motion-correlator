@@ -143,8 +143,8 @@ function displayVectors(detection) {
 	return "";
 }
 
-function displayDetectionRow(detection, prefix, id, processTime) {
-	return	"<tr id=\"" + prefix + "-tr-" + id + (processTime ? "\" data-process-time=\"" + processTime + "\"" : "") +">" +
+function displayDetectionRow(detection, prefix, id, processTime, replaced) {
+	return	"<tr id=\"" + prefix + "-tr-" + id + (processTime ? "\" data-process-time=\"" + processTime + "\"" : "") + (replaced ? "data-replaced" : "") + ">" +
 				"<td>" +
 					"<button class=\"button\" type=\"button\" data-toggle=\"" + prefix + "-div-" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
 					"<div class=\"dropdown-pane\" id=\"" + prefix + "-div-" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
@@ -182,7 +182,7 @@ function displayLiveDetections(detections, prefix) {
 		var processTime = formatTimestamp(detection.processTime);
 		var element = document.getElementById(prefix + "-tr-" + id)
 		if (!element) {
-			var html = displayDetectionRow(detection, prefix, id, processTime);
+			var html = displayDetectionRow(detection, prefix, id, processTime, false);
 			var rows = document.getElementById(prefix + "-detections-tbody").children;
 			var newNode = undefined;
 			if (rows.length == 0) {
@@ -205,7 +205,7 @@ function displayLiveDetections(detections, prefix) {
 		} else {
 			var oldProcessTime = $(element).attr("data-process-time");
 			if (processTime > oldProcessTime) {
-				var html = displayDetectionRow(detection, prefix, id, processTime);
+				var html = displayDetectionRow(detection, prefix, id, processTime, true);
 				var newNode = $(element).replaceWith(html);
 				newNode.foundation();
 				newNode.find("img.lazyload").lazyload();
