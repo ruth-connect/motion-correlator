@@ -3,11 +3,11 @@ String.prototype.toTitleCase = function () {
 };
 
 function formatMilliseconds(milliseconds) {
-	return milliseconds.padEnd(3, "0");
+	return (milliseconds && milliseconds != "0") ? "." + milliseconds.padEnd(3, "0") : "";
 }
 
 function formatTimestamp(timestamp) {
-	return timestamp.substring(0, 19) + "." + formatMilliseconds(timestamp.substring(20, timestamp.length));
+	return timestamp.substring(0, 19) + formatMilliseconds(timestamp.substring(20, timestamp.length));
 }
 
 function getDate(detection) {
@@ -17,12 +17,12 @@ function getDate(detection) {
 
 function getVectorTime(detection) {
 	return detection.vectorMotionDetection && detection.vectorMotionDetection.timestamp ?
-		detection.vectorMotionDetection.timestamp.substring(11, 19) + "." +
+		detection.vectorMotionDetection.timestamp.substring(11, 19) +
 			formatMilliseconds(detection.vectorMotionDetection.timestamp.substring(20, detection.vectorMotionDetection.timestamp.length)) : "";
 }
 
 function getTime(detection) {
-	return detection.timestamp.substring(11, 19) + "." +
+	return detection.timestamp.substring(11, 19) +
 		formatMilliseconds(detection.timestamp.substring(20, detection.timestamp.length));
 }
 
