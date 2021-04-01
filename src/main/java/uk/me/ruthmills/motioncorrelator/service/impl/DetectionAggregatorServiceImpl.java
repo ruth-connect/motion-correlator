@@ -91,6 +91,7 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 						// Create the detection object.
 						Detection detection = new Detection(motionCorrelation.getCamera(),
 								motionCorrelation.getFrame().getSequence(), motionCorrelation.getFrame().getTimestamp(),
+								motionCorrelation.getFrame().getImage().getAlarmState(),
 								motionCorrelation.getVectorMotionDetection(), motionCorrelation.getPersonDetections(),
 								motionCorrelation.isRoundRobin());
 

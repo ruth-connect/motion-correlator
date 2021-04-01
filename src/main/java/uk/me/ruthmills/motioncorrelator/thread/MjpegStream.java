@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
+import uk.me.ruthmills.motioncorrelator.service.AlarmStateService;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
@@ -29,6 +30,9 @@ public class MjpegStream implements Runnable {
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
+
+	@Autowired
+	private AlarmStateService alarmStateService;
 
 	@Autowired
 	private FrameService frameService;
@@ -128,7 +132,7 @@ public class MjpegStream implements Runnable {
 					+ (actualMillisNow - expectedMillisNow) + " milliseconds behind schedule");
 		}
 
-		Image image = new Image(now, currentFrame);
+		Image image = new Image(now, currentFrame, alarmStateService.getAlarmState());
 		frameService.addCurrentFrame(camera.getName(), image);
 	}
 }

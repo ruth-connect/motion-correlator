@@ -12,6 +12,7 @@ public class Detection {
 	private String camera;
 	private long sequence;
 	private LocalDateTime timestamp;
+	private AlarmState alarmState;
 	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
 	private boolean roundRobin;
@@ -20,11 +21,12 @@ public class Detection {
 	public Detection() {
 	}
 
-	public Detection(String camera, long sequence, LocalDateTime timestamp, VectorMotionDetection vectorMotionDetection,
-			PersonDetections personDetections, boolean roundRobin) {
+	public Detection(String camera, long sequence, LocalDateTime timestamp, AlarmState alarmState,
+			VectorMotionDetection vectorMotionDetection, PersonDetections personDetections, boolean roundRobin) {
 		this.camera = camera;
 		this.sequence = sequence;
 		this.timestamp = timestamp;
+		this.alarmState = alarmState;
 		this.vectorMotionDetection = vectorMotionDetection;
 		this.personDetections = personDetections;
 		this.roundRobin = roundRobin;
@@ -41,6 +43,10 @@ public class Detection {
 
 	public LocalDateTime getTimestamp() {
 		return timestamp;
+	}
+
+	public AlarmState getAlarmState() {
+		return alarmState;
 	}
 
 	public boolean isRoundRobin() {
@@ -80,7 +86,8 @@ public class Detection {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Camera: " + camera + ", Sequence: " + sequence + ", Timestamp: " + timestamp + "\n");
+		stringBuilder.append("Camera: " + camera + ", Sequence: " + sequence + ", Timestamp: " + timestamp
+				+ ", Alarm State: " + alarmState + "\n");
 		if (vectorMotionDetection != null) {
 			stringBuilder.append("Vector Motion Detection: " + vectorMotionDetection);
 		}
