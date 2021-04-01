@@ -121,6 +121,12 @@ function displayAlarmState(detection) {
 	return	"<h5 style=\"margin-top: 20px; float: right;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>";
 }
 
+function displayExternalTrigger(detection) {
+	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
+		return "<h5>Trigger: <b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("_", " ") + "</b></h5>";
+	}
+}
+
 function displayVectors(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.frameVector) {
 		return	"<h5 style=\"margin-top: 20px;\">Vectors" + (detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? " (Interpolated)" : "") + "</h5>" +
@@ -159,6 +165,7 @@ function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 							"<div class=\"grid-x grid-padding-x\">" +
 								"<div class=\"large-12 cell\">" +
 									displayAlarmState(detection) +
+									displayExternalTrigger(detection) +
 									displayVectors(detection) +
 								"</div>" +
 							"</div>" +
