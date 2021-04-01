@@ -206,7 +206,8 @@ function displayLiveDetections(detections, prefix) {
 			var oldProcessTime = $(element).attr("data-process-time");
 			if (processTime > oldProcessTime) {
 				var html = displayDetectionRow(detection, prefix, id, processTime, true);
-				var newNode = $(element).replaceWith(html);
+				$(element).replaceWith(html);
+				var newNode = $("#" + prefix + "-detections-tbody").find("#" + id);
 				newNode.foundation();
 				newNode.find("img.lazyload").lazyload();
 			}
