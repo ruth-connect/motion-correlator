@@ -122,7 +122,7 @@ function displayAlarmState(detection) {
 	return	"<div class=\"large-12 cell\">" +
 				"<div class=\"grid-x grid-padding-x\">" +
 					"<div class=\"large-12 cell\">" +
-						"<h5>Burglar Alarm: " + getAlarmState(detection) + "</h5>" +
+						"<h5 style=\"margin-top: 20px;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>" +
 					"</div>" +
 				"</div>" +
 			"</div>";
@@ -133,7 +133,7 @@ function displayVectors(detection) {
 		return	"<div class=\"large-12 cell\">" +
 					"<div class=\"grid-x grid-padding-x\">" +
 						"<div class=\"large-12 cell\">" +
-							"<h5 style=\"margin-top: 20px;\">Vectors</h5>" +
+							"<h5>Vectors</h5>" +
 							"<table>" +
 								"<thead>" +
 									"<th>Region</th>" +
