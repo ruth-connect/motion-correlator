@@ -168,6 +168,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getPreviousHour(String camera, String year, String month, String day, String hour) {
+		logger.info("getPreviousHour: " + camera + "/" + year + "/" + month + "/" + day + "/" + hour);
 		int previousHour = Integer.parseInt(hour) - 1;
 		if (previousHour < 0) {
 			return getPreviousDay(camera, year, month, day);
@@ -178,6 +179,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getDetectionPath(String camera, String year, String month, String day, String hour) {
+		logger.info("getDetectionPath: " + camera + "/" + year + "/" + month + "/" + day + "/" + hour);
 		String closestYear = getClosestYear(camera, year);
 		if (closestYear == null) {
 			return null;
