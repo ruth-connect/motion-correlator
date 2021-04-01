@@ -143,8 +143,8 @@ function displayVectors(detection) {
 	return "";
 }
 
-function displayDetectionRow(detection, prefix, id) {
-	return	"<tr id=\"" + prefix + "-tr-" + id + "\">" +
+function displayDetectionRow(detection, prefix, id, processTime) {
+	return	"<tr id=\"" + prefix + "-tr-" + id + (processTime ? "\" data-process-time=\"" + processTime + "\"" : "") +">" +
 				"<td>" +
 					"<button class=\"button\" type=\"button\" data-toggle=\"" + prefix + "-div-" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
 					"<div class=\"dropdown-pane\" id=\"" + prefix + "-div-" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
@@ -179,8 +179,10 @@ function displayLiveDetections(detections, prefix) {
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
 		var id = detection.timestamp + "-" + detection.sequence;
-		if (!document.getElementById(prefix + "-tr-" + id)) {
-			var html = displayDetectionRow(detection, prefix, id);
+		var processTime = formatTimestamp(detection.processTime);
+		var element = document.getElementById(prefix + "-tr-" + id)
+		if (!element) {
+			var html = displayDetectionRow(detection, prefix, id, processTime);
 			var rows = document.getElementById(prefix + "-detections-tbody").children;
 			var newNode = undefined;
 			if (rows.length == 0) {
@@ -200,6 +202,14 @@ function displayLiveDetections(detections, prefix) {
 			}
 			newNode.foundation();
 			newNode.find("img.lazyload").lazyload();
+		} else {
+			var oldProcessTime = $(element).attr("data-process-time");
+			if (processTime > oldProcessTime) {
+				var html = displayDetectionRow(detection, prefix, id, processTime);
+				var newNode = $(element).replaceWith(html);
+				newNode.foundation();
+				newNode.find("img.lazyload").lazyload();
+			}
 		}
 	}
 }
