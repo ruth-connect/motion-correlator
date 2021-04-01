@@ -207,7 +207,7 @@ function displayLiveDetections(detections, prefix) {
 			if (processTime > oldProcessTime) {
 				var html = displayDetectionRow(detection, prefix, id, processTime, true);
 				$(element).replaceWith(html);
-				var newNode = $("#" + prefix + "-detections-tbody").find("#" + id);
+				var newNode = $(document.getElementById(prefix + "-tr-" + id));
 				newNode.foundation();
 				newNode.find("img.lazyload").lazyload();
 			}
