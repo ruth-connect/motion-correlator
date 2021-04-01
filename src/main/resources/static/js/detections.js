@@ -104,7 +104,6 @@ function displayVector(vector) {
 				"<td>" + vector.dy + "</td>" +
 				"<td>" + vector.magnitude + "</td>" +
 				"<td>" + vector.count + "</td>" +
-				"<td>" + (vector.interpolated ? "Y" : "") + "</td>" +
 			"</tr>";
 }
 
@@ -119,40 +118,27 @@ function displayRegionVectors(regionVectors) {
 }
 
 function displayAlarmState(detection) {
-	return	"<div class=\"large-12 cell\">" +
-				"<div class=\"grid-x grid-padding-x\">" +
-					"<div class=\"large-12 cell\">" +
-						"<h5 style=\"margin-top: 20px;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>" +
-					"</div>" +
-				"</div>" +
-			"</div>";
+	return	"<h5 style=\"margin-top: 20px; float: right;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>";
 }
 
 function displayVectors(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.frameVector) {
-		return	"<div class=\"large-12 cell\">" +
-					"<div class=\"grid-x grid-padding-x\">" +
-						"<div class=\"large-12 cell\">" +
-							"<h5>Vectors</h5>" +
-							"<table>" +
-								"<thead>" +
-									"<th>Region</th>" +
-									"<th>x</th>" +
-									"<th>y</th>" +
-									"<th>dx</th>" +
-									"<th>dy</th>" +
-									"<th>Mag</th>" +
-									"<th>Count</th>" +
-									"<th>Int</th>" +
-								"</thead>" +
-								"<tbody>" +
-									displayVector(detection.vectorMotionDetection.frameVector) +
-									displayRegionVectors(detection.vectorMotionDetection.regionVectors) +
-								"</tbody>" +
-							"</table>" +
-						"</div>" +
-					"</div>" +
-				"</div>";
+		return	"<h5>Vectors</h5>" +
+				"<table>" +
+					"<thead>" +
+						"<th>Region</th>" +
+						"<th>x</th>" +
+						"<th>y</th>" +
+						"<th>dx</th>" +
+						"<th>dy</th>" +
+						"<th>Mag</th>" +
+						"<th>Count</th>" +
+					"</thead>" +
+					"<tbody>" +
+						displayVector(detection.vectorMotionDetection.frameVector) +
+						displayRegionVectors(detection.vectorMotionDetection.regionVectors) +
+					"</tbody>" +
+				"</table>";
 	}
 	return "";
 }
@@ -169,8 +155,14 @@ function displayDetectionRow(detection, prefix, id) {
 								displayImage("Delta", getImagePath(detection, "/stamped/", "-delta")) +
 							"</div>" +
 						"</div>" +
-						displayAlarmState(detection) +
-						displayVectors(detection) +
+						"<div class=\"large-12 cell\">" +
+							"<div class=\"grid-x grid-padding-x\">" +
+								"<div class=\"large-12 cell\">" +
+									displayAlarmState(detection) +
+									displayVectors(detection) +
+								"</div>" +
+							"</div>" +
+						"</div>" +
 					"</div>" +
 				"</td>" +
 				"<td>" + getDate(detection) + "</td>" +
