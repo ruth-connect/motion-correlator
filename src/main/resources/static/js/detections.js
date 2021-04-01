@@ -125,6 +125,7 @@ function displayExternalTrigger(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
 		return "<h5 style=\"margin-top: 20px;\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("_", " ") + "</b></h5>";
 	}
+	return "";
 }
 
 function displayVectors(detection) {
