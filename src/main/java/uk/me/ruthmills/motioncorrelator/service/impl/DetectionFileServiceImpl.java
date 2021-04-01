@@ -168,7 +168,6 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getPreviousHour(String camera, String year, String month, String day, String hour) {
-		logger.info("getPreviousHour: " + camera + "/" + year + "/" + month + "/" + day + "/" + hour);
 		int previousHour = Integer.parseInt(hour) - 1;
 		if (previousHour < 0) {
 			return getPreviousDay(camera, year, month, day);
@@ -179,34 +178,32 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getDetectionPath(String camera, String year, String month, String day, String hour) {
-		logger.info("getDetectionPath: " + camera + "/" + year + "/" + month + "/" + day + "/" + hour);
 		String closestYear = getClosestYear(camera, year);
 		if (closestYear == null) {
 			return null;
-		} else if (!closestYear.equals(year)) {
-			return getPreviousYear(camera, year);
-		} else {
-			String closestMonth = getClosestMonth(camera, year, month);
-			if (closestMonth == null) {
-				return getPreviousYear(camera, year);
-			} else if (!closestMonth.equals(month)) {
-				return getPreviousMonth(camera, year, month);
-			} else {
-				String closestDay = getClosestDay(camera, year, month, day);
-				if (closestDay == null) {
-					return getPreviousMonth(camera, year, month);
-				} else if (!closestDay.equals(day)) {
-					return getPreviousDay(camera, year, month, day);
-				} else {
-					String closestHour = getClosestHour(camera, year, month, day, hour);
-					if (closestHour == null) {
-						return getPreviousDay(camera, year, month, day);
-					} else {
-						return year + "/" + month + "/" + day + "/" + closestHour;
-					}
-				}
-			}
 		}
+		if (!closestYear.equals(year) || month == null) {
+			return getPreviousYear(camera, year);
+		}
+		String closestMonth = getClosestMonth(camera, year, month);
+		if (closestMonth == null) {
+			return getPreviousYear(camera, year);
+		}
+		if (!closestMonth.equals(month) || day == null) {
+			return getPreviousMonth(camera, year, month);
+		}
+		String closestDay = getClosestDay(camera, year, month, day);
+		if (closestDay == null) {
+			return getPreviousMonth(camera, year, month);
+		}
+		if (!closestDay.equals(day) || hour == null) {
+			return getPreviousDay(camera, year, month, day);
+		}
+		String closestHour = getClosestHour(camera, year, month, day, hour);
+		if (closestHour == null) {
+			return getPreviousDay(camera, year, month, day);
+		}
+		return year + "/" + month + "/" + day + "/" + closestHour;
 	}
 
 	private List<Detection> readDetections(String camera, String year, String month, String day, String hour,
