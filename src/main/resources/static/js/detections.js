@@ -123,7 +123,7 @@ function displayAlarmState(detection) {
 
 function displayExternalTrigger(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
-		return "<h5>Trigger: <b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("_", " ") + "</b></h5>";
+		return "<h5 style=\"margin-top: 20px;\">External Trigger: <b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("_", " ") + "</b></h5>";
 	}
 }
 
