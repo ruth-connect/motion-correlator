@@ -119,7 +119,9 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	private List<String> getDirectoryNames(String path) {
 		File directory = new File(path);
 		if (directory.exists()) {
-			return Arrays.asList(directory.list());
+			List<String> directoryNames = Arrays.asList(directory.list());
+			Collections.sort(directoryNames, Collections.reverseOrder());
+			return directoryNames;
 		} else {
 			return Collections.<String>emptyList();
 		}
