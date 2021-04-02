@@ -264,12 +264,17 @@ function getDetections() {
 	});
 }
 
-function getDetectionsForTimestamp(timestamp) {
+function getDetectionsForTimestamp(timestamp, clear) {
+	$("#load-more").attr("disabled", "disabled");
+	$("#load-more").addClass("disabled");
 	$.ajax({
 		url: "/detections/" + camera + "/" + timestamp,
 		context: document.body
 	}).done(function(detections) {
 		if (detections.length > 0) {
+			if (clear) {
+				$("#previous-detections-tbody").empty();
+			}
 			displayDetections(detections, 'previous');
 			$("#load-more").removeAttr("disabled");
 			$("#load-more").removeClass("disabled");
@@ -278,7 +283,7 @@ function getDetectionsForTimestamp(timestamp) {
 }
 
 function getDetectionsForSelected() {
-	getDetectionsForTimestamp($("year").val() + "-" + $("month").val() + "-" + $("day").val() + "T" + $("hour").val() + ":" + $("minute").val() + ":" + $("second").val() + ".999");
+	getDetectionsForTimestamp($("year").val() + "-" + $("month").val() + "-" + $("day").val() + "T" + $("hour").val() + ":" + $("minute").val() + ":" + $("second").val() + ".999", true);
 }
 
 function updateOptions(select, list) {
@@ -368,11 +373,9 @@ function getDetectionDatesForMinute() {
 
 function loadMore(event) {
 	event.preventDefault();
-	$("#load-more").attr("disabled", "disabled");
-	$("#load-more").addClass("disabled");
 	var id = $("#previous-detections-tbody").children("tr").last().attr("id");
 	var timestamp = formatTimestamp(id.substring(12, id.lastIndexOf("-")));
-	getDetectionsForTimestamp(timestamp);
+	getDetectionsForTimestamp(timestamp, false);
 }
 
 function clearAll(event) {
