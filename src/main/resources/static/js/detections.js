@@ -224,14 +224,15 @@ function displayLiveDetections(detections, prefix) {
 }
 
 function displayDetections(detections, prefix) {
+	var html = "";
 	for (var i = 0; i < detections.length; i++) {
 		var detection = detections[i];
 		var id = detection.timestamp + "-" + detection.sequence;
-		var html = displayDetectionRow(detection, prefix, id);
-		var newNode = $("#" + prefix + "-detections-tbody").append(html);
-		newNode.foundation();
-		newNode.find("img.lazyload").lazyload();
+		html += displayDetectionRow(detection, prefix, id);
 	}
+	var newNode = $("#" + prefix + "-detections-tbody").append(html);
+	newNode.foundation();
+	newNode.find("img.lazyload").lazyload();
 }
 
 function getLiveDetections() {
