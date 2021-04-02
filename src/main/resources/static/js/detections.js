@@ -395,5 +395,5 @@ $(document).ready(function() {
 	$("#hour").change(getDetectionDatesForHour);
 	$("#minute").change(getDetectionDatesForMinute);
 	$("#second").change(getDetectionsForSelected);
-//	setInterval(getLiveDetections, 500);
+	setInterval(getLiveDetections, 500);
 });
