@@ -97,7 +97,7 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 						// Write the detection to a JSON file.
 						try {
-							detectionFileService.writeDetection(detection);
+							detectionFileService.writeDetection(detection, false);
 							if (!diskOK) {
 								homeAssistantService.notifyDiskOK();
 								diskOK = true;

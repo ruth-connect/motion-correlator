@@ -11,7 +11,8 @@ import uk.me.ruthmills.motioncorrelator.model.DetectionDates;
 
 public interface DetectionFileService {
 
-	public void writeDetection(Detection detection) throws IOException, JsonMappingException, JsonGenerationException;
+	public void writeDetection(Detection detection, boolean remote)
+			throws IOException, JsonMappingException, JsonGenerationException;
 
 	public List<Detection> readDetections(String camera, int maxDetections) throws IOException;
 
