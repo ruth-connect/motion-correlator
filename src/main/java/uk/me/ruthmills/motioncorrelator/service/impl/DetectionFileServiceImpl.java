@@ -106,6 +106,13 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String month = timestamp.substring(5, 7);
 		String day = timestamp.substring(8, 10);
 		String hour = timestamp.substring(11, 13);
+		String path = getDetectionPath(camera, year, month, day, hour);
+		logger.info("Getting detection dates for path: " + path);
+		String[] parts = path.split("/");
+		year = parts[0];
+		month = parts[1];
+		day = parts[2];
+		hour = parts[3];
 
 		DetectionDates detectionDates = new DetectionDates();
 		detectionDates.setYears(getDirectoryNames(DETECTION_PATH_PREFIX + camera));
@@ -113,6 +120,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		detectionDates.setDays(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month));
 		detectionDates
 				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setMinutes(
+				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
 		return detectionDates;
 	}
 
@@ -125,6 +134,23 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		} else {
 			return Collections.<String>emptyList();
 		}
+	}
+
+	private List<String> getMinutes(String path) {
+		List<String> minutes = new ArrayList<>();
+		try (Stream<Path> stream = Files.walk(Paths.get(path))) {
+			minutes = stream.filter(Files::isReadable).filter(p -> !Files.isDirectory(p)).map(p -> {
+				try {
+					return p.toFile().getName().substring(14, 16);
+				} catch (Exception ex) {
+					logger.error("Failed get minutes from filename: " + p.toString(), ex);
+					return null;
+				}
+			}).filter(p -> p != null).distinct().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+		} catch (Exception ex) {
+			logger.error("Failed to read minutes", ex);
+		}
+		return minutes;
 	}
 
 	private String getClosestMatch(String path, String match) {
