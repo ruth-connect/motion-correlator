@@ -327,7 +327,7 @@ function getDetectionDatesForYear() {
 
 function getDetectionDatesForMonth() {
 	$.ajax({
-		url: "/detectionDates/" + camera + "/" + $("#year").val(),
+		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val(),
 		context: document.body
 	}).done(function(detectionDates) {
 		updateOptions($("#day"), detectionDates.days);
@@ -340,7 +340,7 @@ function getDetectionDatesForMonth() {
 
 function getDetectionDatesForDay() {
 	$.ajax({
-		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val(),
+		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val() + "/" + $("#day").val(),
 		context: document.body
 	}).done(function(detectionDates) {
 		updateOptions($("#hour"), detectionDates.hours);
@@ -352,7 +352,7 @@ function getDetectionDatesForDay() {
 
 function getDetectionDatesForHour() {
 	$.ajax({
-		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val() + "/" + $("#hour").val(),
+		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val() + "/" + $("#day").val() + "/" + $("#hour").val(),
 		context: document.body
 	}).done(function(detectionDates) {
 		updateOptions($("#minute"), detectionDates.minutes);
@@ -363,7 +363,7 @@ function getDetectionDatesForHour() {
 
 function getDetectionDatesForMinute() {
 	$.ajax({
-		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val() + "/" + $("#hour").val() + "/" + $("#minute").val(),
+		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val() + "/" + $("#day").val() + "/" + $("#hour").val() + "/" + $("#minute").val(),
 		context: document.body
 	}).done(function(detectionDates) {
 		updateOptions($("#second"), detectionDates.seconds);
