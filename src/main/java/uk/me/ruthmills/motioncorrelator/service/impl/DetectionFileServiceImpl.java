@@ -164,8 +164,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		try (Stream<Path> stream = Files.walk(Paths.get(path))) {
 			seconds = stream.filter(Files::isReadable).filter(p -> {
 				try {
-					return !Files.isDirectory(p)
-							&& minute.equals(path.substring(path.lastIndexOf("/") + 1, path.length()));
+					return !Files.isDirectory(p) && p.toFile().getName().substring(14, 16).equals(minute);
 				} catch (Exception ex) {
 					logger.error("Failed to filter minutes from filename: " + p.toString(), ex);
 					return false;
