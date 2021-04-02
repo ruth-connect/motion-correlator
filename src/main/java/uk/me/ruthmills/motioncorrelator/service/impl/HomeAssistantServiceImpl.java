@@ -29,10 +29,10 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 @Service
 public class HomeAssistantServiceImpl implements HomeAssistantService {
 
-	@Value("${endpoint}")
+	@Value("${homeassistant.endpoint}")
 	private String endpoint;
 
-	@Value("${token}")
+	@Value("${homeassistant.token}")
 	private String token;
 
 	private HomeAssistantNotifier homeAssistantNotifier = new HomeAssistantNotifier();
