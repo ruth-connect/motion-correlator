@@ -91,7 +91,9 @@ function getImagePath(detection, prefix, suffix) {
 function displayImage(title, imagePath) {
 	return	"<div class=\"large-4 medium-6 small-12 cell\">" +
 				"<h4>" + title + "</h4>" +
-				"<img class=\"lazyload\" data-src=\"" + imagePath + "\" style=\"width: 100%;\"/>" +
+				"<a href=\"" + imagePath + "\" rel=\"facebox\">" +
+					"<img class=\"lazyload\" data-src=\"" + imagePath + "\" style=\"width: 100%;\"/>" +
+				"</a>" +
 			"</div>";
 }
 
@@ -210,6 +212,7 @@ function displayLiveDetections(detections, prefix) {
 			}
 			newNode.foundation();
 			newNode.find("img.lazyload").lazyload();
+			newNode.find("a[rel*=facebox]").facebox();
 		} else {
 			var oldProcessTime = $(element).attr("data-process-time");
 			if (processTime > oldProcessTime) {
@@ -218,6 +221,7 @@ function displayLiveDetections(detections, prefix) {
 				var newNode = $(document.getElementById(prefix + "-tr-" + id));
 				newNode.foundation();
 				newNode.find("img.lazyload").lazyload();
+				newNode.find("a[rel*=facebox]").facebox();
 			}
 		}
 	}
@@ -233,6 +237,7 @@ function displayDetections(detections, prefix) {
 	var newNode = $("#" + prefix + "-detections-tbody").append(html);
 	newNode.foundation();
 	newNode.find("img.lazyload").lazyload();
+	newNode.find("a[rel*=facebox]").facebox();
 }
 
 function getLiveDetections() {
