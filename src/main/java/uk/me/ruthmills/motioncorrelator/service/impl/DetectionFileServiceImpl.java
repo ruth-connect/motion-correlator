@@ -103,11 +103,12 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String month = timestamp.substring(5, 7);
 		String day = timestamp.substring(8, 10);
 		String hour = timestamp.substring(11, 13);
-		return getDetectionDates(camera, year, month, day, hour);
+		String minute = timestamp.substring(14, 16);
+		return getDetectionDates(camera, year, month, day, hour, minute);
 	}
 
-	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour)
-			throws IOException {
+	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour,
+			String minute) throws IOException {
 		String path = getDetectionPath(camera, year, month, day, hour);
 		logger.info("Getting detection dates for path: " + path);
 		String[] parts = path.split("/");
@@ -124,6 +125,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
 		detectionDates.setMinutes(
 				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+		detectionDates.setSeconds(getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/"
+				+ hour + "/" + detectionDates.getMinutes().get(0)));
 		return detectionDates;
 	}
 
@@ -153,6 +156,31 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 			logger.error("Failed to read minutes", ex);
 		}
 		return minutes;
+	}
+
+	private List<String> getSeconds(String path) {
+		List<String> seconds = new ArrayList<>();
+		try (Stream<Path> stream = Files.walk(Paths.get(path))) {
+			seconds = stream.filter(Files::isReadable).filter(p -> {
+				try {
+					return !Files.isDirectory(p) && p.toFile().getName().substring(14, 16)
+							.equals(path.substring(path.lastIndexOf("/") + 1, path.length()));
+				} catch (Exception ex) {
+					logger.error("Failed to filter minutes from filename: " + p.toString(), ex);
+					return false;
+				}
+			}).map(p -> {
+				try {
+					return p.toFile().getName().substring(17, 19);
+				} catch (Exception ex) {
+					logger.error("Failed get seconds from filename: " + p.toString(), ex);
+					return null;
+				}
+			}).filter(p -> p != null).distinct().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+		} catch (Exception ex) {
+			logger.error("Failed to read seconds", ex);
+		}
+		return seconds;
 	}
 
 	private String getClosestMatch(String path, String match) {
