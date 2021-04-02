@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import uk.me.ruthmills.motioncorrelator.model.image.Image;
+import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.service.ImageFileService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
@@ -29,18 +29,30 @@ public class ImageFileServiceImpl implements ImageFileService {
 	private static final Logger logger = LoggerFactory.getLogger(ImageFileServiceImpl.class);
 
 	@Override
-	public void writeImage(String camera, Image image, boolean remote) throws IOException {
-		writeImage(camera, image, "", remote);
+	public void writeImages(Detection detection, boolean remote) throws IOException {
+		writeImage(detection.getCamera(), detection.getTimestamp(), detection.getSequence(), detection.getImage(),
+				false);
+		writeImage(detection.getCamera(), detection.getTimestamp(), detection.getSequence(),
+				detection.getAverageImage(), "-average", false);
+		writeImage(detection.getCamera(), detection.getTimestamp(), detection.getSequence(), detection.getDeltaImage(),
+				"-delta", false);
 	}
 
 	@Override
-	public void writeImage(String camera, Image image, String suffix, boolean remote) throws IOException {
+	public void writeImage(String camera, LocalDateTime timestamp, long sequence, byte[] image, boolean remote)
+			throws IOException {
+		writeImage(camera, timestamp, sequence, image, "", remote);
+	}
+
+	@Override
+	public void writeImage(String camera, LocalDateTime timestamp, long sequence, byte[] image, String suffix,
+			boolean remote) throws IOException {
 		if (image != null) {
-			Path path = FileSystems.getDefault().getPath(getImagePath(camera, image.getTimestamp(), remote),
-					image.getTimestamp() + "-" + image.getSequence() + suffix + ".jpg");
+			Path path = FileSystems.getDefault().getPath(getImagePath(camera, timestamp, remote),
+					timestamp + "-" + sequence + suffix + ".jpg");
 			File file = path.toFile();
 			if (!file.exists()) {
-				Files.write(path, image.getBytes(), StandardOpenOption.CREATE);
+				Files.write(path, image, StandardOpenOption.CREATE);
 			} else {
 				logger.info("Image: " + file.getAbsolutePath() + " exists so not writing it again");
 			}

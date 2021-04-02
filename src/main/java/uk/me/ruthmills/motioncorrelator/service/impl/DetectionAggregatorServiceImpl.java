@@ -1,5 +1,6 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -85,15 +86,20 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 						logger.info("DETECTION AGGREGATOR. Motion correlation data for camera "
 								+ motionCorrelation.getCamera() + ": " + motionCorrelation);
 
-						// Write the images.
-						writeImages(motionCorrelation);
-
 						// Create the detection object.
 						Detection detection = new Detection(motionCorrelation.getCamera(),
 								motionCorrelation.getFrame().getSequence(), motionCorrelation.getFrame().getTimestamp(),
 								motionCorrelation.getFrame().getImage().getAlarmState(),
 								motionCorrelation.getVectorMotionDetection(), motionCorrelation.getPersonDetections(),
-								motionCorrelation.isRoundRobin());
+								motionCorrelation.isRoundRobin(), motionCorrelation.getFrame().getImage().getBytes(),
+								motionCorrelation.getAverageFrame().getBytes(),
+								motionCorrelation.getDelta().getBytes());
+
+						// Write the images.
+						writeImages(detection);
+
+						// Set the process time to now.
+						detection.setProcessTime(LocalDateTime.now());
 
 						// Write the detection to a JSON file.
 						try {
@@ -133,14 +139,9 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 			}
 		}
 
-		private void writeImages(MotionCorrelation motionCorrelation) {
+		private void writeImages(Detection detection) {
 			try {
-				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage(),
-						false);
-				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getAverageFrame(),
-						"-average", false);
-				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta",
-						false);
+				imageFileService.writeImages(detection, false);
 
 				if (!diskOK) {
 					homeAssistantService.notifyDiskOK();

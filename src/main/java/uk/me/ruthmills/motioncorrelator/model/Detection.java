@@ -17,12 +17,16 @@ public class Detection {
 	private PersonDetections personDetections;
 	private boolean roundRobin;
 	private LocalDateTime processTime;
+	private byte[] image;
+	private byte[] averageImage;
+	private byte[] deltaImage;
 
 	public Detection() {
 	}
 
 	public Detection(String camera, long sequence, LocalDateTime timestamp, AlarmState alarmState,
-			VectorMotionDetection vectorMotionDetection, PersonDetections personDetections, boolean roundRobin) {
+			VectorMotionDetection vectorMotionDetection, PersonDetections personDetections, boolean roundRobin,
+			byte[] image, byte[] averageImage, byte[] deltaImage) {
 		this.camera = camera;
 		this.sequence = sequence;
 		this.timestamp = timestamp;
@@ -30,7 +34,9 @@ public class Detection {
 		this.vectorMotionDetection = vectorMotionDetection;
 		this.personDetections = personDetections;
 		this.roundRobin = roundRobin;
-		processTime = LocalDateTime.now();
+		this.image = image;
+		this.averageImage = averageImage;
+		this.deltaImage = deltaImage;
 	}
 
 	public String getCamera() {
@@ -57,6 +63,10 @@ public class Detection {
 		return processTime;
 	}
 
+	public void setProcessTime(LocalDateTime processTime) {
+		this.processTime = processTime;
+	}
+
 	public VectorMotionDetection getVectorMotionDetection() {
 		return vectorMotionDetection;
 	}
@@ -70,6 +80,33 @@ public class Detection {
 		return personDetections != null && personDetections.getStrongestPersonDetection() != null
 				? personDetections.getStrongestPersonDetection().getWeight()
 				: 0d;
+	}
+
+	@JsonIgnore
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
+
+	@JsonIgnore
+	public byte[] getAverageImage() {
+		return averageImage;
+	}
+
+	public void setAverageImage(byte[] averageImage) {
+		this.averageImage = averageImage;
+	}
+
+	@JsonIgnore
+	public byte[] getDeltaImage() {
+		return deltaImage;
+	}
+
+	public void setDeltaImage(byte[] deltaImage) {
+		this.deltaImage = deltaImage;
 	}
 
 	@Override
