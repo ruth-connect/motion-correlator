@@ -105,7 +105,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String hour = timestamp.substring(11, 13);
 
 		String path = getDetectionPath(camera, year, month, day, hour);
-		logger.info("Getting detection dates for path: " + path);
+		logger.info("Getting detection dates for NOW for path: " + path);
 		String[] parts = path.split("/");
 		year = parts[0];
 		month = parts[1];
@@ -128,7 +128,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	public DetectionDates getDetectionDates(String camera, String year) throws IOException {
 		String path = getDetectionPath(camera, year, "12", "31", "23");
-		logger.info("Getting detection dates for path: " + path);
+		logger.info("Getting detection dates for YEAR for path: " + path);
 		String[] parts = path.split("/");
 		year = parts[0];
 		String month = parts[1];
@@ -151,7 +151,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	public DetectionDates getDetectionDates(String camera, String year, String month) throws IOException {
 		String path = getDetectionPath(camera, year, month, "31", "23");
-		logger.info("Getting detection dates for path: " + path);
+		logger.info("Getting detection dates for MONTH for path: " + path);
 		String[] parts = path.split("/");
 		year = parts[0];
 		month = parts[1];
@@ -173,7 +173,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	public DetectionDates getDetectionDates(String camera, String year, String month, String day) throws IOException {
 		String path = getDetectionPath(camera, year, month, day, "23");
-		logger.info("Getting detection dates for path: " + path);
+		logger.info("Getting detection dates for DAY for path: " + path);
 		String[] parts = path.split("/");
 		year = parts[0];
 		month = parts[1];
@@ -194,7 +194,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour)
 			throws IOException {
 		String path = getDetectionPath(camera, year, month, day, hour);
-		logger.info("Getting detection dates for path: " + path);
+		logger.info("Getting detection dates for HOUR for path: " + path);
 		String[] parts = path.split("/");
 		year = parts[0];
 		month = parts[1];
@@ -218,7 +218,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour,
 			String minute) throws IOException {
 		String path = getDetectionPath(camera, year, month, day, hour);
-		logger.info("Getting detection dates for path: " + path);
+		logger.info("Getting detection dates for MINUTE for path: " + path);
 		String[] parts = path.split("/");
 		year = parts[0];
 		month = parts[1];
