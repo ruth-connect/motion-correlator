@@ -75,10 +75,10 @@ public class CameraController {
 		return detectionFileService.getDetectionDates(camera);
 	}
 
-	@GetMapping(path = "/detectionDates/{camera}/{timestamp}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/detectionDates/{camera}/{year}/{month}/{day}/{hour}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public DetectionDates getDetectionDates(@PathVariable String camera, @PathVariable String timestamp)
-			throws IOException {
-		return detectionFileService.getDetectionDates(camera, timestamp);
+	public DetectionDates getDetectionDates(@PathVariable String camera, @PathVariable String year,
+			@PathVariable String month, @PathVariable String day, @PathVariable String hour) throws IOException {
+		return detectionFileService.getDetectionDates(camera, year, month, day, hour);
 	}
 }

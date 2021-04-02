@@ -98,14 +98,16 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	public DetectionDates getDetectionDates(String camera) throws IOException {
-		return getDetectionDates(camera, LocalDateTime.now().format(TIMESTAMP_FORMAT));
-	}
-
-	public DetectionDates getDetectionDates(String camera, String timestamp) throws IOException {
+		String timestamp = LocalDateTime.now().format(TIMESTAMP_FORMAT);
 		String year = timestamp.substring(0, 4);
 		String month = timestamp.substring(5, 7);
 		String day = timestamp.substring(8, 10);
 		String hour = timestamp.substring(11, 13);
+		return getDetectionDates(camera, year, month, day, hour);
+	}
+
+	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour)
+			throws IOException {
 		String path = getDetectionPath(camera, year, month, day, hour);
 		logger.info("Getting detection dates for path: " + path);
 		String[] parts = path.split("/");
