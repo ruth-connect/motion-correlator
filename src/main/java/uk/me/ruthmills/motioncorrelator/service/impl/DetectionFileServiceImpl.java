@@ -125,8 +125,9 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
 		detectionDates.setMinutes(
 				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
-		detectionDates.setSeconds(getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/"
-				+ hour + "/" + detectionDates.getMinutes().get(0)));
+		detectionDates.setSeconds(
+				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+						detectionDates.getMinutes().get(0)));
 		return detectionDates;
 	}
 
@@ -158,13 +159,13 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		return minutes;
 	}
 
-	private List<String> getSeconds(String path) {
+	private List<String> getSeconds(String path, String minute) {
 		List<String> seconds = new ArrayList<>();
 		try (Stream<Path> stream = Files.walk(Paths.get(path))) {
 			seconds = stream.filter(Files::isReadable).filter(p -> {
 				try {
-					return !Files.isDirectory(p) && p.toFile().getName().substring(14, 16)
-							.equals(path.substring(path.lastIndexOf("/") + 1, path.length()));
+					return !Files.isDirectory(p)
+							&& minute.equals(path.substring(path.lastIndexOf("/") + 1, path.length()));
 				} catch (Exception ex) {
 					logger.error("Failed to filter minutes from filename: " + p.toString(), ex);
 					return false;
