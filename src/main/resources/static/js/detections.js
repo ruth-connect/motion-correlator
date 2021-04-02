@@ -264,12 +264,31 @@ function getDetections() {
 	});
 }
 
+function getDetectionsForTimestamp(timestamp) {
+	$.ajax({
+		url: "/detections/" + camera + "/" + timestamp,
+		context: document.body
+	}).done(function(detections) {
+		if (detections.length > 0) {
+			displayDetections(detections, 'previous');
+			$("#load-more").removeAttr("disabled");
+			$("#load-more").removeClass("disabled");
+		}
+	});
+}
+
+function getDetectionsForSelected() {
+	getDetectionsForTimestamp($("year").val() + "-" + $("month").val() + "-" + $("day").val() + "T" + $("hour").val() + ":" + $("minute").val() + ":" + $("second").val() + ".999");
+}
+
 function updateOptions(select, list) {
-	var html = "";
-	for (var i = 0; i < list.length; i++) {
-		html += "<option value=\"" + list[i] + "\">" + list[i] + "</option>";
+	if (list != null) {
+		var html = "";
+		for (var i = 0; i < list.length; i++) {
+			html += "<option value=\"" + list[i] + "\">" + list[i] + "</option>";
+		}
+		select.html(html);
 	}
-	select.html(html);
 }
 
 function getDetectionDates() {
@@ -287,16 +306,63 @@ function getDetectionDates() {
 	});
 }
 
-function getDetectionsForTimestamp(timestamp) {
+function getDetectionDatesForYear() {
 	$.ajax({
-		url: "/detections/" + camera + "/" + timestamp,
+		url: "/detectionDates/" + camera + "/" + $("#year").val(),
 		context: document.body
-	}).done(function(detections) {
-		if (detections.length > 0) {
-			displayDetections(detections, 'previous');
-			$("#load-more").removeAttr("disabled");
-			$("#load-more").removeClass("disabled");
-		}
+	}).done(function(detectionDates) {
+		updateOptions($("#month"), detectionDates.months);
+		updateOptions($("#day"), detectionDates.days);
+		updateOptions($("#hour"), detectionDates.hours);
+		updateOptions($("#minute"), detectionDates.minutes);
+		updateOptions($("#second"), detectionDates.seconds);
+		getDetectionsForSelected();
+	});
+}
+
+function getDetectionDatesForMonth() {
+	$.ajax({
+		url: "/detectionDates/" + camera + "/" + $("#year").val(),
+		context: document.body
+	}).done(function(detectionDates) {
+		updateOptions($("#day"), detectionDates.days);
+		updateOptions($("#hour"), detectionDates.hours);
+		updateOptions($("#minute"), detectionDates.minutes);
+		updateOptions($("#second"), detectionDates.seconds);
+		getDetectionsForSelected();
+	});
+}
+
+function getDetectionDatesForDay() {
+	$.ajax({
+		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val(),
+		context: document.body
+	}).done(function(detectionDates) {
+		updateOptions($("#hour"), detectionDates.hours);
+		updateOptions($("#minute"), detectionDates.minutes);
+		updateOptions($("#second"), detectionDates.seconds);
+		getDetectionsForSelected();
+	});
+}
+
+function getDetectionDatesForHour() {
+	$.ajax({
+		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val() + "/" + $("#hour").val(),
+		context: document.body
+	}).done(function(detectionDates) {
+		updateOptions($("#minute"), detectionDates.minutes);
+		updateOptions($("#second"), detectionDates.seconds);
+		getDetectionsForSelected();
+	});
+}
+
+function getDetectionDatesForMinute() {
+	$.ajax({
+		url: "/detectionDates/" + camera + "/" + $("#year").val() + "/" + $("#month").val() + "/" + $("#hour").val() + "/" + $("#minute").val(),
+		context: document.body
+	}).done(function(detectionDates) {
+		updateOptions($("#second"), detectionDates.seconds);
+		getDetectionsForSelected();
 	});
 }
 
@@ -319,6 +385,12 @@ $(document).ready(function() {
 	lazyload();
 	getDetectionDates();
 	$("#load-more").click(loadMore);
-	$("#clear-all").click(clearAll)
-	setInterval(getLiveDetections, 500);
+	$("#clear-all").click(clearAll);
+	$("#year").change(getDetectionDatesForYear);
+	$("#month").change(getDetectionDatesForMonth);
+	$("#day").change(getDetectionDatesForDay);
+	$("#hour").change(getDetectionDatesForHour);
+	$("#minute").change(getDetectionDatesForMinute);
+	$("#second").change(getDetectionsForSelected);
+//	setInterval(getLiveDetections, 500);
 });
