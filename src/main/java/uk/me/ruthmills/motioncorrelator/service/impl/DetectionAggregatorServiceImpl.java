@@ -23,6 +23,7 @@ import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.service.ImageFileService;
+import uk.me.ruthmills.motioncorrelator.service.RemoteBackupService;
 
 @Service
 public class DetectionAggregatorServiceImpl implements DetectionAggregatorService {
@@ -38,6 +39,9 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
+
+	@Autowired
+	private RemoteBackupService remoteBackupService;
 
 	private DetectionAggregator detectionAggregator;
 
@@ -115,6 +119,9 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 								diskOK = false;
 							}
 						}
+
+						// Write to remote backup.
+						remoteBackupService.writeDetection(detection);
 
 						// Add the detection to the list.
 						Detections detections = getDetectionsForCamera(detection.getCamera());

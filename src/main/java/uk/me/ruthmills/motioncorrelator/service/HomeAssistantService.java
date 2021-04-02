@@ -19,6 +19,10 @@ public interface HomeAssistantService {
 
 	public void notifyDiskFailed();
 
+	public void notifyRemoteDiskOK();
+
+	public void notifyRemoteDiskFailed();
+
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections);
 }
