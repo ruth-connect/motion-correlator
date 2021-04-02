@@ -135,10 +135,12 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 
 		private void writeImages(MotionCorrelation motionCorrelation) {
 			try {
-				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage());
+				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getFrame().getImage(),
+						false);
 				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getAverageFrame(),
-						"-average");
-				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta");
+						"-average", false);
+				imageFileService.writeImage(motionCorrelation.getCamera(), motionCorrelation.getDelta(), "-delta",
+						false);
 
 				if (!diskOK) {
 					homeAssistantService.notifyDiskOK();
