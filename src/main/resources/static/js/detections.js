@@ -283,8 +283,7 @@ function getDetectionsForTimestamp(timestamp, clear) {
 }
 
 function getDetectionsForSelected() {
-	alert("here");
-	getDetectionsForTimestamp($("#year").val() + "-" + $("#month").val() + "-" + $("day").val() + "T" + $("#hour").val() + ":" + $("#minute").val() + ":" + $("#second").val() + ".999", true);
+	getDetectionsForTimestamp($("#year").val() + "-" + $("#month").val() + "-" + $("#day").val() + "T" + $("#hour").val() + ":" + $("#minute").val() + ":" + $("#second").val() + ".999", true);
 }
 
 function updateOptions(select, list) {
