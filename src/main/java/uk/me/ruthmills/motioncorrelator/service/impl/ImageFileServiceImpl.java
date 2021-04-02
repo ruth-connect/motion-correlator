@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
@@ -19,7 +20,8 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 @Service
 public class ImageFileServiceImpl implements ImageFileService {
 
-	private static final String IMAGE_PATH_PREFIX = "/mnt/media/images/";
+	@Value("${filesystem.media}")
+	private String mediaPath;
 
 	private static final Logger logger = LoggerFactory.getLogger(ImageFileServiceImpl.class);
 
@@ -45,15 +47,19 @@ public class ImageFileServiceImpl implements ImageFileService {
 	@Override
 	public byte[] readImage(String camera, String year, String month, String day, String hour, String filename)
 			throws IOException {
-		String imagePath = IMAGE_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
+		String imagePath = getImagePathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
 		logger.info("Image path: " + imagePath + "/" + filename);
 		byte[] image = Files.readAllBytes(FileSystems.getDefault().getPath(imagePath, filename));
 		logger.info("Image size: " + image.length + " bytes");
 		return image;
 	}
 
+	private String getImagePathPrefix() {
+		return mediaPath + "/images/";
+	}
+
 	private String getImagePath(String camera, LocalDateTime timestamp) {
-		String path = IMAGE_PATH_PREFIX + ImageUtils.getImagePath(camera, timestamp);
+		String path = getImagePathPrefix() + ImageUtils.getImagePath(camera, timestamp);
 		File file = new File(path);
 		file.mkdirs();
 		return path;

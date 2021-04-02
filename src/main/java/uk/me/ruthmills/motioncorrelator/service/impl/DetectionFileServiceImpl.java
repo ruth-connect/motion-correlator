@@ -95,7 +95,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 			String sequence) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		String filename = getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour + "/"
+		String filename = getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour + "/"
 				+ timestamp + "-" + sequence + ".json";
 		return mapper.readValue(new File(filename), Detection.class);
 	}
@@ -116,14 +116,14 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		hour = parts[3];
 
 		DetectionDates detectionDates = new DetectionDates();
-		detectionDates.setYears(getDirectoryNames(getDetectionPath() + camera));
-		detectionDates.setMonths(getDirectoryNames(getDetectionPath() + camera + "/" + year));
-		detectionDates.setDays(getDirectoryNames(getDetectionPath() + camera + "/" + year + "/" + month));
-		detectionDates.setHours(getDirectoryNames(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setYears(getDirectoryNames(getDetectionPathPrefix() + camera));
+		detectionDates.setMonths(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year));
+		detectionDates.setDays(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year + "/" + month));
+		detectionDates.setHours(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day));
 		detectionDates.setMinutes(
-				getMinutes(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+				getMinutes(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
 		detectionDates
-				.setSeconds(getSeconds(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+				.setSeconds(getSeconds(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
 						detectionDates.getMinutes().get(0)));
 		return detectionDates;
 	}
@@ -138,13 +138,13 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String hour = parts[3];
 
 		DetectionDates detectionDates = new DetectionDates();
-		detectionDates.setMonths(getDirectoryNames(getDetectionPath() + camera + "/" + year));
-		detectionDates.setDays(getDirectoryNames(getDetectionPath() + camera + "/" + year + "/" + month));
-		detectionDates.setHours(getDirectoryNames(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setMonths(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year));
+		detectionDates.setDays(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year + "/" + month));
+		detectionDates.setHours(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day));
 		detectionDates.setMinutes(
-				getMinutes(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+				getMinutes(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
 		detectionDates
-				.setSeconds(getSeconds(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+				.setSeconds(getSeconds(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
 						detectionDates.getMinutes().get(0)));
 		return detectionDates;
 
@@ -160,12 +160,12 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String hour = parts[3];
 
 		DetectionDates detectionDates = new DetectionDates();
-		detectionDates.setDays(getDirectoryNames(getDetectionPath() + camera + "/" + year + "/" + month));
-		detectionDates.setHours(getDirectoryNames(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setDays(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year + "/" + month));
+		detectionDates.setHours(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day));
 		detectionDates.setMinutes(
-				getMinutes(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+				getMinutes(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
 		detectionDates
-				.setSeconds(getSeconds(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+				.setSeconds(getSeconds(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
 						detectionDates.getMinutes().get(0)));
 		return detectionDates;
 
@@ -181,11 +181,11 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String hour = parts[3];
 
 		DetectionDates detectionDates = new DetectionDates();
-		detectionDates.setHours(getDirectoryNames(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setHours(getDirectoryNames(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day));
 		detectionDates.setMinutes(
-				getMinutes(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+				getMinutes(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
 		detectionDates
-				.setSeconds(getSeconds(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+				.setSeconds(getSeconds(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
 						detectionDates.getMinutes().get(0)));
 		return detectionDates;
 	}
@@ -202,9 +202,9 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 		DetectionDates detectionDates = new DetectionDates();
 		detectionDates.setMinutes(
-				getMinutes(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+				getMinutes(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
 		detectionDates
-				.setSeconds(getSeconds(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+				.setSeconds(getSeconds(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
 						detectionDates.getMinutes().get(0)));
 		return detectionDates;
 	}
@@ -221,7 +221,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 		DetectionDates detectionDates = new DetectionDates();
 		detectionDates.setSeconds(
-				getSeconds(getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour, minute));
+				getSeconds(getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour, minute));
 		return detectionDates;
 	}
 
@@ -292,13 +292,13 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		}
 	}
 
-	private String getDetectionPath() {
+	private String getDetectionPathPrefix() {
 		return mediaPath + "/detections/";
 	}
 
 	private String getClosestYear(String camera, String year) {
 		logger.info("getClosestYear: " + camera + "/" + year);
-		String path = getDetectionPath() + camera;
+		String path = getDetectionPathPrefix() + camera;
 		return getClosestMatch(path, year);
 	}
 
@@ -307,7 +307,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		if (month.length() < 2) {
 			month = "0" + month;
 		}
-		String path = getDetectionPath() + camera + "/" + year;
+		String path = getDetectionPathPrefix() + camera + "/" + year;
 		return getClosestMatch(path, month);
 	}
 
@@ -316,7 +316,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		if (day.length() < 2) {
 			day = "0" + day;
 		}
-		String path = getDetectionPath() + camera + "/" + year + "/" + month;
+		String path = getDetectionPathPrefix() + camera + "/" + year + "/" + month;
 		return getClosestMatch(path, day);
 	}
 
@@ -325,7 +325,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		if (hour.length() < 2) {
 			hour = "0" + hour;
 		}
-		String path = getDetectionPath() + camera + "/" + year + "/" + month + "/" + day;
+		String path = getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day;
 		return getClosestMatch(path, hour);
 	}
 
@@ -394,7 +394,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	private List<Detection> readDetections(String camera, String year, String month, String day, String hour,
 			String timestamp, int maxDetections) throws IOException {
-		String detectionPath = getDetectionPath() + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
+		String detectionPath = getDetectionPathPrefix() + camera + "/" + year + "/" + month + "/" + day + "/" + hour;
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		List<Detection> detections = new ArrayList<>();
@@ -419,7 +419,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private String getDetectionPath(String camera, LocalDateTime timestamp) {
-		String path = getDetectionPath() + ImageUtils.getImagePath(camera, timestamp);
+		String path = getDetectionPathPrefix() + ImageUtils.getImagePath(camera, timestamp);
 		File file = new File(path);
 		file.mkdirs();
 		return path;
