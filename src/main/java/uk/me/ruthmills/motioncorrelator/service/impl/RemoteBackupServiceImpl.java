@@ -76,13 +76,13 @@ public class RemoteBackupServiceImpl implements RemoteBackupService {
 							imageFileService.writeImages(detection, true);
 
 							if (!diskOK) {
-								homeAssistantService.notifyRemoteDiskOK();
+								homeAssistantService.notifyRemoteDiskWriteOK();
 								diskOK = true;
 							}
 						} catch (Exception ex) {
 							logger.info("Failed to write images", ex);
 							if (diskOK) {
-								homeAssistantService.notifyRemoteDiskFailed();
+								homeAssistantService.notifyRemoteDiskWriteFailed();
 								diskOK = false;
 							}
 						}
@@ -91,13 +91,13 @@ public class RemoteBackupServiceImpl implements RemoteBackupService {
 						try {
 							detectionFileService.writeDetection(detection, true);
 							if (!diskOK) {
-								homeAssistantService.notifyRemoteDiskOK();
+								homeAssistantService.notifyRemoteDiskWriteOK();
 								diskOK = true;
 							}
 						} catch (Exception ex) {
 							logger.error("Failed writing detection to file", ex);
 							if (diskOK) {
-								homeAssistantService.notifyRemoteDiskFailed();
+								homeAssistantService.notifyRemoteDiskWriteFailed();
 								diskOK = false;
 							}
 						}

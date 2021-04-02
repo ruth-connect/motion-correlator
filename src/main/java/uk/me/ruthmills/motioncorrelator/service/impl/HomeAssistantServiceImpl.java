@@ -72,27 +72,27 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	}
 
 	@Override
-	public void notifyDiskOK() {
-		logger.info("Disk OK");
-		homeAssistantNotifier.notify("heimdallr_disk_ok", LocalDateTime.now().toString());
+	public void notifyDiskWriteOK() {
+		logger.info("Disk Write OK");
+		homeAssistantNotifier.notify("heimdallr_disk_write_ok", LocalDateTime.now().toString());
 	}
 
 	@Override
-	public void notifyDiskFailed() {
-		logger.info("Disk Failed");
-		homeAssistantNotifier.notify("heimdallr_disk_failed", LocalDateTime.now().toString());
+	public void notifyDiskWriteFailed() {
+		logger.info("Disk Write Failed");
+		homeAssistantNotifier.notify("heimdallr_disk_write_failed", LocalDateTime.now().toString());
 	}
 
 	@Override
-	public void notifyRemoteDiskOK() {
-		logger.info("Remote Disk OK");
-		homeAssistantNotifier.notify("heimdallr_remote_disk_ok", LocalDateTime.now().toString());
+	public void notifyRemoteDiskWriteOK() {
+		logger.info("Remote Disk Write OK");
+		homeAssistantNotifier.notify("heimdallr_remote_disk_write_ok", LocalDateTime.now().toString());
 	}
 
 	@Override
-	public void notifyRemoteDiskFailed() {
-		logger.info("Remote Disk Failed");
-		homeAssistantNotifier.notify("heimdallr_remote_disk_failed", LocalDateTime.now().toString());
+	public void notifyRemoteDiskWriteFailed() {
+		logger.info("Remote Disk Write Failed");
+		homeAssistantNotifier.notify("heimdallr_remote_disk_write_failed", LocalDateTime.now().toString());
 	}
 
 	@Override

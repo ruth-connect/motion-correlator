@@ -15,13 +15,13 @@ public interface HomeAssistantService {
 
 	public void notifyCameraStreamBehindSchedule(Camera camera);
 
-	public void notifyDiskOK();
+	public void notifyDiskWriteOK();
 
-	public void notifyDiskFailed();
+	public void notifyDiskWriteFailed();
 
-	public void notifyRemoteDiskOK();
+	public void notifyRemoteDiskWriteOK();
 
-	public void notifyRemoteDiskFailed();
+	public void notifyRemoteDiskWriteFailed();
 
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections);

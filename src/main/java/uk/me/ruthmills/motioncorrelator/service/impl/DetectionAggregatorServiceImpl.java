@@ -109,13 +109,13 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 						try {
 							detectionFileService.writeDetection(detection, false);
 							if (!diskOK) {
-								homeAssistantService.notifyDiskOK();
+								homeAssistantService.notifyDiskWriteOK();
 								diskOK = true;
 							}
 						} catch (Exception ex) {
 							logger.error("Failed writing detection to file", ex);
 							if (diskOK) {
-								homeAssistantService.notifyDiskFailed();
+								homeAssistantService.notifyDiskWriteFailed();
 								diskOK = false;
 							}
 						}
@@ -151,13 +151,13 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 				imageFileService.writeImages(detection, false);
 
 				if (!diskOK) {
-					homeAssistantService.notifyDiskOK();
+					homeAssistantService.notifyDiskWriteOK();
 					diskOK = true;
 				}
 			} catch (Exception ex) {
 				logger.info("Failed to write images", ex);
 				if (diskOK) {
-					homeAssistantService.notifyDiskFailed();
+					homeAssistantService.notifyDiskWriteFailed();
 					diskOK = false;
 				}
 			}
