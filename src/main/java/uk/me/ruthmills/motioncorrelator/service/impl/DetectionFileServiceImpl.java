@@ -103,7 +103,6 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String month = timestamp.substring(5, 7);
 		String day = timestamp.substring(8, 10);
 		String hour = timestamp.substring(11, 13);
-		String minute = timestamp.substring(14, 16);
 
 		String path = getDetectionPath(camera, year, month, day, hour);
 		logger.info("Getting detection dates for path: " + path);
@@ -122,7 +121,8 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		detectionDates.setMinutes(
 				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
 		detectionDates.setSeconds(
-				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour, minute));
+				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+						detectionDates.getMinutes().get(0)));
 		return detectionDates;
 	}
 
