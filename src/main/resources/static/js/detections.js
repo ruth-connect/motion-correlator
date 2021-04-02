@@ -50,7 +50,7 @@ function getInterpolated(detection) {
 }
 
 function getAlarmState(detection) {
-	return detection.alarmState && detection.alarmState !== "UNKNOWN" ? detection.alarmState.replaceAll("_", " ").toTitleCase() : "";
+	return detection.alarmState.replaceAll("_", " ").toTitleCase();
 }
 
 function getVectorData(detection) {
@@ -120,7 +120,8 @@ function displayRegionVectors(regionVectors) {
 }
 
 function displayAlarmState(detection) {
-	return	"<h5 style=\"margin-top: 20px; float: right;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>";
+	return	detection.alarmState && detection.alarmState !== "UNKNOWN" ? 
+		("<h5 style=\"margin-top: 20px; float: right;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>") : "";
 }
 
 function displayExternalTrigger(detection) {
