@@ -104,11 +104,95 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String day = timestamp.substring(8, 10);
 		String hour = timestamp.substring(11, 13);
 		String minute = timestamp.substring(14, 16);
-		return getDetectionDates(camera, year, month, day, hour, minute);
+
+		String path = getDetectionPath(camera, year, month, day, hour);
+		logger.info("Getting detection dates for path: " + path);
+		String[] parts = path.split("/");
+		year = parts[0];
+		month = parts[1];
+		day = parts[2];
+		hour = parts[3];
+
+		DetectionDates detectionDates = new DetectionDates();
+		detectionDates.setYears(getDirectoryNames(DETECTION_PATH_PREFIX + camera));
+		detectionDates.setMonths(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year));
+		detectionDates.setDays(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month));
+		detectionDates
+				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setMinutes(
+				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+		detectionDates.setSeconds(
+				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour, minute));
+		return detectionDates;
 	}
 
-	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour,
-			String minute) throws IOException {
+	public DetectionDates getDetectionDates(String camera, String year) throws IOException {
+		String path = getDetectionPath(camera, year, "12", "31", "23");
+		logger.info("Getting detection dates for path: " + path);
+		String[] parts = path.split("/");
+		year = parts[0];
+		String month = parts[1];
+		String day = parts[2];
+		String hour = parts[3];
+
+		DetectionDates detectionDates = new DetectionDates();
+		detectionDates.setMonths(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year));
+		detectionDates.setDays(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month));
+		detectionDates
+				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setMinutes(
+				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+		detectionDates.setSeconds(
+				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+						detectionDates.getMinutes().get(0)));
+		return detectionDates;
+
+	}
+
+	public DetectionDates getDetectionDates(String camera, String year, String month) throws IOException {
+		String path = getDetectionPath(camera, year, month, "31", "23");
+		logger.info("Getting detection dates for path: " + path);
+		String[] parts = path.split("/");
+		year = parts[0];
+		month = parts[1];
+		String day = parts[2];
+		String hour = parts[3];
+
+		DetectionDates detectionDates = new DetectionDates();
+		detectionDates.setDays(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month));
+		detectionDates
+				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setMinutes(
+				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+		detectionDates.setSeconds(
+				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+						detectionDates.getMinutes().get(0)));
+		return detectionDates;
+
+	}
+
+	public DetectionDates getDetectionDates(String camera, String year, String month, String day) throws IOException {
+		String path = getDetectionPath(camera, year, month, day, "23");
+		logger.info("Getting detection dates for path: " + path);
+		String[] parts = path.split("/");
+		year = parts[0];
+		month = parts[1];
+		day = parts[2];
+		String hour = parts[3];
+
+		DetectionDates detectionDates = new DetectionDates();
+		detectionDates
+				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
+		detectionDates.setMinutes(
+				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
+		detectionDates.setSeconds(
+				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
+						detectionDates.getMinutes().get(0)));
+		return detectionDates;
+	}
+
+	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour)
+			throws IOException {
 		String path = getDetectionPath(camera, year, month, day, hour);
 		logger.info("Getting detection dates for path: " + path);
 		String[] parts = path.split("/");
@@ -128,6 +212,22 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		detectionDates.setSeconds(
 				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour,
 						detectionDates.getMinutes().get(0)));
+		return detectionDates;
+	}
+
+	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour,
+			String minute) throws IOException {
+		String path = getDetectionPath(camera, year, month, day, hour);
+		logger.info("Getting detection dates for path: " + path);
+		String[] parts = path.split("/");
+		year = parts[0];
+		month = parts[1];
+		day = parts[2];
+		hour = parts[3];
+
+		DetectionDates detectionDates = new DetectionDates();
+		detectionDates.setSeconds(
+				getSeconds(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour, minute));
 		return detectionDates;
 	}
 

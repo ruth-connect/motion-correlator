@@ -22,6 +22,15 @@ public interface DetectionFileService {
 
 	public DetectionDates getDetectionDates(String camera) throws IOException;
 
+	public DetectionDates getDetectionDates(String camera, String year) throws IOException;
+
+	public DetectionDates getDetectionDates(String camera, String year, String month) throws IOException;
+
+	public DetectionDates getDetectionDates(String camera, String year, String month, String day) throws IOException;
+
+	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour)
+			throws IOException;
+
 	public DetectionDates getDetectionDates(String camera, String year, String month, String day, String hour,
-			String second) throws IOException;
+			String minute) throws IOException;
 }
