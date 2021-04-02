@@ -31,11 +31,11 @@ public class ImageFileServiceImpl implements ImageFileService {
 	@Override
 	public void writeImages(Detection detection, boolean remote) throws IOException {
 		writeImage(detection.getCamera(), detection.getTimestamp(), detection.getSequence(), detection.getImage(),
-				false);
+				remote);
 		writeImage(detection.getCamera(), detection.getTimestamp(), detection.getSequence(),
-				detection.getAverageImage(), "-average", false);
+				detection.getAverageImage(), "-average", remote);
 		writeImage(detection.getCamera(), detection.getTimestamp(), detection.getSequence(), detection.getDeltaImage(),
-				"-delta", false);
+				"-delta", remote);
 	}
 
 	@Override
