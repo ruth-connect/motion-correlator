@@ -264,6 +264,29 @@ function getDetections() {
 	});
 }
 
+function updateOptions(select, list) {
+	var html = "";
+	for (var i = 0; i < list.length; i++) {
+		html += "<option value=\"" + list[i] + "\">";
+	}
+	select.html(html);
+}
+
+function getDetectionDates() {
+	$.ajax({
+		url: "/detectionDates/" + camera,
+		context: document.body
+	}).done(function(detectionDates) {
+		updateOptions($("#year"), detectionDates.years);
+		updateOptions($("#month"), detectionDates.months);
+		updateOptions($("#day"), detectionDates.days);
+		updateOptions($("#hour"), detectionDates.hours);
+		updateOptions($("#minute"), detectionDates.minutes);
+		updateOptions($("#second"), detectionDates.seconds);
+		getDetections();
+	});
+}
+
 function getDetectionsForTimestamp(timestamp) {
 	$.ajax({
 		url: "/detections/" + camera + "/" + timestamp,
@@ -294,7 +317,7 @@ function clearAll(event) {
 $(document).ready(function() {
 	$(document).foundation();
 	lazyload();
-	getDetections();
+	getDetectionDates();
 	$("#load-more").click(loadMore);
 	$("#clear-all").click(clearAll)
 	setInterval(getLiveDetections, 500);
