@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import uk.me.ruthmills.motioncorrelator.model.Detection;
+import uk.me.ruthmills.motioncorrelator.model.DetectionDates;
 import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
@@ -93,6 +95,34 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String filename = DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour + "/"
 				+ timestamp + "-" + sequence + ".json";
 		return mapper.readValue(new File(filename), Detection.class);
+	}
+
+	public DetectionDates getDetectionDates(String camera) throws IOException {
+		return getDetectionDates(camera, LocalDateTime.now().format(TIMESTAMP_FORMAT));
+	}
+
+	public DetectionDates getDetectionDates(String camera, String timestamp) throws IOException {
+		String year = timestamp.substring(0, 4);
+		String month = timestamp.substring(5, 7);
+		String day = timestamp.substring(8, 10);
+		String hour = timestamp.substring(11, 13);
+
+		DetectionDates detectionDates = new DetectionDates();
+		detectionDates.setYears(getDirectoryNames(DETECTION_PATH_PREFIX + camera));
+		detectionDates.setMonths(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year));
+		detectionDates.setDays(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month));
+		detectionDates
+				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
+		return detectionDates;
+	}
+
+	private List<String> getDirectoryNames(String path) {
+		File directory = new File(path);
+		if (directory.exists()) {
+			return Arrays.asList(directory.list());
+		} else {
+			return Collections.<String>emptyList();
+		}
 	}
 
 	private String getClosestMatch(String path, String match) {

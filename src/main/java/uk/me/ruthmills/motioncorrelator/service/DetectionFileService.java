@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import uk.me.ruthmills.motioncorrelator.model.Detection;
+import uk.me.ruthmills.motioncorrelator.model.DetectionDates;
 
 public interface DetectionFileService {
 
@@ -18,4 +19,8 @@ public interface DetectionFileService {
 
 	public Detection readDetection(String camera, String year, String month, String day, String hour, String timestamp,
 			String sequence) throws IOException;
+
+	public DetectionDates getDetectionDates(String camera) throws IOException;
+
+	public DetectionDates getDetectionDates(String camera, String timestamp) throws IOException;
 }

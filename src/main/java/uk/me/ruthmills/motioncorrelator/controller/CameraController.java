@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.Detection;
+import uk.me.ruthmills.motioncorrelator.model.DetectionDates;
 import uk.me.ruthmills.motioncorrelator.model.Detections;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
@@ -66,5 +67,18 @@ public class CameraController {
 	public List<Detection> getDetectionsForTimestamp(@PathVariable String camera, @PathVariable String timestamp)
 			throws IOException {
 		return detectionFileService.readDetections(camera, timestamp, 50);
+	}
+
+	@GetMapping(path = "/detectionDates/{camera}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public DetectionDates getDetectionDates(@PathVariable String camera) throws IOException {
+		return detectionFileService.getDetectionDates(camera);
+	}
+
+	@GetMapping(path = "/detectionDates/{camera}/{timestamp}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public DetectionDates getDetectionDates(@PathVariable String camera, @PathVariable String timestamp)
+			throws IOException {
+		return detectionFileService.getDetectionDates(camera, timestamp);
 	}
 }
