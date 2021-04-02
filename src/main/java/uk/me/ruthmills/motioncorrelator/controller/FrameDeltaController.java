@@ -36,7 +36,8 @@ public class FrameDeltaController {
 	public byte[] getFrameDelta(@PathVariable String camera) throws IOException {
 		try {
 			Frame frame = frameService.getLatestFrame(camera);
-			if (frame != null) {
+			if (frame != null && frame.getPreviousFrame() != null
+					&& frame.getPreviousFrame().getAverageFrame() != null) {
 				Mat averageFrame = frame.getPreviousFrame().getAverageFrame();
 				Mat blurredFrame = frame.getBlurredFrame();
 				Mat absBlurredFrame = new Mat();
