@@ -9,9 +9,7 @@ public class DetectionDates {
 	private List<String> days;
 	private List<String> hours;
 	private List<String> minutes;
-
-	public DetectionDates() {
-	}
+	private List<String> seconds;
 
 	public List<String> getYears() {
 		return years;
@@ -51,5 +49,13 @@ public class DetectionDates {
 
 	public void setMinutes(List<String> minutes) {
 		this.minutes = minutes;
+	}
+
+	public List<String> getSeconds() {
+		return seconds;
+	}
+
+	public void setSeconds(List<String> seconds) {
+		this.seconds = seconds;
 	}
 }

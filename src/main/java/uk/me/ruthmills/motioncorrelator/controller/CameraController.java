@@ -78,27 +78,35 @@ public class CameraController {
 	@GetMapping(path = "/detectionDates/{camera}/{year}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DetectionDates getDetectionDates(@PathVariable String camera, @PathVariable String year) throws IOException {
-		return detectionFileService.getDetectionDates(camera, year, "12", "31", "23");
+		return detectionFileService.getDetectionDates(camera, year, "12", "31", "23", "59");
 	}
 
 	@GetMapping(path = "/detectionDates/{camera}/{year}/{month}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DetectionDates getDetectionDates(@PathVariable String camera, @PathVariable String year,
 			@PathVariable String month) throws IOException {
-		return detectionFileService.getDetectionDates(camera, year, month, "31", "23");
+		return detectionFileService.getDetectionDates(camera, year, month, "31", "23", "59");
 	}
 
 	@GetMapping(path = "/detectionDates/{camera}/{year}/{month}/{day}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DetectionDates getDetectionDates(@PathVariable String camera, @PathVariable String year,
 			@PathVariable String month, @PathVariable String day) throws IOException {
-		return detectionFileService.getDetectionDates(camera, year, month, day, "23");
+		return detectionFileService.getDetectionDates(camera, year, month, day, "23", "59");
 	}
 
 	@GetMapping(path = "/detectionDates/{camera}/{year}/{month}/{day}/{hour}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DetectionDates getDetectionDates(@PathVariable String camera, @PathVariable String year,
 			@PathVariable String month, @PathVariable String day, @PathVariable String hour) throws IOException {
-		return detectionFileService.getDetectionDates(camera, year, month, day, hour);
+		return detectionFileService.getDetectionDates(camera, year, month, day, hour, "59");
+	}
+
+	@GetMapping(path = "/detectionDates/{camera}/{year}/{month}/{day}/{hour}/{minute}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public DetectionDates getDetectionDates(@PathVariable String camera, @PathVariable String year,
+			@PathVariable String month, @PathVariable String day, @PathVariable String hour,
+			@PathVariable String minute) throws IOException {
+		return detectionFileService.getDetectionDates(camera, year, month, day, hour, minute);
 	}
 }
