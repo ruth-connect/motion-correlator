@@ -267,7 +267,7 @@ function getDetections() {
 function updateOptions(select, list) {
 	var html = "";
 	for (var i = 0; i < list.length; i++) {
-		html += "<option value=\"" + list[i] + "\">";
+		html += "<option value=\"" + list[i] + "\">" + list[i] + "</option>";
 	}
 	select.html(html);
 }
