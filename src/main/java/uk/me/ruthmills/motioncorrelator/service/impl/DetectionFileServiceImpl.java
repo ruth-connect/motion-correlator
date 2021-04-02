@@ -202,11 +202,6 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		hour = parts[3];
 
 		DetectionDates detectionDates = new DetectionDates();
-		detectionDates.setYears(getDirectoryNames(DETECTION_PATH_PREFIX + camera));
-		detectionDates.setMonths(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year));
-		detectionDates.setDays(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month));
-		detectionDates
-				.setHours(getDirectoryNames(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day));
 		detectionDates.setMinutes(
 				getMinutes(DETECTION_PATH_PREFIX + camera + "/" + year + "/" + month + "/" + day + "/" + hour));
 		detectionDates.setSeconds(
