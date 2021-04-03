@@ -55,19 +55,19 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	@Override
 	public void notifyCameraConnected(Camera camera) {
 		logger.info(camera.getName() + " connected");
-		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_connected", LocalDateTime.now().toString());
+		homeAssistantNotifier.notify(camera.getName() + "_" + "camera_connected", LocalDateTime.now().toString());
 	}
 
 	@Override
 	public void notifyCameraConnectionFailed(Camera camera) {
 		logger.info(camera.getName() + " connection failed");
-		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_connection_failed",
+		homeAssistantNotifier.notify(camera.getName() + "_" + "camera_connection_failed",
 				LocalDateTime.now().toString());
 	}
 
 	public void notifyCameraStreamBehindSchedule(Camera camera) {
 		logger.info(camera.getName() + " stream behind schedule");
-		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_stream_behind_schedule",
+		homeAssistantNotifier.notify(camera.getName() + "_" + "camera_stream_behind_schedule",
 				LocalDateTime.now().toString());
 	}
 
@@ -99,7 +99,7 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections) {
 		logger.info(camera.getName() + " person detected");
-		homeAssistantNotifier.notify(camera.getLocation() + "_" + "camera_person_detected", "stamped/"
+		homeAssistantNotifier.notify(camera.getName() + "_" + "camera_person_detected", "stamped/"
 				+ ImageUtils.getImagePath(camera.getName(), timestamp) + timestamp + "-" + sequence + ".jpg");
 	}
 
@@ -122,8 +122,8 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 			logger.info("Started Home Assistant notifier thread");
 		}
 
-		public void notify(String location, String type) {
-			messages.offer(new HomeAssistantMessage(location, type));
+		public void notify(String name, String type) {
+			messages.offer(new HomeAssistantMessage(name, type));
 		}
 
 		@Override
