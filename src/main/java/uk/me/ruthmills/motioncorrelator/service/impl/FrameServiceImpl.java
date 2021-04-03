@@ -5,11 +5,12 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,8 @@ public class FrameServiceImpl implements FrameService {
 	private Map<String, Frames> framesMap = new ConcurrentHashMap<>();
 	private Map<String, MjpegStream> streamsMap = new ConcurrentHashMap<>();
 
+	private static final Logger logger = LoggerFactory.getLogger(FrameServiceImpl.class);
+
 	@PostConstruct
 	public void initialise() {
 		List<Camera> cameras = cameraService.getCameras();
@@ -59,7 +62,8 @@ public class FrameServiceImpl implements FrameService {
 	public Frame getLatestFrame(String camera) {
 		try {
 			return framesMap.get(camera).getFrames().getLast();
-		} catch (NoSuchElementException ex) {
+		} catch (Exception ex) {
+			logger.error("Could not get latest frame for camera: " + camera, ex);
 			return null;
 		}
 	}
