@@ -16,6 +16,6 @@ public class Video {
 
 	public String getTimestamp() {
 		int underscoreIndex = filename.indexOf(".");
-		return filename.substring(underscoreIndex - 13, underscoreIndex + 5);
+		return filename.substring(underscoreIndex - 13, underscoreIndex + 6);
 	}
 }
