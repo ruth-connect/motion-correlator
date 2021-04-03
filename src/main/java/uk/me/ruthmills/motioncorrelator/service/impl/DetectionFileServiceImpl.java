@@ -119,7 +119,9 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		for (Detection detection : detections) {
 			String videoTimestamp = detection.getTimestamp().format(VIDEO_TIMESTAMP_FORMAT);
 			if (videoMap.containsKey(videoTimestamp)) {
-				detection.setVideoPath(videoMap.get(videoTimestamp));
+				String videoPath = videoMap.get(videoTimestamp);
+				logger.info("Adding video path: " + videoPath + " to detection");
+				detection.setVideoPath(videoPath);
 				videoMap.remove(videoTimestamp);
 			}
 		}
