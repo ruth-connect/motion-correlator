@@ -20,10 +20,10 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 @Service
 public class ImageFileServiceImpl implements ImageFileService {
 
-	@Value("${filesystem.media}")
+	@Value("${filesystem.media.path}")
 	private String mediaPath;
 
-	@Value("${filesystem.remote}")
+	@Value("${filesystem.remote.path}")
 	private String remotePath;
 
 	private static final Logger logger = LoggerFactory.getLogger(ImageFileServiceImpl.class);

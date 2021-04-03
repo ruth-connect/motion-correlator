@@ -35,10 +35,10 @@ import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 @Service
 public class DetectionFileServiceImpl implements DetectionFileService {
 
-	@Value("${filesystem.media}")
+	@Value("${filesystem.media.path}")
 	private String mediaPath;
 
-	@Value("${filesystem.remote}")
+	@Value("${filesystem.remote.path}")
 	private String remotePath;
 
 	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");

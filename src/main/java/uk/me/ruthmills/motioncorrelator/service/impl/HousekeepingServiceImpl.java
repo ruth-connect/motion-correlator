@@ -12,10 +12,10 @@ import uk.me.ruthmills.motioncorrelator.service.HousekeepingService;
 @Service
 public class HousekeepingServiceImpl implements HousekeepingService {
 
-	@Value("${filesystem.media}")
+	@Value("${filesystem.media.path}")
 	private String mediaPath;
 
-	@Value("${filesystem.remote}")
+	@Value("${filesystem.remote.path}")
 	private String remotePath;
 
 	private static final Logger logger = LoggerFactory.getLogger(HousekeepingServiceImpl.class);
