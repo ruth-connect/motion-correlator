@@ -1,6 +1,7 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +63,7 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 	}
 
 	private String getEarliestDay(String path) {
+		List<String> earliestDays = new ArrayList<>();
 		File topLevelDirectory = new File(path);
 		for (File mediaTypeDirectory : topLevelDirectory.listFiles()) {
 			if (mediaTypeDirectory.isDirectory()) {
@@ -70,48 +72,58 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 				for (String camera : cameras) {
 					File cameraDirectory = new File(path + "/" + mediaType + "/" + camera);
 					if (cameraDirectory.isDirectory()) {
-						List<String> years = Arrays.asList(cameraDirectory.list());
-						Collections.sort(years);
-						if (years.size() > 0) {
-							int yearIndex = 0;
-							String earliestMonth = "";
-							while (yearIndex < years.size() && earliestMonth.equals("")) {
-								String earliestYear = years.get(yearIndex);
-								File yearDirectory = new File(
-										path + "/" + mediaType + "/" + camera + "/" + earliestYear);
-								if (!yearDirectory.isDirectory()) {
-									yearIndex++;
-								} else {
-									List<String> months = Arrays.asList(yearDirectory.list());
-									Collections.sort(months);
-									if (months.size() > 0) {
-										int monthIndex = 0;
-										String earliestDay = "";
-										while (monthIndex < months.size() && earliestDay.equals("")) {
-											earliestMonth = months.get(monthIndex);
-											File monthDirectory = new File(path + "/" + mediaType + "/" + camera + "/"
-													+ earliestYear + "/" + earliestMonth);
-											if (!monthDirectory.isDirectory()) {
-												monthIndex++;
-											} else {
-												List<String> days = Arrays.asList(monthDirectory.list());
-												Collections.sort(days);
-												if (days.size() > 0) {
-													int dayIndex = 0;
-													while (dayIndex < days.size()) {
-														earliestDay = days.get(dayIndex);
-														File dayDirectory = new File(path + "/" + mediaType + "/"
-																+ camera + "/" + earliestYear + "/" + earliestMonth
-																+ "/" + earliestDay);
-														if (!dayDirectory.isDirectory()) {
-															dayIndex++;
-														} else {
-															return earliestYear + "/" + earliestMonth + "/"
-																	+ earliestDay;
-														}
-													}
-												}
-											}
+						String earliestDay = getEarliestDayForCamera(path, mediaType, camera, cameraDirectory);
+						if (earliestDay != null) {
+							earliestDays.add(earliestDay);
+						}
+					}
+				}
+			}
+		}
+		if (earliestDays.size() == 0) {
+			return null;
+		} else {
+			Collections.sort(earliestDays);
+			return earliestDays.get(0);
+		}
+	}
+
+	private String getEarliestDayForCamera(String path, String mediaType, String camera, File cameraDirectory) {
+		List<String> years = Arrays.asList(cameraDirectory.list());
+		Collections.sort(years);
+		if (years.size() > 0) {
+			int yearIndex = 0;
+			String earliestMonth = "";
+			while (yearIndex < years.size() && earliestMonth.equals("")) {
+				String earliestYear = years.get(yearIndex);
+				File yearDirectory = new File(path + "/" + mediaType + "/" + camera + "/" + earliestYear);
+				if (!yearDirectory.isDirectory()) {
+					yearIndex++;
+				} else {
+					List<String> months = Arrays.asList(yearDirectory.list());
+					Collections.sort(months);
+					if (months.size() > 0) {
+						int monthIndex = 0;
+						String earliestDay = "";
+						while (monthIndex < months.size() && earliestDay.equals("")) {
+							earliestMonth = months.get(monthIndex);
+							File monthDirectory = new File(
+									path + "/" + mediaType + "/" + camera + "/" + earliestYear + "/" + earliestMonth);
+							if (!monthDirectory.isDirectory()) {
+								monthIndex++;
+							} else {
+								List<String> days = Arrays.asList(monthDirectory.list());
+								Collections.sort(days);
+								if (days.size() > 0) {
+									int dayIndex = 0;
+									while (dayIndex < days.size()) {
+										earliestDay = days.get(dayIndex);
+										File dayDirectory = new File(path + "/" + mediaType + "/" + camera + "/"
+												+ earliestYear + "/" + earliestMonth + "/" + earliestDay);
+										if (!dayDirectory.isDirectory()) {
+											dayIndex++;
+										} else {
+											return earliestYear + "/" + earliestMonth + "/" + earliestDay;
 										}
 									}
 								}
