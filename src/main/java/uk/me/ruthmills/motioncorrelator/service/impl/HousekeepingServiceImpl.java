@@ -58,8 +58,30 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 
 	private void freeDiskSpace(String path, double minPercentFree) {
 		logger.info("Freeing disk space for: " + path);
+//		while (getPercentageDiskSpaceFree(path) < minPercentFree) {
 		String earliestDay = getEarliestDay(path);
 		logger.info("Earliest day to free disk space for: " + earliestDay);
+		freeDiskSpaceForDay(path, earliestDay);
+//		}
+	}
+
+	private void freeDiskSpaceForDay(String path, String dayPath) {
+		File topLevelDirectory = new File(path);
+		for (File mediaTypeDirectory : topLevelDirectory.listFiles()) {
+			if (mediaTypeDirectory.isDirectory()) {
+				String mediaType = mediaTypeDirectory.getName();
+				List<String> cameras = Arrays.asList(mediaTypeDirectory.list());
+				for (String camera : cameras) {
+					File cameraDirectory = new File(path + "/" + mediaType + "/" + camera);
+					if (cameraDirectory.isDirectory()) {
+						File dayDirectoryToDelete = new File(path + "/" + mediaType + "/" + camera + "/" + dayPath);
+						if (dayDirectoryToDelete.exists()) {
+							logger.info("Deleting: " + path + "/" + mediaType + "/" + camera + "/" + dayPath);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private String getEarliestDay(String path) {
