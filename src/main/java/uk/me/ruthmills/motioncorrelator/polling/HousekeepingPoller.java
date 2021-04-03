@@ -19,7 +19,7 @@ public class HousekeepingPoller {
 	@Scheduled(cron = "*/10 * * * * *")
 	public void tick() {
 		try {
-
+			housekeepingService.runHousekeeping();
 		} catch (Exception ex) {
 			logger.error("Exception in Housekeeping poller thread", ex);
 		}
