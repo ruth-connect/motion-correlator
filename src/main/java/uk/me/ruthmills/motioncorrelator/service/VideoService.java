@@ -1,8 +1,10 @@
 package uk.me.ruthmills.motioncorrelator.service;
 
-import java.util.Map;
+import java.util.List;
+
+import uk.me.ruthmills.motioncorrelator.model.Video;
 
 public interface VideoService {
 
-	public Map<String, String> getVideos(String camera, String year, String month, String day);
+	public List<Video> getVideos(String camera, String year, String month, String day);
 }

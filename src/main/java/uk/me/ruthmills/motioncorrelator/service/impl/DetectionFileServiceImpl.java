@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,6 +30,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.model.DetectionDates;
+import uk.me.ruthmills.motioncorrelator.model.Video;
 import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
 import uk.me.ruthmills.motioncorrelator.service.VideoService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
@@ -115,15 +115,10 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private void addVideoLinks(String camera, String year, String month, String day, List<Detection> detections) {
-		Map<String, String> videoMap = videoService.getVideos(camera, year, month, day);
-		for (Detection detection : detections) {
+		List<Video> videos = videoService.getVideos(camera, year, month, day);
+		for (int i = detections.size() - 1; i >= 0; i--) {
+			Detection detection = detections.get(i);
 			String videoTimestamp = detection.getTimestamp().format(VIDEO_TIMESTAMP_FORMAT);
-			if (videoMap.containsKey(videoTimestamp)) {
-				String videoPath = videoMap.get(videoTimestamp);
-				logger.info("Adding video path: " + videoPath + " to detection");
-				detection.setVideoPath(videoPath);
-				videoMap.remove(videoTimestamp);
-			}
 		}
 	}
 
