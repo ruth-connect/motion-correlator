@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ public class VideoServiceImpl implements VideoService {
 	@Value("${videoUrlPrefix}")
 	private String videoUrlPrefix;
 
+	private static final Logger logger = LoggerFactory.getLogger(VideoServiceImpl.class);
+
 	@Override
 	public Map<String, String> getVideos(String camera, String year, String month, String day) {
 		Map<String, String> videoMap = new HashMap<>();
@@ -33,6 +37,7 @@ public class VideoServiceImpl implements VideoService {
 							file.getName()))
 					.collect(Collectors.toList());
 			for (Video video : videos) {
+				logger.info(video.getTimestamp() + "=" + video.getPath());
 				videoMap.put(video.getTimestamp(), video.getPath());
 			}
 		}
