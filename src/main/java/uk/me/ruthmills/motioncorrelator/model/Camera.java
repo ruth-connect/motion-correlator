@@ -3,10 +3,10 @@ package uk.me.ruthmills.motioncorrelator.model;
 public class Camera {
 
 	private String name;
+	private String displayName;
 	private String streamUrl;
 	private String adminUrl;
 	private String location;
-	private String locationDescription;
 	private boolean connected;
 
 	public String getName() {
@@ -15,6 +15,14 @@ public class Camera {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public String getStreamUrl() {
@@ -41,14 +49,6 @@ public class Camera {
 		this.location = location;
 	}
 
-	public String getLocationDescription() {
-		return locationDescription;
-	}
-
-	public void setLocationDescription(String locationDescription) {
-		this.locationDescription = locationDescription;
-	}
-
 	public boolean isConnected() {
 		return connected;
 	}
@@ -60,9 +60,10 @@ public class Camera {
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("name: " + name);
+		stringBuilder.append(", displayName: " + displayName);
 		stringBuilder.append(", url: " + streamUrl);
+		stringBuilder.append(", adminUrl: " + adminUrl);
 		stringBuilder.append(", location: " + location);
-		stringBuilder.append(", locationDescription: " + locationDescription);
 		stringBuilder.append(", connected: " + connected + "\n");
 		return stringBuilder.toString();
 	}

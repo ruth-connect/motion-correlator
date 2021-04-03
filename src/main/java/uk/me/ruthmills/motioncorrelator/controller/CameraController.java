@@ -39,7 +39,7 @@ public class CameraController {
 	@GetMapping(path = "/")
 	public String showHomePage(Model model) throws IOException {
 		model.addAttribute("cameras", cameraService.getCameras().stream()
-				.sorted(Comparator.comparing(Camera::getLocationDescription)).collect(Collectors.toList()));
+				.sorted(Comparator.comparing(Camera::getLocation)).collect(Collectors.toList()));
 		return "index";
 	}
 

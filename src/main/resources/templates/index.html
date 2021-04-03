@@ -15,7 +15,7 @@
 			<div class="large-12 cell">
 				<div class="grid-x grid-padding-x">
 					<div class="large-3 medium-6 small-12 cell" th:each="camera: ${cameras}">
-						<h4 th:text="${camera.locationDescription}"></h4>
+						<h4 th:text="${camera.location}"></h4>
 						<a th:href="@{/camera/{name}(name=${camera.name})}">
 							<img th:id="${camera.name}" th:src="@{/snapshot/{name}(name=${camera.name})}" style="width: 100%; margin-bottom: 30px;"/>
 							<script th:inline="javascript">

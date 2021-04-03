@@ -1,6 +1,6 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-	<title th:text="${camera.locationDescription}"></title>
+	<title th:text="${camera.location} + ' (' + ${camera.displayName} + ')'"></title>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<link href="/css/foundation.css" rel="stylesheet" type="text/css"/>
@@ -9,7 +9,7 @@
 	<div class="grid-container">
 		<div class="grid-x grid-padding-x">
 			<div class="large-12 cell">
-				<h1 th:text="${camera.locationDescription}"></h1>
+				<h1 th:text="${camera.location} + ' (' + ${camera.displayName} + ')'"></h1>
 			</div>
 		</div>
 		<div class="grid-x grid-padding-x">
