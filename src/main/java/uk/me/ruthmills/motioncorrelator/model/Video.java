@@ -5,10 +5,8 @@ public class Video {
 	private String videoPath;
 	private String filename;
 
-	public Video() {
-	}
-
 	public Video(String videoPath, String filename) {
+		this.videoPath = videoPath;
 		this.filename = filename;
 	}
 
