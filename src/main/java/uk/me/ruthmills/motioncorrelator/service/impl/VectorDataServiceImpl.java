@@ -87,7 +87,7 @@ public class VectorDataServiceImpl implements VectorDataService {
 
 	private ExternalTrigger parseExternalTrigger(String line) {
 		String[] elements = line.split(" ");
-		String code = elements[1].replace("_", " ");
+		String code = elements[1].replace("-", " ");
 		logger.info("External Trigger. Code: " + code);
 		ExternalTrigger externalTrigger = new ExternalTrigger();
 		externalTrigger.setCode(code);

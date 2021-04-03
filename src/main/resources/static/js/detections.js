@@ -50,7 +50,7 @@ function getInterpolated(detection) {
 }
 
 function getAlarmState(detection) {
-	return detection.alarmState.replaceAll("_", " ").toTitleCase();
+	return detection.alarmState.replaceAll("_", " ").replaceAll("-", " ").toTitleCase();
 }
 
 function getVectorData(detection) {
