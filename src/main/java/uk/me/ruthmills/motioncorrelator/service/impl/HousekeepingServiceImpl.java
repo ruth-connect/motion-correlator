@@ -18,13 +18,25 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 	@Value("${filesystem.remote.path}")
 	private String remotePath;
 
+	@Value("${filesystem.media.min.percent.free}")
+	private double mediaMinPercentFree;
+
+	@Value("${filesystem.remote.min.percent.free}")
+	private double remoteMinPercentFree;
+
 	private static final Logger logger = LoggerFactory.getLogger(HousekeepingServiceImpl.class);
 
 	@Override
 	public void runHousekeeping() {
 		logger.info("Running Housekeeping...");
-		getPercentageDiskSpaceFree(mediaPath);
-		getPercentageDiskSpaceFree(remotePath);
+		double mediaPercentFree = getPercentageDiskSpaceFree(mediaPath);
+		double remotePercentFree = getPercentageDiskSpaceFree(remotePath);
+		if (mediaPercentFree < mediaMinPercentFree) {
+			logger.info("Media percent free is below minimum of " + mediaMinPercentFree + "%");
+		}
+		if (remotePercentFree < remoteMinPercentFree) {
+			logger.info("Remote percent free is below minimum of " + remoteMinPercentFree + "%");
+		}
 	}
 
 	private double getPercentageDiskSpaceFree(String path) {
@@ -34,7 +46,7 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 		double percentageDiskSpaceFree = 100d * (double) usableSpace / (double) totalSpace;
 		logger.info("Total Space for " + path + ": " + totalSpace + " bytes");
 		logger.info("Usable Space for " + path + " : " + usableSpace + " bytes");
-		logger.info("Percentage Disk Space Free: " + percentageDiskSpaceFree + "%");
+		logger.info("Percentage Disk Space Free for " + path + " : " + percentageDiskSpaceFree + "%");
 		return percentageDiskSpaceFree;
 	}
 }
