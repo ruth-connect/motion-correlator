@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 
 import uk.me.ruthmills.motioncorrelator.service.HousekeepingService;
 
@@ -37,11 +38,11 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 		double remotePercentFree = getPercentageDiskSpaceFree(remotePath);
 		if (mediaPercentFree < mediaMinPercentFree) {
 			logger.info("Media percent free is below minimum of " + mediaMinPercentFree + "%");
-			freeDiskSpace(mediaPath, mediaMinPercentFree);
+			freeDiskSpace(mediaPath, mediaPercentFree, mediaMinPercentFree);
 		}
 		if (remotePercentFree < remoteMinPercentFree) {
 			logger.info("Remote percent free is below minimum of " + remoteMinPercentFree + "%");
-			freeDiskSpace(remotePath, remoteMinPercentFree);
+			freeDiskSpace(remotePath, remotePercentFree, remoteMinPercentFree);
 		}
 	}
 
@@ -56,16 +57,18 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 		return percentageDiskSpaceFree;
 	}
 
-	private void freeDiskSpace(String path, double minPercentFree) {
-		logger.info("Freeing disk space for: " + path);
-//		while (getPercentageDiskSpaceFree(path) < minPercentFree) {
-		String earliestDay = getEarliestDay(path);
-		logger.info("Earliest day to free disk space for: " + earliestDay);
-		freeDiskSpaceForDay(path, earliestDay);
-//		}
+	private void freeDiskSpace(String path, double percentFree, double minPercentFree) {
+		do {
+			logger.info("Freeing disk space for: " + path);
+			String earliestDay = getEarliestDay(path);
+			logger.info("Earliest day to free disk space for: " + earliestDay);
+			freeDiskSpaceForDay(path, earliestDay);
+			percentFree = getPercentageDiskSpaceFree(path);
+			logger.info("Disk space free for " + path + " now: " + percentFree);
+		} while (percentFree < minPercentFree);
 	}
 
-	private void freeDiskSpaceForDay(String path, String dayPath) {
+	private void freeDiskSpaceForDay(String path, String day) {
 		File topLevelDirectory = new File(path);
 		for (File mediaTypeDirectory : topLevelDirectory.listFiles()) {
 			if (mediaTypeDirectory.isDirectory()) {
@@ -74,9 +77,25 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 				for (String camera : cameras) {
 					File cameraDirectory = new File(path + "/" + mediaType + "/" + camera);
 					if (cameraDirectory.isDirectory()) {
-						File dayDirectoryToDelete = new File(path + "/" + mediaType + "/" + camera + "/" + dayPath);
+						String dayPath = path + "/" + mediaType + "/" + camera + "/" + day;
+						File dayDirectoryToDelete = new File(dayPath);
 						if (dayDirectoryToDelete.exists()) {
-							logger.info("Deleting: " + path + "/" + mediaType + "/" + camera + "/" + dayPath);
+							logger.info("Deleting: " + dayPath);
+							FileSystemUtils.deleteRecursively(dayDirectoryToDelete);
+
+							String monthPath = dayPath.substring(0, dayPath.lastIndexOf("/"));
+							File monthDirectory = new File(monthPath);
+							if (monthDirectory.list().length == 0) {
+								logger.info("Deleting: " + monthPath);
+								monthDirectory.delete();
+
+								String yearPath = monthPath.substring(0, monthPath.lastIndexOf("/"));
+								File yearDirectory = new File(yearPath);
+								if (yearDirectory.list().length == 0) {
+									logger.info("Deleting: " + yearPath);
+									yearDirectory.delete();
+								}
+							}
 						}
 					}
 				}
