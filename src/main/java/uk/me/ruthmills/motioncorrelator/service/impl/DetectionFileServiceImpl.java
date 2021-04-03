@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,6 +20,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.me.ruthmills.motioncorrelator.model.Detection;
 import uk.me.ruthmills.motioncorrelator.model.DetectionDates;
 import uk.me.ruthmills.motioncorrelator.service.DetectionFileService;
+import uk.me.ruthmills.motioncorrelator.service.VideoService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 @Service
@@ -41,7 +44,12 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	@Value("${filesystem.remote.path}")
 	private String remotePath;
 
+	@Autowired
+	private VideoService videoService;
+
 	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	private static final DateTimeFormatter VIDEO_TIMESTAMP_FORMAT = DateTimeFormatter
+			.ofPattern("yyyy-MM-dd'_'HH.mm.ss");
 
 	private static final Logger logger = LoggerFactory.getLogger(DetectionFileServiceImpl.class);
 
@@ -80,10 +88,12 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 			day = parts[2];
 			hour = parts[3];
 			LocalDateTime dateTime = LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT);
-			detections
-					.addAll(readDetections(camera, year, month, day, hour, timestamp, maxDetections - detections.size())
-							.stream().filter(detection -> detection.getTimestamp().isBefore(dateTime))
-							.collect(Collectors.toList()));
+			List<Detection> newDetections = readDetections(camera, year, month, day, hour, timestamp,
+					maxDetections - detections.size()).stream()
+							.filter(detection -> detection.getTimestamp().isBefore(dateTime))
+							.collect(Collectors.toList());
+			addVideoLinks(camera, year, month, day, detections);
+			detections.addAll(newDetections);
 			logger.info("Detections size: " + detections.size());
 			if (detections.size() < 50) {
 				path = getPreviousHour(camera, year, month, day, hour);
@@ -102,6 +112,17 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String filename = getDetectionPathPrefix(false) + camera + "/" + year + "/" + month + "/" + day + "/" + hour
 				+ "/" + timestamp + "-" + sequence + ".json";
 		return mapper.readValue(new File(filename), Detection.class);
+	}
+
+	private void addVideoLinks(String camera, String year, String month, String day, List<Detection> detections) {
+		Map<String, String> videoMap = videoService.getVideos(camera, year, month, day);
+		for (Detection detection : detections) {
+			String videoTimestamp = detection.getTimestamp().format(VIDEO_TIMESTAMP_FORMAT);
+			if (videoMap.containsKey(videoTimestamp)) {
+				detection.setVideoPath(videoMap.get(videoTimestamp));
+				videoMap.remove(videoTimestamp);
+			}
+		}
 	}
 
 	public DetectionDates getDetectionDates(String camera) throws IOException {

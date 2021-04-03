@@ -20,6 +20,7 @@ public class Detection {
 	private byte[] image;
 	private byte[] averageImage;
 	private byte[] deltaImage;
+	private String videoPath;
 
 	public Detection() {
 	}
@@ -107,6 +108,14 @@ public class Detection {
 
 	public void setDeltaImage(byte[] deltaImage) {
 		this.deltaImage = deltaImage;
+	}
+
+	public String getVideoPath() {
+		return videoPath;
+	}
+
+	public void setVideoPath(String videoPath) {
+		this.videoPath = videoPath;
 	}
 
 	@Override
