@@ -87,6 +87,11 @@ public class RemoteBackupServiceImpl implements RemoteBackupService {
 							}
 						}
 
+						// Clear the images to free up memory.
+						detection.setImage(null);
+						detection.setAverageImage(null);
+						detection.setDeltaImage(null);
+
 						// Write the detection to a JSON file on the remote server.
 						try {
 							detectionFileService.writeDetection(detection, true);
