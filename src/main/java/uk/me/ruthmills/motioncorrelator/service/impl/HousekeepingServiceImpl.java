@@ -63,44 +63,53 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 
 	private String getEarliestDay(String path) {
 		File topLevelDirectory = new File(path);
-		for (File cameraDirectory : topLevelDirectory.listFiles()) {
-			if (cameraDirectory.isDirectory()) {
-				String camera = cameraDirectory.getName();
-				List<String> years = Arrays.asList(cameraDirectory.list());
-				Collections.sort(years);
-				if (years.size() > 0) {
-					int yearIndex = 0;
-					String earliestMonth = "";
-					while (yearIndex < years.size() && earliestMonth.equals("")) {
-						String earliestYear = years.get(yearIndex);
-						File yearDirectory = new File(path + "/" + camera + "/" + earliestYear);
-						if (!yearDirectory.isDirectory()) {
-							yearIndex++;
-						} else {
-							List<String> months = Arrays.asList(yearDirectory.list());
-							Collections.sort(months);
-							if (months.size() > 0) {
-								int monthIndex = 0;
-								String earliestDay = "";
-								while (monthIndex < months.size() && earliestDay.equals("")) {
-									earliestMonth = months.get(monthIndex);
-									File monthDirectory = new File(
-											path + "/" + camera + "/" + earliestYear + "/" + earliestMonth);
-									if (!monthDirectory.isDirectory()) {
-										monthIndex++;
-									} else {
-										List<String> days = Arrays.asList(monthDirectory.list());
-										Collections.sort(days);
-										if (days.size() > 0) {
-											int dayIndex = 0;
-											while (dayIndex < days.size()) {
-												earliestDay = days.get(dayIndex);
-												File dayDirectory = new File(path + "/" + camera + "/" + earliestYear
-														+ "/" + earliestMonth + "/" + earliestDay);
-												if (!dayDirectory.isDirectory()) {
-													dayIndex++;
-												} else {
-													return earliestYear + "/" + earliestMonth + "/" + earliestDay;
+		for (File mediaTypeDirectory : topLevelDirectory.listFiles()) {
+			if (mediaTypeDirectory.isDirectory()) {
+				String mediaType = mediaTypeDirectory.getName();
+				List<String> cameras = Arrays.asList(mediaTypeDirectory.list());
+				for (String camera : cameras) {
+					File cameraDirectory = new File(path + "/" + mediaType + "/" + camera);
+					if (cameraDirectory.isDirectory()) {
+						List<String> years = Arrays.asList(cameraDirectory.list());
+						Collections.sort(years);
+						if (years.size() > 0) {
+							int yearIndex = 0;
+							String earliestMonth = "";
+							while (yearIndex < years.size() && earliestMonth.equals("")) {
+								String earliestYear = years.get(yearIndex);
+								File yearDirectory = new File(
+										path + "/" + mediaType + "/" + camera + "/" + earliestYear);
+								if (!yearDirectory.isDirectory()) {
+									yearIndex++;
+								} else {
+									List<String> months = Arrays.asList(yearDirectory.list());
+									Collections.sort(months);
+									if (months.size() > 0) {
+										int monthIndex = 0;
+										String earliestDay = "";
+										while (monthIndex < months.size() && earliestDay.equals("")) {
+											earliestMonth = months.get(monthIndex);
+											File monthDirectory = new File(path + "/" + mediaType + "/" + camera + "/"
+													+ earliestYear + "/" + earliestMonth);
+											if (!monthDirectory.isDirectory()) {
+												monthIndex++;
+											} else {
+												List<String> days = Arrays.asList(monthDirectory.list());
+												Collections.sort(days);
+												if (days.size() > 0) {
+													int dayIndex = 0;
+													while (dayIndex < days.size()) {
+														earliestDay = days.get(dayIndex);
+														File dayDirectory = new File(path + "/" + mediaType + "/"
+																+ camera + "/" + earliestYear + "/" + earliestMonth
+																+ "/" + earliestDay);
+														if (!dayDirectory.isDirectory()) {
+															dayIndex++;
+														} else {
+															return earliestYear + "/" + earliestMonth + "/"
+																	+ earliestDay;
+														}
+													}
 												}
 											}
 										}
