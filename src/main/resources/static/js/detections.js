@@ -11,7 +11,7 @@ function formatTimestamp(timestamp) {
 }
 
 function getVideo(detection) {
-	return detection.videoPath ? "<a href=\"" + detection.videoPath + "\" target=\"_blank\"><img src=\"/play-button.png\" width=\"41\" height=\"41\"/></a>" : "";
+	return detection.videoPath ? "<a href=\"" + detection.videoPath + "\" rel=\"facebox\"><img src=\"/play-button.png\" width=\"41\" height=\"41\"/></a>" : "";
 }
 
 function getDate(detection) {
