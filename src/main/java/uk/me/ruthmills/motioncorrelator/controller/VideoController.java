@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.me.ruthmills.motioncorrelator.service.VideoService;
 
 @Controller
-@RequestMapping("video")
+@RequestMapping("videos")
 public class VideoController {
 
 	@Autowired
