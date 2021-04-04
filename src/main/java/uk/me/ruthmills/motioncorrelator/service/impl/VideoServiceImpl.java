@@ -10,6 +10,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ public class VideoServiceImpl implements VideoService {
 
 	@Value("${filesystem.media.path}")
 	private String mediaPath;
+
+	private static final Logger logger = LoggerFactory.getLogger(VideoServiceImpl.class);
 
 	@Override
 	public List<Video> getVideos(String camera, String year, String month, String day) {
@@ -38,6 +42,7 @@ public class VideoServiceImpl implements VideoService {
 	@Override
 	public byte[] getVideo(String camera, String year, String month, String day, String filename) throws IOException {
 		String videoPath = mediaPath + "/videos/" + camera + "/" + year + "/" + month + "/" + day;
+		logger.info("Video path: " + videoPath);
 		return Files.readAllBytes(FileSystems.getDefault().getPath(videoPath, filename));
 	}
 }
