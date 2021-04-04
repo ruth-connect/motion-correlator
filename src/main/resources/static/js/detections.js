@@ -54,14 +54,14 @@ function getInterpolated(detection) {
 }
 
 function getAlarmState(detection) {
-	return detection.alarmState.replaceAll("-", " ").toTitleCase();
+	return detection.alarmState.replaceAll("_", " ").toTitleCase();
 }
 
 function getVectorData(detection) {
 	if (!detection.vectorMotionDetection && detection.roundRobin) {
 		return "<td colspan=\"5\"><i>Round Robin</i></td>";
 	} else if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
-		return "<td colspan=\"5\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("_", " ") + "</b></td>";
+		return "<td colspan=\"5\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("-", " ") + "</b></td>";
 	} else {
 		return	"<td>" + getRegions(detection) + "</td>" + 
 				"<td>" + getMagnitude(detection) + "</td>" +
@@ -130,7 +130,7 @@ function displayAlarmState(detection) {
 
 function displayExternalTrigger(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
-		return "<h5 style=\"margin-top: 20px;\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("_", " ") + "</b></h5>";
+		return "<h5 style=\"margin-top: 20px;\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("-", " ") + "</b></h5>";
 	}
 	return "";
 }
