@@ -160,7 +160,7 @@ function displayVectors(detection) {
 function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 	return	"<tr id=\"" + prefix + "-tr-" + id + "\"" + (processTime ? " data-process-time=\"" + processTime + "\"" : "") + (replaced ? " data-replaced" : "") + ">" +
 				"<td>" +
-					"<button class=\"button\" type=\"button\" data-toggle=\"" + prefix + "-div-" + id + "\" style=\"margin-bottom: 0px;\">Images</button>" +
+					"<button class=\"button\" type=\"button\" data-toggle=\"" + prefix + "-div-" + id + "\" style=\"margin-bottom: 0px;\">View</button>" +
 					"<div class=\"dropdown-pane\" id=\"" + prefix + "-div-" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
