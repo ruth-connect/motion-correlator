@@ -11,7 +11,7 @@ function formatTimestamp(timestamp) {
 }
 
 function getVideo(detection) {
-	return detection.videoPath ? "<a href=\"#\" onclick=\"jQuery.facebox('<div style=\\\'width: 640px; height: 480px;\\\'><video width=\\\'640\\\' height=\\\'480\\\' controls><source type=\\\'movie/mp4\\\' src=\\\'" + detection.videoPath + "\\\'></video></div>');\"><img src=\"/play-button.png\" width=\"41\" height=\"41\"/></a>" : "";
+	return detection.videoPath ? "<a href=\"#\" onclick=\"jQuery.facebox('<div style=\\\'width: 640px; height: 480px;\\\'><video width=\\\'640\\\' height=\\\'480\\\' controls><source type=\\\'movie/mp4\\\' src=\\\'" + detection.videoPath + "\\\'></video></div>'); return false;\"><img src=\"/play-button.png\" width=\"41\" height=\"41\"/></a>" : "";
 }
 
 function getDate(detection) {
