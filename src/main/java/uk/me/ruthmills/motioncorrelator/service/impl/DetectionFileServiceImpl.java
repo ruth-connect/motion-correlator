@@ -149,7 +149,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 
 	private void addVideoLinks(String camera, List<Detection> detections, int maxDetections) {
 		List<Video> videos = getVideos(camera, detections);
-		for (int i = detections.size() - 1; i >= 0; i--) {
+		for (int i = detections.size() - 1; i >= 0 && videos.size() > 0; i--) {
 			Detection detection = detections.get(i);
 			String videoTimestamp = detection.getTimestamp().format(VIDEO_TIMESTAMP_FORMAT);
 			Video video = videos.get(0);
