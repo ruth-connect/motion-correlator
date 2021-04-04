@@ -9,5 +9,6 @@ public interface VideoService {
 
 	public List<Video> getVideos(String camera, String year, String month, String day);
 
-	public byte[] getVideo(String camera, String year, String month, String day, String filename) throws IOException;
+	public String getVideoPath(String camera, String year, String month, String day, String filename)
+			throws IOException;
 }
