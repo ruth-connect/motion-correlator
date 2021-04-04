@@ -124,22 +124,24 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	}
 
 	private List<Video> getVideos(String camera, List<Detection> detections) {
-		String earliestDetectionTime = detections.get(detections.size() - 1).getTimestamp()
-				.format(VIDEO_TIMESTAMP_FORMAT);
-		String latestDetectionTime = detections.get(0).getTimestamp().format(VIDEO_TIMESTAMP_FORMAT);
 		List<Video> videos = new ArrayList<>();
-		List<String> videoDates = getVideoDates(detections);
-		for (String videoDate : videoDates) {
-			String[] parts = videoDate.split("/");
-			String year = parts[0];
-			String month = parts[1];
-			String day = parts[2];
-			videos.addAll(videoService.getVideos(camera, year, month, day));
+		if (detections.size() > 0) {
+			String earliestDetectionTime = detections.get(detections.size() - 1).getTimestamp()
+					.format(VIDEO_TIMESTAMP_FORMAT);
+			String latestDetectionTime = detections.get(0).getTimestamp().format(VIDEO_TIMESTAMP_FORMAT);
+			List<String> videoDates = getVideoDates(detections);
+			for (String videoDate : videoDates) {
+				String[] parts = videoDate.split("/");
+				String year = parts[0];
+				String month = parts[1];
+				String day = parts[2];
+				videos.addAll(videoService.getVideos(camera, year, month, day));
+			}
+			videos = videos.stream()
+					.filter(video -> video.getTimestamp().compareTo(latestDetectionTime) <= 0
+							&& video.getTimestamp().compareTo(earliestDetectionTime) >= 0)
+					.sorted(Comparator.comparing(Video::getTimestamp)).collect(Collectors.toList());
 		}
-		videos = videos.stream()
-				.filter(video -> video.getTimestamp().compareTo(latestDetectionTime) <= 0
-						&& video.getTimestamp().compareTo(earliestDetectionTime) >= 0)
-				.sorted(Comparator.comparing(Video::getTimestamp)).collect(Collectors.toList());
 		return videos;
 	}
 
