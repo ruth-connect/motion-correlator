@@ -11,7 +11,7 @@ function formatTimestamp(timestamp) {
 }
 
 function getVideo(detection) {
-	return detection.videoPath ? "<button class=\"button mdi mdi-video\" type=\"button\" style=\"margin-bottom: 0px;\" onclick=\"jQuery.facebox('<div style=\\\'width: 640px; height: 480px;\\\'><video width=\\\'640\\\' height=\\\'480\\\' controls autoplay><source type=\\\'video/mp4\\\' src=\\\'" + detection.videoPath + "\\\'></video></div>'); return false;\"></button>" : "";
+	return detection.videoPath ? "<button class=\"button hollow mdi mdi-video\" type=\"button\" style=\"margin-bottom: 0px;\" onclick=\"jQuery.facebox('<div style=\\\'width: 640px; height: 480px;\\\'><video width=\\\'640\\\' height=\\\'480\\\' controls autoplay><source type=\\\'video/mp4\\\' src=\\\'" + detection.videoPath + "\\\'></video></div>'); return false;\"></button>" : "";
 }
 
 function getDate(detection) {
@@ -160,7 +160,7 @@ function displayVectors(detection) {
 function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 	return	"<tr id=\"" + prefix + "-tr-" + id + "\"" + (processTime ? " data-process-time=\"" + processTime + "\"" : "") + (replaced ? " data-replaced" : "") + ">" +
 				"<td>" +
-					"<button class=\"button mdi mdi-information\" type=\"button\" data-toggle=\"" + prefix + "-div-" + id + "\" style=\"margin-bottom: 0px;\"></button>" +
+					"<button class=\"button hollow mdi mdi-information\" type=\"button\" data-toggle=\"" + prefix + "-div-" + id + "\" style=\"margin-bottom: 0px;\"></button>" +
 					"<div class=\"dropdown-pane\" id=\"" + prefix + "-div-" + id + "\" data-dropdown data-hover=\"true\" data-hover-pane=\"true\" data-position=\"right\" data-alignment=\"top\" style=\"width: 79%;\">" +
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
