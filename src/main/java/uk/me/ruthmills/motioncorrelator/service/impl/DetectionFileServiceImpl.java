@@ -89,8 +89,10 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 			day = parts[2];
 			hour = parts[3];
 			LocalDateTime dateTime = LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT);
-			detections.addAll(detections.stream().filter(detection -> detection.getTimestamp().isBefore(dateTime))
-					.collect(Collectors.toList()));
+			detections.addAll(
+					readDetections(camera, year, month, day, hour, timestamp, maxDetections + 1 - detections.size())
+							.stream().filter(detection -> detection.getTimestamp().isBefore(dateTime))
+							.collect(Collectors.toList()));
 			logger.info("Detections size: " + detections.size());
 			if (detections.size() < maxDetections + 1) {
 				path = getPreviousHour(camera, year, month, day, hour);
