@@ -10,6 +10,10 @@ function formatTimestamp(timestamp) {
 	return timestamp.substring(0, 19) + formatMilliseconds(timestamp.substring(20, timestamp.length), false);
 }
 
+function getVideo(detection) {
+	return detection.videoPath ? "<a href=\"" + detection.videoPath + "\"><img src=\"/play-button.png\" width=\"41\" height=\"41\"/></a>" : "";
+}
+
 function getDate(detection) {
 	return detection.timestamp.substring(8, 10) + "/" + detection.timestamp.substring(5, 7) + "/" +
 		detection.timestamp.substring(0, 4);
@@ -176,6 +180,7 @@ function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 						"</div>" +
 					"</div>" +
 				"</td>" +
+				"<td>" + getVideo(detection) + "</td>" + 
 				"<td>" + getDate(detection) + "</td>" +
 				"<td>" + getTime(detection) + "</td>" +
 				"<td>" + getVectorTime(detection) + "</td>" +
