@@ -48,6 +48,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 	private VideoService videoService;
 
 	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 	private static final DateTimeFormatter VIDEO_TIMESTAMP_FORMAT = DateTimeFormatter
 			.ofPattern("yyyy-MM-dd'_'HH.mm.ss");
 
@@ -80,7 +81,7 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		String hour = timestamp.substring(11, 13);
 		List<Detection> detections = new ArrayList<>();
 		String path = getDetectionPath(camera, year, month, day, hour);
-		while (path != null && detections.size() < 50) {
+		while (path != null && detections.size() < maxDetections + 1) {
 			logger.info("Detection Path: " + path);
 			String[] parts = path.split("/");
 			year = parts[0];
@@ -88,17 +89,14 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 			day = parts[2];
 			hour = parts[3];
 			LocalDateTime dateTime = LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT);
-			List<Detection> newDetections = readDetections(camera, year, month, day, hour, timestamp,
-					maxDetections - detections.size()).stream()
-							.filter(detection -> detection.getTimestamp().isBefore(dateTime))
-							.collect(Collectors.toList());
-			addVideoLinks(camera, year, month, day, detections);
-			detections.addAll(newDetections);
+			detections.addAll(detections.stream().filter(detection -> detection.getTimestamp().isBefore(dateTime))
+					.collect(Collectors.toList()));
 			logger.info("Detections size: " + detections.size());
-			if (detections.size() < 50) {
+			if (detections.size() < maxDetections + 1) {
 				path = getPreviousHour(camera, year, month, day, hour);
 			}
 		}
+		addVideoLinks(camera, detections, maxDetections);
 		stopWatch.stop();
 		logger.info("Read time: " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms");
 		return detections;
@@ -114,11 +112,52 @@ public class DetectionFileServiceImpl implements DetectionFileService {
 		return mapper.readValue(new File(filename), Detection.class);
 	}
 
-	private void addVideoLinks(String camera, String year, String month, String day, List<Detection> detections) {
-		List<Video> videos = videoService.getVideos(camera, year, month, day);
+	private List<String> getVideoDates(List<Detection> detections) {
+		List<String> videoDates = new ArrayList<>();
+		for (Detection detection : detections) {
+			String videoDate = detection.getTimestamp().format(DATE_FORMAT);
+			if (!videoDates.contains(videoDate)) {
+				videoDates.add(videoDate);
+			}
+		}
+		return videoDates;
+	}
+
+	private List<Video> getVideos(String camera, List<Detection> detections) {
+		String earliestDetectionTime = detections.get(detections.size() - 1).getTimestamp()
+				.format(VIDEO_TIMESTAMP_FORMAT);
+		String latestDetectionTime = detections.get(0).getTimestamp().format(VIDEO_TIMESTAMP_FORMAT);
+		List<Video> videos = new ArrayList<>();
+		List<String> videoDates = getVideoDates(detections);
+		for (String videoDate : videoDates) {
+			String[] parts = videoDate.split("/");
+			String year = parts[0];
+			String month = parts[1];
+			String day = parts[2];
+			videos.addAll(videoService.getVideos(camera, year, month, day));
+		}
+		videos = videos.stream()
+				.filter(video -> video.getTimestamp().compareTo(latestDetectionTime) <= 0
+						&& video.getTimestamp().compareTo(earliestDetectionTime) >= 0)
+				.sorted(Comparator.comparing(Video::getTimestamp)).collect(Collectors.toList());
+		return videos;
+	}
+
+	private void addVideoLinks(String camera, List<Detection> detections, int maxDetections) {
+		List<Video> videos = getVideos(camera, detections);
 		for (int i = detections.size() - 1; i >= 0; i--) {
 			Detection detection = detections.get(i);
 			String videoTimestamp = detection.getTimestamp().format(VIDEO_TIMESTAMP_FORMAT);
+			Video video = videos.get(0);
+			if (video.getTimestamp().compareTo(videoTimestamp) <= 0) {
+				logger.info("Setting video path: " + video.getPath() + " for detection with timestamp: "
+						+ detection.getTimestamp());
+				detection.setVideoPath(video.getPath());
+				videos.remove(0);
+			}
+		}
+		if (detections.size() > maxDetections) {
+			detections.remove(maxDetections);
 		}
 	}
 
