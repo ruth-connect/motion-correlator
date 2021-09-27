@@ -80,19 +80,19 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 						String dayPath = path + "/" + mediaType + "/" + camera + "/" + day;
 						File dayDirectoryToDelete = new File(dayPath);
 						if (dayDirectoryToDelete.exists()) {
-							logger.info("Deleting: " + dayPath);
+							logger.info("Deleting DAY: " + dayPath);
 							FileSystemUtils.deleteRecursively(dayDirectoryToDelete);
 
 							String monthPath = dayPath.substring(0, dayPath.lastIndexOf("/"));
 							File monthDirectory = new File(monthPath);
 							if (monthDirectory.list().length == 0) {
-								logger.info("Deleting: " + monthPath);
+								logger.info("Deleting MONTH: " + monthPath);
 								monthDirectory.delete();
 
 								String yearPath = monthPath.substring(0, monthPath.lastIndexOf("/"));
 								File yearDirectory = new File(yearPath);
 								if (yearDirectory.list().length == 0) {
-									logger.info("Deleting: " + yearPath);
+									logger.info("Deleting YEAR: " + yearPath);
 									yearDirectory.delete();
 								}
 							}
