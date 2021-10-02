@@ -100,6 +100,12 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 		}
 
 		private void freeDiskSpace(boolean isRemote, String path, double percentFree, double minPercentFree) {
+			if (isRemote) {
+				homeAssistantService.notifyRemoteDiskSpaceFreeStart();
+			} else {
+				homeAssistantService.notifyDiskSpaceFreeStart();
+			}
+
 			do {
 				double oldPercentFree = percentFree;
 				logger.info("Freeing disk space for: " + path);
@@ -108,6 +114,7 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 				freeDiskSpaceForDay(path, earliestDay);
 				percentFree = getPercentageDiskSpaceFree(path);
 				logger.info("Disk space free for " + path + " now: " + percentFree);
+
 				if (oldPercentFree == percentFree) {
 					logger.error("Error! No disk space was freed! Exiting loop.");
 					if (isRemote) {
@@ -118,6 +125,7 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 					return; // exit the method.
 				}
 			} while (percentFree < minPercentFree);
+
 			if (isRemote) {
 				homeAssistantService.notifyRemoteDiskSpaceFreed();
 			} else {

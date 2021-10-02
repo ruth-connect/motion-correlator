@@ -19,9 +19,13 @@ public interface HomeAssistantService {
 
 	public void notifyDiskWriteFailed();
 
+	public void notifyDiskSpaceFreeStart();
+
 	public void notifyDiskSpaceFreed();
 
 	public void notifyDiskSpaceNotFreed();
+
+	public void notifyRemoteDiskSpaceFreeStart();
 
 	public void notifyRemoteDiskWriteOK();
 
