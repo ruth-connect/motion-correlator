@@ -78,9 +78,14 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 				} else {
 					homeAssistantService.notifyDiskSpaceNotFreed();
 				}
-				break; // exit the while loop.
+				return; // exit the method.
 			}
 		} while (percentFree < minPercentFree);
+		if (isRemote) {
+			homeAssistantService.notifyRemoteDiskSpaceFreed();
+		} else {
+			homeAssistantService.notifyDiskSpaceFreed();
+		}
 	}
 
 	private void freeDiskSpaceForDay(String path, String day) {
