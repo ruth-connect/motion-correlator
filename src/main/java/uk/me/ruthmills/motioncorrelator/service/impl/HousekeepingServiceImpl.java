@@ -59,16 +59,22 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 
 	private void freeDiskSpace(String path, double percentFree, double minPercentFree) {
 		do {
+			double oldPercentFree = percentFree;
 			logger.info("Freeing disk space for: " + path);
 			String earliestDay = getEarliestDay(path);
 			logger.info("Earliest day to free disk space for: " + earliestDay);
 			freeDiskSpaceForDay(path, earliestDay);
 			percentFree = getPercentageDiskSpaceFree(path);
 			logger.info("Disk space free for " + path + " now: " + percentFree);
+			if (oldPercentFree == percentFree) {
+				logger.error("Error! No disk space was freed! Exiting loop.");
+				break; // exit the while loop.
+			}
 		} while (percentFree < minPercentFree);
 	}
 
 	private void freeDiskSpaceForDay(String path, String day) {
+		logger.info("freeDiskSpaceForDay invoked. Path: " + path + ", day: " + day);
 		File topLevelDirectory = new File(path);
 		for (File mediaTypeDirectory : topLevelDirectory.listFiles()) {
 			if (mediaTypeDirectory.isDirectory()) {
@@ -115,6 +121,7 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 					if (cameraDirectory.isDirectory()) {
 						String earliestDay = getEarliestDayForCamera(path, mediaType, camera, cameraDirectory);
 						if (earliestDay != null) {
+							logger.info("Adding earliest day to list: " + earliestDay);
 							earliestDays.add(earliestDay);
 						}
 					}
@@ -122,9 +129,11 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 			}
 		}
 		if (earliestDays.size() == 0) {
+			logger.warn("Earliest days list size is zero! Returning null");
 			return null;
 		} else {
 			Collections.sort(earliestDays);
+			logger.info("Earliest day is: " + earliestDays.get(0));
 			return earliestDays.get(0);
 		}
 	}
@@ -164,6 +173,8 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 										if (!dayDirectory.isDirectory()) {
 											dayIndex++;
 										} else {
+											logger.info("Returning earliest day for camera " + camera + ": "
+													+ earliestYear + "/" + earliestMonth + "/" + earliestDay);
 											return earliestYear + "/" + earliestMonth + "/" + earliestDay;
 										}
 									}
@@ -174,6 +185,7 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 				}
 			}
 		}
+		logger.warn("No earliest day for camera: " + camera + " found! Returning null");
 		return null;
 	}
 }
