@@ -34,10 +34,18 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 	@Autowired
 	private HomeAssistantService homeAssistantService;
 
+	private boolean inProgress = false;
+
 	private static final Logger logger = LoggerFactory.getLogger(HousekeepingServiceImpl.class);
 
 	@Override
 	public void runHousekeeping() {
+		if (inProgress) {
+			logger.info("NOT running housekeeping as it's already in progress");
+			return;
+		}
+
+		inProgress = true;
 		logger.info("Running Housekeeping...");
 		double mediaPercentFree = getPercentageDiskSpaceFree(mediaPath);
 		double remotePercentFree = getPercentageDiskSpaceFree(remotePath);
@@ -49,6 +57,8 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 			logger.info("Remote percent free is below minimum of " + remoteMinPercentFree + "%");
 			freeDiskSpace(true, remotePath, remotePercentFree, remoteMinPercentFree);
 		}
+		logger.info("Housekeeping Complete!");
+		inProgress = false;
 	}
 
 	private double getPercentageDiskSpaceFree(String path) {
