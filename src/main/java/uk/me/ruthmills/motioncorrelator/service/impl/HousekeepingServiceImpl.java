@@ -8,10 +8,12 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 
+import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.service.HousekeepingService;
 
 @Service
@@ -29,6 +31,9 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 	@Value("${filesystem.remote.min.percent.free}")
 	private double remoteMinPercentFree;
 
+	@Autowired
+	private HomeAssistantService homeAssistantService;
+
 	private static final Logger logger = LoggerFactory.getLogger(HousekeepingServiceImpl.class);
 
 	@Override
@@ -38,11 +43,11 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 		double remotePercentFree = getPercentageDiskSpaceFree(remotePath);
 		if (mediaPercentFree < mediaMinPercentFree) {
 			logger.info("Media percent free is below minimum of " + mediaMinPercentFree + "%");
-			freeDiskSpace(mediaPath, mediaPercentFree, mediaMinPercentFree);
+			freeDiskSpace(false, mediaPath, mediaPercentFree, mediaMinPercentFree);
 		}
 		if (remotePercentFree < remoteMinPercentFree) {
 			logger.info("Remote percent free is below minimum of " + remoteMinPercentFree + "%");
-			freeDiskSpace(remotePath, remotePercentFree, remoteMinPercentFree);
+			freeDiskSpace(true, remotePath, remotePercentFree, remoteMinPercentFree);
 		}
 	}
 
@@ -57,7 +62,7 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 		return percentageDiskSpaceFree;
 	}
 
-	private void freeDiskSpace(String path, double percentFree, double minPercentFree) {
+	private void freeDiskSpace(boolean isRemote, String path, double percentFree, double minPercentFree) {
 		do {
 			double oldPercentFree = percentFree;
 			logger.info("Freeing disk space for: " + path);
@@ -68,6 +73,11 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 			logger.info("Disk space free for " + path + " now: " + percentFree);
 			if (oldPercentFree == percentFree) {
 				logger.error("Error! No disk space was freed! Exiting loop.");
+				if (isRemote) {
+					homeAssistantService.notifyRemoteDiskSpaceNotFreed();
+				} else {
+					homeAssistantService.notifyDiskSpaceNotFreed();
+				}
 				break; // exit the while loop.
 			}
 		} while (percentFree < minPercentFree);

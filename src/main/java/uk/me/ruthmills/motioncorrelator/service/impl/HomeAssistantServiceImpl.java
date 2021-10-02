@@ -84,6 +84,12 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	}
 
 	@Override
+	public void notifyDiskSpaceNotFreed() {
+		logger.info("Disk Space Not Freed");
+		homeAssistantNotifier.notify("heimdallr_disk_space_not_freed", LocalDateTime.now().toString());
+	}
+
+	@Override
 	public void notifyRemoteDiskWriteOK() {
 		logger.info("Remote Disk Write OK");
 		homeAssistantNotifier.notify("heimdallr_remote_disk_write_ok", LocalDateTime.now().toString());
@@ -93,6 +99,12 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	public void notifyRemoteDiskWriteFailed() {
 		logger.info("Remote Disk Write Failed");
 		homeAssistantNotifier.notify("heimdallr_remote_disk_write_failed", LocalDateTime.now().toString());
+	}
+
+	@Override
+	public void notifyRemoteDiskSpaceNotFreed() {
+		logger.info("Remote Disk Space Not Freed");
+		homeAssistantNotifier.notify("heimdallr_remote_disk_space_not_freed", LocalDateTime.now().toString());
 	}
 
 	@Override
