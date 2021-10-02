@@ -111,7 +111,6 @@ public class MjpegStream implements Runnable {
 
 	private BufferedInputStream openConnection() throws IOException {
 		BufferedInputStream bufferedInputStream = null;
-		logger.info("Opening connection to: " + camera.getStreamUrl());
 		URL url = new URL(camera.getStreamUrl());
 		conn = url.openConnection();
 		conn.setReadTimeout(5000); // 5 seconds
