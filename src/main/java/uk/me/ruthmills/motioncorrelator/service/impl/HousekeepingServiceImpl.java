@@ -1,6 +1,8 @@
 package uk.me.ruthmills.motioncorrelator.service.impl;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,6 +48,27 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 		housekeeping.initialise();
 	}
 
+	@Override
+	public void reportDiskUsage() {
+		BigDecimal mediaPercentUsed = new BigDecimal(100d - getPercentageDiskSpaceFree(mediaPath));
+		BigDecimal remotePercentUsed = new BigDecimal(100d - getPercentageDiskSpaceFree(remotePath));
+		homeAssistantService
+				.notifyMediaDiskSpaceUsed(mediaPercentUsed.setScale(1, RoundingMode.HALF_UP).toPlainString());
+		homeAssistantService
+				.notifyRemoteDiskSpaceUsed(remotePercentUsed.setScale(1, RoundingMode.HALF_UP).toPlainString());
+	}
+
+	private double getPercentageDiskSpaceFree(String path) {
+		File file = new File(path);
+		long totalSpace = file.getTotalSpace();
+		long usableSpace = file.getUsableSpace();
+		double percentageDiskSpaceFree = 100d * (double) usableSpace / (double) totalSpace;
+		logger.info("Total Space for " + path + ": " + totalSpace + " bytes");
+		logger.info("Usable Space for " + path + " : " + usableSpace + " bytes");
+		logger.info("Percentage Disk Space Free for " + path + " : " + percentageDiskSpaceFree + "%");
+		return percentageDiskSpaceFree;
+	}
+
 	private class Housekeeping implements Runnable {
 
 		private Thread housekeepingThread;
@@ -86,17 +109,6 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 				freeDiskSpace(true, remotePath, remotePercentFree, remoteMinPercentFree);
 			}
 			logger.info("Housekeeping Complete!");
-		}
-
-		private double getPercentageDiskSpaceFree(String path) {
-			File file = new File(path);
-			long totalSpace = file.getTotalSpace();
-			long usableSpace = file.getUsableSpace();
-			double percentageDiskSpaceFree = 100d * (double) usableSpace / (double) totalSpace;
-			logger.info("Total Space for " + path + ": " + totalSpace + " bytes");
-			logger.info("Usable Space for " + path + " : " + usableSpace + " bytes");
-			logger.info("Percentage Disk Space Free for " + path + " : " + percentageDiskSpaceFree + "%");
-			return percentageDiskSpaceFree;
 		}
 
 		private void freeDiskSpace(boolean isRemote, String path, double percentFree, double minPercentFree) {

@@ -35,6 +35,10 @@ public interface HomeAssistantService {
 
 	public void notifyRemoteDiskSpaceNotFreed();
 
+	public void notifyMediaDiskSpaceUsed(String mediaDiskSpace);
+
+	public void notifyRemoteDiskSpaceUsed(String remoteDiskSpace);
+
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections);
 }

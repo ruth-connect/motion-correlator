@@ -132,6 +132,18 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	}
 
 	@Override
+	public void notifyMediaDiskSpaceUsed(String mediaDiskSpace) {
+		logger.info("Media Disk Space Used: " + mediaDiskSpace + "%");
+		homeAssistantNotifier.notify("heimdallr_media_disk_space_used", mediaDiskSpace);
+	}
+
+	@Override
+	public void notifyRemoteDiskSpaceUsed(String remoteDiskSpace) {
+		logger.info("Remote Disk Space Used: " + remoteDiskSpace + "%");
+		homeAssistantNotifier.notify("heimdallr_remote_disk_space_used", remoteDiskSpace);
+	}
+
+	@Override
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections) {
 		logger.info(camera.getName() + " person detected");
