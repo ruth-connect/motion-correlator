@@ -52,10 +52,9 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 	public void reportDiskUsage() {
 		BigDecimal mediaPercentUsed = new BigDecimal(100d - getPercentageDiskSpaceFree(mediaPath));
 		BigDecimal remotePercentUsed = new BigDecimal(100d - getPercentageDiskSpaceFree(remotePath));
+		homeAssistantService.notifyMediaDiskSpaceUsed(mediaPercentUsed.setScale(1, RoundingMode.DOWN).toPlainString());
 		homeAssistantService
-				.notifyMediaDiskSpaceUsed(mediaPercentUsed.setScale(1, RoundingMode.HALF_UP).toPlainString());
-		homeAssistantService
-				.notifyRemoteDiskSpaceUsed(remotePercentUsed.setScale(1, RoundingMode.HALF_UP).toPlainString());
+				.notifyRemoteDiskSpaceUsed(remotePercentUsed.setScale(1, RoundingMode.DOWN).toPlainString());
 	}
 
 	private double getPercentageDiskSpaceFree(String path) {
