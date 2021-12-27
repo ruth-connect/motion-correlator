@@ -159,9 +159,6 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 							if (dayDirectoryToDelete.exists()) {
 								logger.info("Deleting DAY: " + dayPath);
 								FileSystemUtils.deleteRecursively(dayDirectoryToDelete);
-								if (dayDirectoryToDelete.exists()) {
-									dayDirectoryToDelete.delete();
-								}
 
 								String monthPath = dayPath.substring(0, dayPath.lastIndexOf("/"));
 								File monthDirectory = new File(monthPath);
