@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -93,7 +94,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		public void run() {
 			while (true) {
 				try {
-					VectorDataList vectorDataList = vectorDataQueue.pollFirst();
+					VectorDataList vectorDataList = vectorDataQueue.pollFirst(10, TimeUnit.MILLISECONDS);
 					if (vectorDataList != null) {
 						// We have a new vector detection.
 						logger.info("NEW VECTOR DETECTION for camera: " + vectorDataList.getCamera()
@@ -150,7 +151,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							performMotionCorrelation(currentDetection, false);
 						} else {
 							// Perform motion correlation on the next camera round robin.
-							performMotionCorrelationOnNextCameraRoundRobin();
+							// performMotionCorrelationOnNextCameraRoundRobin();
 						}
 					}
 				} catch (Exception ex) {
