@@ -122,7 +122,7 @@ public class MjpegStream implements Runnable {
 	private void handleNewFrame() {
 		sequence++;
 		LocalDateTime now = LocalDateTime.now();
-		long expectedTimeElapsedMilliseconds = sequence * 250L;
+		long expectedTimeElapsedMilliseconds = (long) ((double) sequence * (1000d / 3d));
 		long expectedMillisNow = startTimeMilliseconds + expectedTimeElapsedMilliseconds;
 		long actualMillisNow = TimeUtils.toMilliseconds(now);
 
