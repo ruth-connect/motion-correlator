@@ -7,6 +7,7 @@ public class Camera {
 	private String streamUrl;
 	private String adminUrl;
 	private String location;
+	private int framesPerSecond;
 	private boolean connected;
 
 	public String getName() {
@@ -49,6 +50,14 @@ public class Camera {
 		this.location = location;
 	}
 
+	public int getFramesPerSecond() {
+		return framesPerSecond;
+	}
+
+	public void setFramesPerSecond(int framesPerSecond) {
+		this.framesPerSecond = framesPerSecond;
+	}
+
 	public boolean isConnected() {
 		return connected;
 	}
@@ -64,6 +73,7 @@ public class Camera {
 		stringBuilder.append(", url: " + streamUrl);
 		stringBuilder.append(", adminUrl: " + adminUrl);
 		stringBuilder.append(", location: " + location);
+		stringBuilder.append(", framesPerSecond: " + framesPerSecond);
 		stringBuilder.append(", connected: " + connected + "\n");
 		return stringBuilder.toString();
 	}
