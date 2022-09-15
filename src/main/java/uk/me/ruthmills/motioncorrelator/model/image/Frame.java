@@ -119,6 +119,9 @@ public class Frame {
 					if (initialFrame.previousFrame != null) {
 						previousAverageFrame = initialFrame.previousFrame.averageFrame;
 					}
+					if (initialFrame.image == null) {
+						throw new RuntimeException("IMAGE IS NULL!!!");
+					}
 					Mat decoded = ImageUtils.decodeImage(initialFrame.image,
 							new PersonDetectionParameters().getImageWidthPixels());
 					Mat frame = new Mat();
