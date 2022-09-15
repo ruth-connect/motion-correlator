@@ -54,7 +54,7 @@ public class Frame {
 
 	public Mat getBlurredFrame() {
 		if (blurredFrame == null) {
-			computeAverageFrames(this);
+			computeAverageFrames();
 		}
 		return blurredFrame;
 	}
@@ -65,7 +65,7 @@ public class Frame {
 
 	public Mat getAverageFrame() {
 		if (averageFrame == null) {
-			computeAverageFrames(this);
+			computeAverageFrames();
 		}
 		return averageFrame;
 	}
@@ -99,13 +99,13 @@ public class Frame {
 		nextFrame = null;
 	}
 
-	private static void computeAverageFrames(Frame currentFrame) {
-		synchronized (currentFrame.camera) {
-			if (currentFrame.averageFrame == null) {
-				Frame initialFrame = currentFrame;
+	private void computeAverageFrames() {
+		synchronized (camera) {
+			if (averageFrame == null) {
+				Frame initialFrame = this;
 				int count = 0;
 				while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
-						&& (count < AVERAGE_IMAGE_START * currentFrame.camera.getFramesPerSecond())) {
+						&& (count < AVERAGE_IMAGE_START * camera.getFramesPerSecond())) {
 					initialFrame = initialFrame.previousFrame;
 					count++;
 				}
@@ -132,7 +132,7 @@ public class Frame {
 					}
 					initialFrame.averageFrame = averageFrame;
 					initialFrame.blurredFrame = blurredFrame;
-					if (initialFrame == currentFrame) {
+					if (initialFrame == this) {
 						done = true;
 					} else {
 						initialFrame = initialFrame.nextFrame;
