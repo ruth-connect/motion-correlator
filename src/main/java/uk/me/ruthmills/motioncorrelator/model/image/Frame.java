@@ -121,7 +121,8 @@ public class Frame {
 			if (initialFrame.previousFrame != null) {
 				previousAverageFrame = initialFrame.previousFrame.averageFrame;
 			}
-			Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
+			Mat decoded = ImageUtils.decodeImage(initialFrame.image,
+					new PersonDetectionParameters().getImageWidthPixels());
 			Mat frame = new Mat();
 			decoded.convertTo(frame, CvType.CV_32F);
 			decoded.release();
