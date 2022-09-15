@@ -99,38 +99,40 @@ public class Frame {
 	}
 
 	private static synchronized void computeAverageFrames(Frame currentFrame) {
-		Frame initialFrame = currentFrame;
-		int count = 0;
-		while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
-				&& (count < AVERAGE_IMAGE_START * currentFrame.framesPerSecond)) {
-			initialFrame = initialFrame.previousFrame;
-			count++;
-		}
-		boolean done = false;
-		while (initialFrame.averageFrame == null && !done) {
-			Mat previousAverageFrame = null;
-			initialFrame.averageFrame = new Mat();
-			if (initialFrame.previousFrame != null) {
-				previousAverageFrame = initialFrame.previousFrame.averageFrame;
+		if (currentFrame.averageFrame == null) {
+			Frame initialFrame = currentFrame;
+			int count = 0;
+			while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
+					&& (count < AVERAGE_IMAGE_START * currentFrame.framesPerSecond)) {
+				initialFrame = initialFrame.previousFrame;
+				count++;
 			}
-			Mat decoded = ImageUtils.decodeImage(initialFrame.image,
-					new PersonDetectionParameters().getImageWidthPixels());
-			Mat frame = new Mat();
-			decoded.convertTo(frame, CvType.CV_32F);
-			decoded.release();
-			initialFrame.blurredFrame = new Mat();
-			Imgproc.GaussianBlur(frame, initialFrame.blurredFrame, new Size(25, 25), 0d);
-			frame.release();
-			if (previousAverageFrame == null) {
-				initialFrame.blurredFrame.copyTo(initialFrame.averageFrame);
-			} else {
-				previousAverageFrame.copyTo(initialFrame.averageFrame);
-				Imgproc.accumulateWeighted(initialFrame.blurredFrame, initialFrame.averageFrame, 0.1d);
-			}
-			if (initialFrame == currentFrame) {
-				done = true;
-			} else {
-				initialFrame = initialFrame.nextFrame;
+			boolean done = false;
+			while (initialFrame.averageFrame == null && !done) {
+				Mat previousAverageFrame = null;
+				initialFrame.averageFrame = new Mat();
+				if (initialFrame.previousFrame != null) {
+					previousAverageFrame = initialFrame.previousFrame.averageFrame;
+				}
+				Mat decoded = ImageUtils.decodeImage(initialFrame.image,
+						new PersonDetectionParameters().getImageWidthPixels());
+				Mat frame = new Mat();
+				decoded.convertTo(frame, CvType.CV_32F);
+				decoded.release();
+				initialFrame.blurredFrame = new Mat();
+				Imgproc.GaussianBlur(frame, initialFrame.blurredFrame, new Size(25, 25), 0d);
+				frame.release();
+				if (previousAverageFrame == null) {
+					initialFrame.blurredFrame.copyTo(initialFrame.averageFrame);
+				} else {
+					previousAverageFrame.copyTo(initialFrame.averageFrame);
+					Imgproc.accumulateWeighted(initialFrame.blurredFrame, initialFrame.averageFrame, 0.1d);
+				}
+				if (initialFrame == currentFrame) {
+					done = true;
+				} else {
+					initialFrame = initialFrame.nextFrame;
+				}
 			}
 		}
 	}
