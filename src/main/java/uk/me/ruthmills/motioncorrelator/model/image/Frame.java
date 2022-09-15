@@ -67,9 +67,6 @@ public class Frame {
 		if (averageFrame == null) {
 			computeAverageFrames(this);
 		}
-		if (averageFrame == null) {
-			throw new RuntimeException("IT'S STILL NULL!!!");
-		}
 		return averageFrame;
 	}
 
@@ -118,9 +115,6 @@ public class Frame {
 					initialFrame.averageFrame = new Mat();
 					if (initialFrame.previousFrame != null) {
 						previousAverageFrame = initialFrame.previousFrame.averageFrame;
-					}
-					if (initialFrame.image == null) {
-						throw new RuntimeException("IMAGE IS NULL!!!");
 					}
 					Mat decoded = ImageUtils.decodeImage(initialFrame.image,
 							new PersonDetectionParameters().getImageWidthPixels());
