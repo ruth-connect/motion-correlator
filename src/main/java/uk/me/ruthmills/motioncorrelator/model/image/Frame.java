@@ -30,7 +30,9 @@ public class Frame {
 		this.image = image;
 		this.framesPerSecond = framesPerSecond;
 		this.previousFrame = previousFrame;
-		this.previousFrame.nextFrame = this;
+		if (previousFrame != null) {
+			previousFrame.nextFrame = this;
+		}
 	}
 
 	public long getSequence() {
