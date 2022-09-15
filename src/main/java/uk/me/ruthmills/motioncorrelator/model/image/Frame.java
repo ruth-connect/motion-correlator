@@ -104,8 +104,12 @@ public class Frame {
 			int count = 0;
 			while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
 					&& (count < AVERAGE_IMAGE_START * currentFrame.framesPerSecond)) {
-				initialFrame = initialFrame.previousFrame;
-				count++;
+				if (initialFrame.previousFrame.averageFrame == null) {
+					initialFrame = initialFrame.previousFrame;
+					count++;
+				} else {
+					break;
+				}
 			}
 			boolean done = false;
 			while (initialFrame.averageFrame == null && !done) {
