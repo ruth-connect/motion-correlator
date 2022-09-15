@@ -101,7 +101,8 @@ public class Frame {
 	private synchronized void computeAverageFrames() {
 		Frame initialFrame = this;
 		int count = 0;
-		while ((initialFrame.previousFrame != null) && (count < AVERAGE_IMAGE_START * framesPerSecond)) {
+		while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
+				&& (count < AVERAGE_IMAGE_START * framesPerSecond)) {
 			initialFrame = initialFrame.previousFrame;
 			count++;
 		}
