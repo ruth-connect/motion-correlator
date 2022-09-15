@@ -112,7 +112,7 @@ public class Frame {
 				boolean done = false;
 				while (initialFrame.averageFrame == null && !done) {
 					Mat previousAverageFrame = null;
-					initialFrame.averageFrame = new Mat();
+					Mat averageFrame = new Mat();
 					if (initialFrame.previousFrame != null) {
 						previousAverageFrame = initialFrame.previousFrame.averageFrame;
 					}
@@ -121,15 +121,17 @@ public class Frame {
 					Mat frame = new Mat();
 					decoded.convertTo(frame, CvType.CV_32F);
 					decoded.release();
-					initialFrame.blurredFrame = new Mat();
-					Imgproc.GaussianBlur(frame, initialFrame.blurredFrame, new Size(25, 25), 0d);
+					Mat blurredFrame = new Mat();
+					Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 					frame.release();
 					if (previousAverageFrame == null) {
-						initialFrame.blurredFrame.copyTo(initialFrame.averageFrame);
+						blurredFrame.copyTo(averageFrame);
 					} else {
-						previousAverageFrame.copyTo(initialFrame.averageFrame);
-						Imgproc.accumulateWeighted(initialFrame.blurredFrame, initialFrame.averageFrame, 0.1d);
+						previousAverageFrame.copyTo(averageFrame);
+						Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
 					}
+					initialFrame.averageFrame = averageFrame;
+					initialFrame.blurredFrame = blurredFrame;
 					if (initialFrame == currentFrame) {
 						done = true;
 					} else {
