@@ -2,13 +2,20 @@ package uk.me.ruthmills.motioncorrelator.model.image;
 
 import java.time.LocalDateTime;
 
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
+import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetectionParameters;
+import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
 
 public class Frame {
+	private static final int AVERAGE_IMAGE_START = 10;
 
 	private Image image;
+	private int framesPerSecond;
 	private Mat blurredFrame;
 	private Mat averageFrame;
 	private Frame previousFrame;
@@ -19,10 +26,9 @@ public class Frame {
 		this.image = image;
 	}
 
-	public Frame(Image image, Mat blurredFrame, Mat averageFrame, Frame previousFrame) {
+	public Frame(Image image, int framesPerSecond, Frame previousFrame) {
 		this.image = image;
-		this.blurredFrame = blurredFrame;
-		this.averageFrame = averageFrame;
+		this.framesPerSecond = framesPerSecond;
 		this.previousFrame = previousFrame;
 	}
 
@@ -43,6 +49,9 @@ public class Frame {
 	}
 
 	public Mat getBlurredFrame() {
+		if (blurredFrame == null) {
+			computeAverageFrames();
+		}
 		return blurredFrame;
 	}
 
@@ -51,6 +60,9 @@ public class Frame {
 	}
 
 	public Mat getAverageFrame() {
+		if (averageFrame == null) {
+			computeAverageFrames();
+		}
 		return averageFrame;
 	}
 
@@ -93,5 +105,42 @@ public class Frame {
 		}
 		nextFrame.previousFrame = null;
 		nextFrame = null;
+	}
+
+	private void computeAverageFrames() {
+		synchronized (this) {
+			Frame initialFrame = this;
+			int count = 0;
+			while ((initialFrame.previousFrame != null) && (count < AVERAGE_IMAGE_START * framesPerSecond)) {
+				initialFrame = initialFrame.previousFrame;
+				count++;
+			}
+			boolean done = false;
+			while (!done) {
+				Mat previousAverageFrame = null;
+				averageFrame = new Mat();
+				if (initialFrame.previousFrame != null) {
+					previousAverageFrame = previousFrame.averageFrame;
+				}
+				Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
+				Mat frame = new Mat();
+				decoded.convertTo(frame, CvType.CV_32F);
+				decoded.release();
+				blurredFrame = new Mat();
+				Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
+				frame.release();
+				if (previousAverageFrame == null) {
+					blurredFrame.copyTo(averageFrame);
+				} else {
+					previousAverageFrame.copyTo(averageFrame);
+					Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
+				}
+				if (initialFrame == this) {
+					done = true;
+				} else {
+					initialFrame = initialFrame.nextFrame;
+				}
+			}
+		}
 	}
 }
