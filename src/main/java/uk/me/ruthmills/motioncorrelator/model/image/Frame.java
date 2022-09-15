@@ -107,39 +107,37 @@ public class Frame {
 		nextFrame = null;
 	}
 
-	private void computeAverageFrames() {
-		synchronized (this) {
-			Frame initialFrame = this;
-			int count = 0;
-			while ((initialFrame.previousFrame != null) && (count < AVERAGE_IMAGE_START * framesPerSecond)) {
-				initialFrame = initialFrame.previousFrame;
-				count++;
+	private synchronized void computeAverageFrames() {
+		Frame initialFrame = this;
+		int count = 0;
+		while ((initialFrame.previousFrame != null) && (count < AVERAGE_IMAGE_START * framesPerSecond)) {
+			initialFrame = initialFrame.previousFrame;
+			count++;
+		}
+		boolean done = false;
+		while (!done) {
+			Mat previousAverageFrame = null;
+			averageFrame = new Mat();
+			if (initialFrame.previousFrame != null) {
+				previousAverageFrame = previousFrame.averageFrame;
 			}
-			boolean done = false;
-			while (!done) {
-				Mat previousAverageFrame = null;
-				averageFrame = new Mat();
-				if (initialFrame.previousFrame != null) {
-					previousAverageFrame = previousFrame.averageFrame;
-				}
-				Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
-				Mat frame = new Mat();
-				decoded.convertTo(frame, CvType.CV_32F);
-				decoded.release();
-				blurredFrame = new Mat();
-				Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
-				frame.release();
-				if (previousAverageFrame == null) {
-					blurredFrame.copyTo(averageFrame);
-				} else {
-					previousAverageFrame.copyTo(averageFrame);
-					Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
-				}
-				if (initialFrame == this) {
-					done = true;
-				} else {
-					initialFrame = initialFrame.nextFrame;
-				}
+			Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
+			Mat frame = new Mat();
+			decoded.convertTo(frame, CvType.CV_32F);
+			decoded.release();
+			blurredFrame = new Mat();
+			Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
+			frame.release();
+			if (previousAverageFrame == null) {
+				blurredFrame.copyTo(averageFrame);
+			} else {
+				previousAverageFrame.copyTo(averageFrame);
+				Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
+			}
+			if (initialFrame == this) {
+				done = true;
+			} else {
+				initialFrame = initialFrame.nextFrame;
 			}
 		}
 	}
