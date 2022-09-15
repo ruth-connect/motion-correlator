@@ -81,4 +81,17 @@ public class Frame {
 	public void setMotionCorrelation(MotionCorrelation motionCorrelation) {
 		this.motionCorrelation = motionCorrelation;
 	}
+
+	public void release() {
+		if (blurredFrame != null) {
+			blurredFrame.release();
+			blurredFrame = null;
+		}
+		if (averageFrame != null) {
+			averageFrame.release();
+			averageFrame = null;
+		}
+		nextFrame.previousFrame = null;
+		nextFrame = null;
+	}
 }
