@@ -53,7 +53,7 @@ public class Frame {
 
 	public Mat getBlurredFrame() {
 		if (blurredFrame == null) {
-			computeAverageFrames();
+			computeAverageFrames(this);
 		}
 		return blurredFrame;
 	}
@@ -64,7 +64,7 @@ public class Frame {
 
 	public Mat getAverageFrame() {
 		if (averageFrame == null) {
-			computeAverageFrames();
+			computeAverageFrames(this);
 		}
 		return averageFrame;
 	}
@@ -98,11 +98,11 @@ public class Frame {
 		nextFrame = null;
 	}
 
-	private synchronized void computeAverageFrames() {
-		Frame initialFrame = this;
+	private static synchronized void computeAverageFrames(Frame currentFrame) {
+		Frame initialFrame = currentFrame;
 		int count = 0;
 		while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
-				&& (count < AVERAGE_IMAGE_START * framesPerSecond)) {
+				&& (count < AVERAGE_IMAGE_START * currentFrame.framesPerSecond)) {
 			initialFrame = initialFrame.previousFrame;
 			count++;
 		}
@@ -127,7 +127,7 @@ public class Frame {
 				previousAverageFrame.copyTo(initialFrame.averageFrame);
 				Imgproc.accumulateWeighted(initialFrame.blurredFrame, initialFrame.averageFrame, 0.1d);
 			}
-			if (initialFrame == this) {
+			if (initialFrame == currentFrame) {
 				done = true;
 			} else {
 				initialFrame = initialFrame.nextFrame;
