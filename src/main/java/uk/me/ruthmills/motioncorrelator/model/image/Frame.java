@@ -117,22 +117,22 @@ public class Frame {
 		boolean done = false;
 		while (!done) {
 			Mat previousAverageFrame = null;
-			averageFrame = new Mat();
+			initialFrame.averageFrame = new Mat();
 			if (initialFrame.previousFrame != null) {
-				previousAverageFrame = previousFrame.averageFrame;
+				previousAverageFrame = initialFrame.previousFrame.averageFrame;
 			}
 			Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
 			Mat frame = new Mat();
 			decoded.convertTo(frame, CvType.CV_32F);
 			decoded.release();
-			blurredFrame = new Mat();
-			Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
+			initialFrame.blurredFrame = new Mat();
+			Imgproc.GaussianBlur(frame, initialFrame.blurredFrame, new Size(25, 25), 0d);
 			frame.release();
 			if (previousAverageFrame == null) {
-				blurredFrame.copyTo(averageFrame);
+				initialFrame.blurredFrame.copyTo(initialFrame.averageFrame);
 			} else {
-				previousAverageFrame.copyTo(averageFrame);
-				Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
+				previousAverageFrame.copyTo(initialFrame.averageFrame);
+				Imgproc.accumulateWeighted(initialFrame.blurredFrame, initialFrame.averageFrame, 0.1d);
 			}
 			if (initialFrame == this) {
 				done = true;
