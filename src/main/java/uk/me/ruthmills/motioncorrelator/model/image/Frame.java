@@ -7,6 +7,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetectionParameters;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
@@ -15,7 +16,7 @@ public class Frame {
 	private static final int AVERAGE_IMAGE_START = 10;
 
 	private Image image;
-	private int framesPerSecond;
+	private Camera camera;
 	private Mat blurredFrame;
 	private Mat averageFrame;
 	private Frame previousFrame;
@@ -26,9 +27,9 @@ public class Frame {
 		this.image = image;
 	}
 
-	public Frame(Image image, int framesPerSecond, Frame previousFrame) {
+	public Frame(Image image, Camera camera, Frame previousFrame) {
 		this.image = image;
-		this.framesPerSecond = framesPerSecond;
+		this.camera = camera;
 		this.previousFrame = previousFrame;
 		if (previousFrame != null) {
 			previousFrame.nextFrame = this;
@@ -98,44 +99,45 @@ public class Frame {
 		nextFrame = null;
 	}
 
-	private static synchronized void computeAverageFrames(Frame currentFrame) {
-		if (currentFrame.averageFrame == null) {
-			Frame initialFrame = currentFrame;
-			int count = 0;
-			while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
-					&& (count < AVERAGE_IMAGE_START * currentFrame.framesPerSecond)) {
-				if (initialFrame.previousFrame.averageFrame == null) {
+	private static void computeAverageFrames(Frame currentFrame) {
+		synchronized (currentFrame.camera) {
+			if (currentFrame.averageFrame == null) {
+				Frame initialFrame = currentFrame;
+				int count = 0;
+				while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
+						&& (count < AVERAGE_IMAGE_START * currentFrame.camera.getFramesPerSecond())) {
 					initialFrame = initialFrame.previousFrame;
 					count++;
-				} else {
-					break;
 				}
-			}
-			boolean done = false;
-			while (initialFrame.averageFrame == null && !done) {
-				Mat previousAverageFrame = null;
-				initialFrame.averageFrame = new Mat();
-				if (initialFrame.previousFrame != null) {
-					previousAverageFrame = initialFrame.previousFrame.averageFrame;
+				boolean done = false;
+				while (initialFrame.averageFrame == null && !done) {
+					Mat previousAverageFrame = null;
+					initialFrame.averageFrame = new Mat();
+					if (initialFrame.previousFrame != null) {
+						previousAverageFrame = initialFrame.previousFrame.averageFrame;
+					}
+					Mat decoded = ImageUtils.decodeImage(initialFrame.image,
+							new PersonDetectionParameters().getImageWidthPixels());
+					Mat frame = new Mat();
+					decoded.convertTo(frame, CvType.CV_32F);
+					decoded.release();
+					initialFrame.blurredFrame = new Mat();
+					Imgproc.GaussianBlur(frame, initialFrame.blurredFrame, new Size(25, 25), 0d);
+					frame.release();
+					if (previousAverageFrame == null) {
+						initialFrame.blurredFrame.copyTo(initialFrame.averageFrame);
+					} else {
+						previousAverageFrame.copyTo(initialFrame.averageFrame);
+						Imgproc.accumulateWeighted(initialFrame.blurredFrame, initialFrame.averageFrame, 0.1d);
+					}
+					if (initialFrame == currentFrame) {
+						done = true;
+					} else {
+						initialFrame = initialFrame.nextFrame;
+					}
 				}
-				Mat decoded = ImageUtils.decodeImage(initialFrame.image,
-						new PersonDetectionParameters().getImageWidthPixels());
-				Mat frame = new Mat();
-				decoded.convertTo(frame, CvType.CV_32F);
-				decoded.release();
-				initialFrame.blurredFrame = new Mat();
-				Imgproc.GaussianBlur(frame, initialFrame.blurredFrame, new Size(25, 25), 0d);
-				frame.release();
-				if (previousAverageFrame == null) {
-					initialFrame.blurredFrame.copyTo(initialFrame.averageFrame);
-				} else {
-					previousAverageFrame.copyTo(initialFrame.averageFrame);
-					Imgproc.accumulateWeighted(initialFrame.blurredFrame, initialFrame.averageFrame, 0.1d);
-				}
-				if (initialFrame == currentFrame) {
-					done = true;
-				} else {
-					initialFrame = initialFrame.nextFrame;
+				if (currentFrame.averageFrame == null) {
+					throw new RuntimeException("IT'S STILL NULL!!!");
 				}
 			}
 		}
