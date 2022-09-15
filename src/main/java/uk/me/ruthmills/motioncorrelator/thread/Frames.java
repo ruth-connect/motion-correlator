@@ -55,7 +55,7 @@ public class Frames implements Runnable {
 				if (size > 0) {
 					previousFrame = frames.getLast();
 				}
-				frames.addLast(new Frame(image, camera.getFramesPerSecond(), previousFrame));
+				frames.addLast(new Frame(image, camera, previousFrame));
 
 				if (size > MAX_QUEUE_SIZE * camera.getFramesPerSecond()) {
 					frames.removeFirst().release();
