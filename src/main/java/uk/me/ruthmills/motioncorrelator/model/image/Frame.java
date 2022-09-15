@@ -30,6 +30,7 @@ public class Frame {
 		this.image = image;
 		this.framesPerSecond = framesPerSecond;
 		this.previousFrame = previousFrame;
+		this.previousFrame.nextFrame = this;
 	}
 
 	public long getSequence() {
@@ -66,24 +67,12 @@ public class Frame {
 		return averageFrame;
 	}
 
-	public void setAverageFrame(Mat averageFrame) {
-		this.averageFrame = averageFrame;
-	}
-
 	public Frame getPreviousFrame() {
 		return previousFrame;
 	}
 
-	public void setPreviousFrame(Frame previousFrame) {
-		this.previousFrame = previousFrame;
-	}
-
 	public Frame getNextFrame() {
 		return nextFrame;
-	}
-
-	public void setNextFrame(Frame nextFrame) {
-		this.nextFrame = nextFrame;
 	}
 
 	public MotionCorrelation getMotionCorrelation() {
