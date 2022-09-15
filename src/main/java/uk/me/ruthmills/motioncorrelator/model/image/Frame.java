@@ -17,8 +17,8 @@ public class Frame {
 
 	private Image image;
 	private Camera camera;
-	private Mat blurredFrame;
-	private Mat averageFrame;
+	private volatile Mat blurredFrame;
+	private volatile Mat averageFrame;
 	private Frame previousFrame;
 	private Frame nextFrame;
 	private MotionCorrelation motionCorrelation;
