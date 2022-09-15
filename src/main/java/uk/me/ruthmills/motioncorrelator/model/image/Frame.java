@@ -67,6 +67,9 @@ public class Frame {
 		if (averageFrame == null) {
 			computeAverageFrames(this);
 		}
+		if (averageFrame == null) {
+			throw new RuntimeException("IT'S STILL NULL!!!");
+		}
 		return averageFrame;
 	}
 
@@ -135,9 +138,6 @@ public class Frame {
 					} else {
 						initialFrame = initialFrame.nextFrame;
 					}
-				}
-				if (currentFrame.averageFrame == null) {
-					throw new RuntimeException("IT'S STILL NULL!!!");
 				}
 			}
 		}
