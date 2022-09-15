@@ -107,7 +107,7 @@ public class Frame {
 			count++;
 		}
 		boolean done = false;
-		while (!done) {
+		while (initialFrame.averageFrame == null && !done) {
 			Mat previousAverageFrame = null;
 			initialFrame.averageFrame = new Mat();
 			if (initialFrame.previousFrame != null) {
