@@ -16,10 +16,11 @@ public class Image {
 		this.bytes = bytes;
 	}
 
-	public Image(LocalDateTime timestamp, byte[] bytes, AlarmState alarmState) {
+	public Image(LocalDateTime timestamp, byte[] bytes, AlarmState alarmState, long sequence) {
 		this.timestamp = timestamp;
 		this.bytes = bytes;
 		this.alarmState = alarmState;
+		this.sequence = sequence;
 	}
 
 	public Image(long sequence, LocalDateTime timestamp, byte[] bytes) {

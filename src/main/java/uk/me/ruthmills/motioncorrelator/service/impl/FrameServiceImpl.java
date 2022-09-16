@@ -17,10 +17,8 @@ import org.springframework.stereotype.Service;
 import uk.me.ruthmills.motioncorrelator.config.MotionCorrelatorConfig;
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.image.Frame;
-import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
-import uk.me.ruthmills.motioncorrelator.thread.Frames;
 import uk.me.ruthmills.motioncorrelator.thread.MjpegStream;
 import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 
@@ -33,7 +31,6 @@ public class FrameServiceImpl implements FrameService {
 	@Autowired
 	private MotionCorrelatorConfig motionCorrelatorConfig;
 
-	private Map<String, Frames> framesMap = new ConcurrentHashMap<>();
 	private Map<String, MjpegStream> streamsMap = new ConcurrentHashMap<>();
 
 	private static final Logger logger = LoggerFactory.getLogger(FrameServiceImpl.class);
@@ -42,26 +39,18 @@ public class FrameServiceImpl implements FrameService {
 	public void initialise() {
 		List<Camera> cameras = cameraService.getCameras();
 		for (Camera camera : cameras) {
-			Frames frames = new Frames(camera);
 			MjpegStream stream = motionCorrelatorConfig.createMjpegStream(camera);
 
-			frames.initialise();
 			stream.initialise();
 
-			framesMap.put(camera.getName(), frames);
 			streamsMap.put(camera.getName(), stream);
 		}
 	}
 
 	@Override
-	public void addCurrentFrame(String camera, Image image) {
-		framesMap.get(camera).addCurrentFrame(image);
-	}
-
-	@Override
 	public Frame getLatestFrame(String camera) {
 		try {
-			return framesMap.get(camera).getFrames().getLast();
+			return streamsMap.get(camera).getFrames().getLast();
 		} catch (Exception ex) {
 			logger.error("Could not get latest frame for camera: " + camera, ex);
 			return null;
@@ -70,7 +59,7 @@ public class FrameServiceImpl implements FrameService {
 
 	@Override
 	public Frame getFrame(String camera, LocalDateTime timestamp) {
-		Deque<Frame> frames = framesMap.get(camera).getFrames();
+		Deque<Frame> frames = streamsMap.get(camera).getFrames();
 		Iterator<Frame> iterator = frames.descendingIterator();
 		Frame previousFrame = null;
 		while (iterator.hasNext()) {

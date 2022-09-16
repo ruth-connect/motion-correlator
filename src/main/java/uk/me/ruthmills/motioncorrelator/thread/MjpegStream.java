@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +18,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
+import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.image.Image;
 import uk.me.ruthmills.motioncorrelator.service.AlarmStateService;
-import uk.me.ruthmills.motioncorrelator.service.FrameService;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 
@@ -27,15 +29,13 @@ import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 public class MjpegStream implements Runnable {
 
 	private static final int INPUT_BUFFER_SIZE = 16384;
+	private static final int MAX_QUEUE_SIZE = 60; // 1 minute.
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
 
 	@Autowired
 	private AlarmStateService alarmStateService;
-
-	@Autowired
-	private FrameService frameService;
 
 	private Camera camera;
 	private URLConnection conn;
@@ -44,6 +44,8 @@ public class MjpegStream implements Runnable {
 	private Thread streamReader;
 	private long startTimeMilliseconds;
 	private long sequence;
+	private int size;
+	private Deque<Frame> frames = new ConcurrentLinkedDeque<>();
 
 	private static final Logger logger = LoggerFactory.getLogger(MjpegStream.class);
 
@@ -56,6 +58,10 @@ public class MjpegStream implements Runnable {
 		streamReader.setPriority(6); // higher priority than normal (5).
 		streamReader.start();
 		logger.info("Started MJPEG stream reader thread for camera: " + camera.getName());
+	}
+
+	public Deque<Frame> getFrames() {
+		return frames;
 	}
 
 	public void run() {
@@ -134,7 +140,17 @@ public class MjpegStream implements Runnable {
 					+ (actualMillisNow - expectedMillisNow) + " milliseconds behind schedule");
 		}
 
-		Image image = new Image(now, currentFrame, alarmStateService.getAlarmState());
-		frameService.addCurrentFrame(camera.getName(), image);
+		Image image = new Image(now, currentFrame, alarmStateService.getAlarmState(), sequence);
+		Frame previousFrame = null;
+		if (size > 0) {
+			previousFrame = frames.getLast();
+		}
+		frames.addLast(new Frame(image, camera, previousFrame));
+
+		if (size > MAX_QUEUE_SIZE * camera.getFramesPerSecond()) {
+			frames.removeFirst().release();
+		} else {
+			size++;
+		}
 	}
 }
