@@ -88,7 +88,7 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 					logger.error("Failed to run housekeeping", ex);
 				}
 				try {
-					Thread.sleep(60000);
+					Thread.sleep(600000);
 				} catch (Exception ex) {
 					logger.error("Interrupted", ex);
 				}
