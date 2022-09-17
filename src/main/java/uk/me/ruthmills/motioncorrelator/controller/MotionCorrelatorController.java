@@ -27,7 +27,7 @@ public class MotionCorrelatorController {
 	@Autowired
 	private MotionCorrelatorService motionCorrelatorService;
 
-	private final Logger logger = LoggerFactory.getLogger(MotionCorrelatorController.class);
+	private static final Logger logger = LoggerFactory.getLogger(MotionCorrelatorController.class);
 
 	@PostMapping(path = "/vectorData/{camera}", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	@ResponseStatus(value = HttpStatus.OK)

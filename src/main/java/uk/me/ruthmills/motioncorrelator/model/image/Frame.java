@@ -6,6 +6,8 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
@@ -22,6 +24,8 @@ public class Frame {
 	private Frame previousFrame;
 	private Frame nextFrame;
 	private MotionCorrelation motionCorrelation;
+
+	private static final Logger logger = LoggerFactory.getLogger(Frame.class);
 
 	public Frame(Image image) {
 		this.image = image;
@@ -101,43 +105,48 @@ public class Frame {
 
 	private void computeAverageFrames() {
 		synchronized (camera) {
-			if (averageFrame == null) {
-				Frame initialFrame = this;
-				int count = 0;
-				while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
-						&& (count < AVERAGE_IMAGE_START * camera.getFramesPerSecond())) {
-					initialFrame = initialFrame.previousFrame;
-					count++;
+			try {
+				if (averageFrame == null) {
+					Frame initialFrame = this;
+					int count = 0;
+					while ((initialFrame.previousFrame != null) && (initialFrame.previousFrame.averageFrame == null)
+							&& (count < AVERAGE_IMAGE_START * camera.getFramesPerSecond())) {
+						initialFrame = initialFrame.previousFrame;
+						count++;
+					}
+					boolean done = false;
+					while (initialFrame.averageFrame == null && !done) {
+						Mat previousAverageFrame = null;
+						Mat averageFrame = new Mat();
+						if (initialFrame.previousFrame != null) {
+							previousAverageFrame = initialFrame.previousFrame.averageFrame;
+						}
+						Mat decoded = ImageUtils.decodeImage(initialFrame.image,
+								new PersonDetectionParameters().getImageWidthPixels());
+						Mat frame = new Mat();
+						decoded.convertTo(frame, CvType.CV_32F);
+						decoded.release();
+						Mat blurredFrame = new Mat();
+						Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
+						frame.release();
+						if (previousAverageFrame == null) {
+							blurredFrame.copyTo(averageFrame);
+						} else {
+							previousAverageFrame.copyTo(averageFrame);
+							Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
+						}
+						initialFrame.averageFrame = averageFrame;
+						initialFrame.blurredFrame = blurredFrame;
+						if (initialFrame == this) {
+							done = true;
+						} else {
+							initialFrame = initialFrame.nextFrame;
+						}
+					}
 				}
-				boolean done = false;
-				while (initialFrame.averageFrame == null && !done) {
-					Mat previousAverageFrame = null;
-					Mat averageFrame = new Mat();
-					if (initialFrame.previousFrame != null) {
-						previousAverageFrame = initialFrame.previousFrame.averageFrame;
-					}
-					Mat decoded = ImageUtils.decodeImage(initialFrame.image,
-							new PersonDetectionParameters().getImageWidthPixels());
-					Mat frame = new Mat();
-					decoded.convertTo(frame, CvType.CV_32F);
-					decoded.release();
-					Mat blurredFrame = new Mat();
-					Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
-					frame.release();
-					if (previousAverageFrame == null) {
-						blurredFrame.copyTo(averageFrame);
-					} else {
-						previousAverageFrame.copyTo(averageFrame);
-						Imgproc.accumulateWeighted(blurredFrame, averageFrame, 0.1d);
-					}
-					initialFrame.averageFrame = averageFrame;
-					initialFrame.blurredFrame = blurredFrame;
-					if (initialFrame == this) {
-						done = true;
-					} else {
-						initialFrame = initialFrame.nextFrame;
-					}
-				}
+			} catch (UnsatisfiedLinkError ex) {
+				logger.error("Unsatisfied link error for Frame processor thread for camera: " + camera.getName()
+						+ " - should only ever happen on start up!", ex);
 			}
 		}
 	}

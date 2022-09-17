@@ -42,7 +42,7 @@ public class TestPersonDetectionController {
 	@Autowired
 	private TestPersonDetectionService testPersonDetectionService;
 
-	private final Logger logger = LoggerFactory.getLogger(TestPersonDetectionController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TestPersonDetectionController.class);
 
 	@GetMapping("/upload")
 	public String showUploadForm(Model model) throws IOException {

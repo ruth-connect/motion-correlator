@@ -22,7 +22,7 @@ public class AlarmStateServiceImpl implements AlarmStateService {
 
 	private volatile AlarmState alarmState;
 
-	private final Logger logger = LoggerFactory.getLogger(AlarmStateServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(AlarmStateServiceImpl.class);
 
 	@PostConstruct
 	public void initialise() {

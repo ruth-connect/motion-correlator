@@ -14,7 +14,7 @@ public class HousekeepingPoller {
 	@Autowired
 	private HousekeepingService housekeepingService;
 
-	private final Logger logger = LoggerFactory.getLogger(HousekeepingPoller.class);
+	private static final Logger logger = LoggerFactory.getLogger(HousekeepingPoller.class);
 
 	@Scheduled(cron = "0 */1 * * * *")
 	public void tick() {
