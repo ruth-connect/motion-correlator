@@ -16,7 +16,7 @@ public class HousekeepingPoller {
 
 	private final Logger logger = LoggerFactory.getLogger(HousekeepingPoller.class);
 
-	@Scheduled(cron = "0 */10 * * * *")
+	@Scheduled(cron = "0 */1 * * * *")
 	public void tick() {
 		try {
 			housekeepingService.reportDiskUsage();
