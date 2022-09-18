@@ -19,13 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.MotionCorrelation;
 import uk.me.ruthmills.motioncorrelator.model.image.Frame;
 import uk.me.ruthmills.motioncorrelator.model.vector.Vector;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
-import uk.me.ruthmills.motioncorrelator.service.CameraService;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
 import uk.me.ruthmills.motioncorrelator.service.MotionCorrelatorService;
@@ -48,17 +46,12 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 	@Autowired
 	private DetectionAggregatorService detectionAggregatorService;
 
-	@Autowired
-	private CameraService cameraService;
-
-	private List<Camera> cameras;
 	private MotionCorrelator motionCorrelator;
 
 	private static final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
 
 	@PostConstruct
 	public void initialise() {
-		cameras = cameraService.getCameras();
 		motionCorrelator = new MotionCorrelator();
 		motionCorrelator.initialise();
 	}
@@ -76,7 +69,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		private BlockingDeque<VectorDataList> vectorDataQueue = new LinkedBlockingDeque<>();
 		private Map<String, MotionCorrelation> previousMotionDetectionMap = new HashMap<>();
 		private Map<String, MotionCorrelation> previousPersonDetectionMap = new HashMap<>();
-		private int cameraIndex = 0;
 		private Thread motionCorrelatorThread;
 
 		public void initialise() {
@@ -340,94 +332,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				}
 			}
 			return null;
-		}
-
-		private void performMotionCorrelationOnNextCameraRoundRobin() throws IOException {
-			MotionCorrelation currentDetection;
-			// Round-robin through the cameras.
-			String camera = getNextCamera();
-			if (camera != null) {
-				// Get the latest frame for the camera.
-				Frame frame = frameService.getLatestFrame(camera);
-
-				// Is there a frame, and no motion correlation for this frame?
-				if (frame != null && frame.getMotionCorrelation() == null) {
-					currentDetection = new MotionCorrelation(camera, frame, true);
-					performMotionCorrelation(currentDetection, true);
-
-					// Is there a person detection?
-					if (currentDetection.getPersonDetections() != null
-							&& currentDetection.getPersonDetections().getPersonDetections().size() > 0) {
-						logger.info("ROUND ROBIN person detection at timestamp: " + currentDetection.getFrameTimestamp()
-								+ " for camera: " + camera);
-
-						// add motion correlations with no frame vector for the last 3 seconds.
-						addEmptyMotionCorrelationsForLast3Seconds(currentDetection);
-						previousPersonDetectionMap.put(camera, currentDetection);
-					} else if (isDetectionInLast3Seconds(currentDetection)) {
-						logger.info("ROUND ROBIN - detection within last 3 seconds - adding empty motion correlations");
-
-						// add motion correlations with no frame vector for the last 3 seconds.
-						addEmptyMotionCorrelationsForLast3Seconds(currentDetection);
-						previousPersonDetectionMap.put(camera, currentDetection);
-					} else {
-						// No person detections, so clear the motion detection.
-						frame.setMotionCorrelation(null);
-					}
-				}
-			}
-		}
-
-		String getNextCamera() {
-			int currentIndex = cameraIndex;
-			getNextCameraIndex();
-			Camera camera = cameras.get(cameraIndex);
-			if (camera.isConnected()) {
-				return camera.getName();
-			}
-			while (cameraIndex != currentIndex) {
-				getNextCameraIndex();
-				camera = cameras.get(cameraIndex);
-				if (camera.isConnected()) {
-					return camera.getName();
-				}
-			}
-			return null;
-		}
-
-		private void getNextCameraIndex() {
-			cameraIndex++;
-			if (cameraIndex >= cameras.size()) {
-				cameraIndex = 0;
-			}
-		}
-
-		boolean isDetectionInLast3Seconds(MotionCorrelation currentDetection) {
-			long currentImageTimestampMilliseconds = TimeUtils.toMilliseconds(currentDetection.getFrameTimestamp());
-			Frame previousFrame = currentDetection.getFrame().getPreviousFrame();
-			if (previousFrame != null) {
-				long previousImageTimestampMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
-				while (previousFrame != null
-						&& (currentImageTimestampMilliseconds - previousImageTimestampMilliseconds <= 3000)) {
-
-					// Is there a previous detection?
-					if (previousFrame.getMotionCorrelation() != null) {
-						MotionCorrelation previousDetection = previousFrame.getMotionCorrelation();
-						if (previousDetection.getVectorMotionDetection() != null
-								|| (previousDetection.getPersonDetections() != null
-										&& previousDetection.getPersonDetections().getPersonDetections().size() > 0)) {
-							return true;
-						}
-					}
-
-					// Not a previous detection this time - get previous.
-					previousFrame = previousFrame.getPreviousFrame();
-					if (previousFrame != null) {
-						previousImageTimestampMilliseconds = TimeUtils.toMilliseconds(previousFrame.getTimestamp());
-					}
-				}
-			}
-			return false;
 		}
 	}
 }
