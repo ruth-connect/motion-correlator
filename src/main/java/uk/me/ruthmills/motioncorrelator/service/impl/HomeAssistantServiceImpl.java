@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import uk.me.ruthmills.motioncorrelator.model.Camera;
 import uk.me.ruthmills.motioncorrelator.model.HomeAssistantMessage;
+import uk.me.ruthmills.motioncorrelator.model.Latency;
 import uk.me.ruthmills.motioncorrelator.model.persondetection.PersonDetections;
 import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.util.ImageUtils;
@@ -149,6 +150,14 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 		logger.info(camera.getName() + " person detected");
 		homeAssistantNotifier.notify(camera.getName() + "_" + "camera_person_detected", "stamped/"
 				+ ImageUtils.getImagePath(camera.getName(), timestamp) + timestamp + "-" + sequence + ".jpg");
+	}
+
+	@Override
+	public void notifyLatency(Camera camera) {
+		logger.info(camera.getName() + " latency");
+		Latency latency = camera.getLatency();
+		camera.clearLatency();
+		homeAssistantNotifier.notify(camera.getName() + "_" + "latency", latency.toString());
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {

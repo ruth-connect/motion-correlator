@@ -145,7 +145,10 @@ public class MjpegStream implements Runnable {
 			latency = 0;
 		}
 
-		// Do not allow it to get more than 5 seconds behind.
+		// Process the latency.
+		camera.getLatency().processLatency((int) latency);
+
+		// Do not allow the latency to get more than 5 seconds behind.
 		if (latency > 5000) {
 			homeAssistantService.notifyCameraStreamBehindSchedule(camera);
 			throw new RuntimeException(

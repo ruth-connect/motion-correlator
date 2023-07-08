@@ -38,6 +38,11 @@ public class Camera {
 	private boolean connected;
 
 	/**
+	 * Latency.
+	 */
+	private Latency latency;
+
+	/**
 	 * Get the name of the camera.
 	 * 
 	 * @return The name of the camera.
@@ -163,6 +168,23 @@ public class Camera {
 	 */
 	public void setConnected(boolean connected) {
 		this.connected = connected;
+	}
+
+	/**
+	 * Get the latency.
+	 */
+	public synchronized Latency getLatency() {
+		if (latency == null) {
+			latency = new Latency();
+		}
+		return latency;
+	}
+
+	/**
+	 * Clear the latency.
+	 */
+	public synchronized void clearLatency() {
+		latency = null;
 	}
 
 	/**
