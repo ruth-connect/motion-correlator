@@ -142,6 +142,7 @@ public class MjpegStream implements Runnable {
 		if (latency < 0) {
 			latency = 0;
 		}
+		logger.info("Latency: " + latency + "ms");
 
 		// Do not allow it to get more than 5 seconds behind.
 		if (latency > 5000) {
