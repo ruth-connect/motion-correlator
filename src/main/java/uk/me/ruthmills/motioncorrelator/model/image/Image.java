@@ -10,17 +10,24 @@ public class Image {
 	private LocalDateTime timestamp;
 	private AlarmState alarmState;
 	private byte[] bytes;
+	private int latency;
+	private int width;
+	private int height;
 
 	public Image(LocalDateTime timestamp, byte[] bytes) {
 		this.timestamp = timestamp;
 		this.bytes = bytes;
 	}
 
-	public Image(LocalDateTime timestamp, byte[] bytes, AlarmState alarmState, long sequence) {
+	public Image(LocalDateTime timestamp, byte[] bytes, AlarmState alarmState, long sequence, int latency, int width,
+			int height) {
 		this.timestamp = timestamp;
 		this.bytes = bytes;
 		this.alarmState = alarmState;
 		this.sequence = sequence;
+		this.latency = latency;
+		this.width = width;
+		this.height = height;
 	}
 
 	public Image(long sequence, LocalDateTime timestamp, byte[] bytes) {
@@ -51,5 +58,17 @@ public class Image {
 
 	public byte[] getBytes() {
 		return bytes;
+	}
+
+	public int getLatency() {
+		return latency;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 }

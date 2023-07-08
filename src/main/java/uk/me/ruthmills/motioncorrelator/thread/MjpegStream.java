@@ -99,9 +99,9 @@ public class MjpegStream implements Runnable {
 					prev = cur;
 				}
 			} catch (Exception ex) {
-				// if (camera.isConnected()) {
-				logger.error("Failed to read stream", ex);
-				// }
+				if (camera.isConnected()) {
+					logger.error("Failed to read stream", ex);
+				}
 			}
 
 			if (camera.isConnected()) {
@@ -133,16 +133,17 @@ public class MjpegStream implements Runnable {
 		long millisNow = TimeUtils.toMilliseconds(now);
 
 		JpegImageMetadata imageMetadata = (JpegImageMetadata) Imaging.getMetadata(currentFrame);
-		logger.info("EXIF: " + imageMetadata);
 		long imageTimestampMillis = Long
 				.parseLong(imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_OWNER_NAME)
 						.getValueDescription().replaceAll("\'", ""));
+		int width = imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
+		int height = imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH)
+				.getIntValue();
 
 		long latency = millisNow - imageTimestampMillis;
 		if (latency < 0) {
 			latency = 0;
 		}
-		logger.info("Latency: " + latency + "ms");
 
 		// Do not allow it to get more than 5 seconds behind.
 		if (latency > 5000) {
@@ -152,7 +153,7 @@ public class MjpegStream implements Runnable {
 		}
 
 		Image image = new Image(TimeUtils.fromMilliseconds(imageTimestampMillis), currentFrame,
-				alarmStateService.getAlarmState(), sequence);
+				alarmStateService.getAlarmState(), sequence, (int) latency, width, height);
 		Frame previousFrame = null;
 		if (size > 0) {
 			previousFrame = frames.getLast();
