@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +46,6 @@ public class MjpegStream implements Runnable {
 	private ByteArrayOutputStream outputStream;
 	protected byte[] currentFrame = new byte[0];
 	private Thread streamReader;
-	private long startTimeMilliseconds;
 	private long sequence;
 	private int size;
 	private Deque<Frame> frames = new ConcurrentLinkedDeque<>();
@@ -70,7 +73,6 @@ public class MjpegStream implements Runnable {
 				int prev = 0;
 				int cur = 0;
 				sequence = 0;
-				startTimeMilliseconds = TimeUtils.toMilliseconds(LocalDateTime.now());
 
 				// EOF is -1
 				while ((inputStream != null) && ((cur = inputStream.read()) >= 0)) {
@@ -125,22 +127,29 @@ public class MjpegStream implements Runnable {
 		return bufferedInputStream;
 	}
 
-	private void handleNewFrame() {
+	private void handleNewFrame() throws ImageReadException, IOException {
 		sequence++;
 		LocalDateTime now = LocalDateTime.now();
-		long expectedTimeElapsedMilliseconds = (long) ((double) sequence
-				* (1000d / (double) camera.getFramesPerSecond()));
-		long expectedMillisNow = startTimeMilliseconds + expectedTimeElapsedMilliseconds;
-		long actualMillisNow = TimeUtils.toMilliseconds(now);
+		long millisNow = TimeUtils.toMilliseconds(now);
 
-		// Do not allow it to get more than 5 seconds behind.
-		if (actualMillisNow - expectedMillisNow > 5000) {
-			homeAssistantService.notifyCameraStreamBehindSchedule(camera);
-			throw new RuntimeException(camera.getLocation() + " camera stream is: "
-					+ (actualMillisNow - expectedMillisNow) + " milliseconds behind schedule");
+		JpegImageMetadata imageMetadata = (JpegImageMetadata) Imaging.getMetadata(currentFrame);
+		long imageTimestampMillis = Long
+				.parseLong(imageMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_ANNOTATIONS).toString());
+
+		long latency = millisNow - imageTimestampMillis;
+		if (latency < 0) {
+			latency = 0;
 		}
 
-		Image image = new Image(now, currentFrame, alarmStateService.getAlarmState(), sequence);
+		// Do not allow it to get more than 5 seconds behind.
+		if (latency > 5000) {
+			homeAssistantService.notifyCameraStreamBehindSchedule(camera);
+			throw new RuntimeException(
+					camera.getLocation() + " camera stream is: " + (latency) + " milliseconds behind schedule");
+		}
+
+		Image image = new Image(TimeUtils.fromMilliseconds(imageTimestampMillis), currentFrame,
+				alarmStateService.getAlarmState(), sequence);
 		Frame previousFrame = null;
 		if (size > 0) {
 			previousFrame = frames.getLast();
