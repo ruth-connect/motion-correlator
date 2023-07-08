@@ -53,11 +53,11 @@ public class Latency {
 		}
 	}
 
-	public int getMinLatency() {
+	public Integer getMinLatency() {
 		return minLatency;
 	}
 
-	public int getMaxLatency() {
+	public Integer getMaxLatency() {
 		return maxLatency;
 	}
 
@@ -65,8 +65,7 @@ public class Latency {
 		return (int) (sum / count);
 	}
 
-	public String toString() {
-		return "{\"minLatency\":" + getMinLatency() + ",\"maxLatency\":" + getMaxLatency() + ",\"averageLatency\":"
-				+ getAverageLatency() + "}";
+	public int getCount() {
+		return count;
 	}
 }

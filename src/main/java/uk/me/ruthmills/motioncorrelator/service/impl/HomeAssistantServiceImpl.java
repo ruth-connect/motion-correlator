@@ -157,7 +157,12 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 		logger.info(camera.getName() + " latency");
 		Latency latency = camera.getLatency();
 		camera.clearLatency();
-		homeAssistantNotifier.notify(camera.getName() + "_" + "latency", latency.toString());
+		if (latency.getCount() > 0) {
+			homeAssistantNotifier.notify(camera.getName() + "_" + "minLatency", latency.getMinLatency().toString());
+			homeAssistantNotifier.notify(camera.getName() + "_" + "maxLatency", latency.getMaxLatency().toString());
+			homeAssistantNotifier.notify(camera.getName() + "_" + "averageLatency",
+					Integer.toString(latency.getAverageLatency()));
+		}
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {
