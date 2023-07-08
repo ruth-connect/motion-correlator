@@ -39,7 +39,7 @@ public class Latency {
 			if (minLatency == null || latency < minLatency) {
 				minLatency = latency;
 			}
-			if (maxLatency == null || latency < maxLatency) {
+			if (maxLatency == null || latency > maxLatency) {
 				maxLatency = latency;
 			}
 			count++;
