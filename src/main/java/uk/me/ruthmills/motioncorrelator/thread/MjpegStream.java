@@ -44,7 +44,7 @@ public class MjpegStream implements Runnable {
 	private Camera camera;
 	private URLConnection conn;
 	private ByteArrayOutputStream outputStream;
-	protected byte[] currentFrame = new byte[0];
+	private byte[] currentFrame = new byte[0];
 	private Thread streamReader;
 	private long sequence;
 	private int size;
@@ -83,9 +83,7 @@ public class MjpegStream implements Runnable {
 					if (outputStream != null) {
 						outputStream.write((byte) cur);
 						if (prev == 0xFF && cur == 0xD9) {
-							synchronized (currentFrame) {
-								currentFrame = outputStream.toByteArray();
-							}
+							currentFrame = outputStream.toByteArray();
 							outputStream.close();
 							// the image is now available - read it
 							handleNewFrame();
