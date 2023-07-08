@@ -132,6 +132,8 @@ public class MjpegStream implements Runnable {
 		LocalDateTime now = LocalDateTime.now();
 		long millisNow = TimeUtils.toMilliseconds(now);
 
+		logger.info("FRAME: " + currentFrame);
+
 		JpegImageMetadata imageMetadata = (JpegImageMetadata) Imaging.getMetadata(currentFrame);
 		long imageTimestampMillis = Long.parseLong(imageMetadata
 				.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_APPLICATION_NOTES).getValueDescription());
