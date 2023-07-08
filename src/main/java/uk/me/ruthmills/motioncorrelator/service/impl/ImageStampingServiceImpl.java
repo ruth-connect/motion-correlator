@@ -219,7 +219,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 				drawText(graphics2D, "Cnt: " + frameVector.getCount(), 530, 450, Color.MAGENTA);
 			}
 			if (vectorMotionDetection.isInterpolated()) {
-				drawText(graphics2D, "[Int]", 10, 370, Color.MAGENTA);
+				drawText(graphics2D, "[Int]", 530, 370, Color.MAGENTA);
 			}
 		}
 	}
