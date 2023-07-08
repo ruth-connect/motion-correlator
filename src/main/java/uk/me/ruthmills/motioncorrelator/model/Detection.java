@@ -21,13 +21,16 @@ public class Detection {
 	private byte[] averageImage;
 	private byte[] deltaImage;
 	private String videoPath;
+	private int latency;
+	private int width;
+	private int height;
 
 	public Detection() {
 	}
 
 	public Detection(String camera, long sequence, LocalDateTime timestamp, AlarmState alarmState,
 			VectorMotionDetection vectorMotionDetection, PersonDetections personDetections, boolean roundRobin,
-			byte[] image, byte[] averageImage, byte[] deltaImage) {
+			byte[] image, byte[] averageImage, byte[] deltaImage, int latency, int width, int height) {
 		this.camera = camera;
 		this.sequence = sequence;
 		this.timestamp = timestamp;
@@ -38,6 +41,9 @@ public class Detection {
 		this.image = image;
 		this.averageImage = averageImage;
 		this.deltaImage = deltaImage;
+		this.latency = latency;
+		this.width = width;
+		this.height = height;
 	}
 
 	public String getCamera() {
@@ -116,6 +122,18 @@ public class Detection {
 
 	public void setVideoPath(String videoPath) {
 		this.videoPath = videoPath;
+	}
+
+	public int getLatency() {
+		return latency;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 	@Override

@@ -97,6 +97,7 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		drawFrameVector(graphics2D, detection.getVectorMotionDetection());
 		if (detection.getPersonDetections() != null && detection.getPersonDetections().getPersonDetections() != null) {
 			drawPersonDetectionWeights(graphics2D, detection.getPersonDetections());
+			drawLatency(graphics2D, detection.getLatency());
 			drawDetectionTime(graphics2D, detection.getPersonDetections().getDetectionTimeMilliseconds());
 			drawTimestamp(graphics2D, detection.getTimestamp(), 0, Color.WHITE);
 		} else {
@@ -127,8 +128,12 @@ public class ImageStampingServiceImpl implements ImageStampingService {
 		}
 	}
 
+	private void drawLatency(Graphics2D graphics2D, int latency) {
+		drawText(graphics2D, "Lat: " + latency + "ms", 10, 370, Color.WHITE);
+	}
+
 	private void drawDetectionTime(Graphics2D graphics2D, long detectionTimeMilliseconds) {
-		drawText(graphics2D, detectionTimeMilliseconds + "ms", 10, 410, Color.WHITE);
+		drawText(graphics2D, "Det: " + detectionTimeMilliseconds + "ms", 10, 410, Color.WHITE);
 	}
 
 	private Color getPersonDetectionColor(int i) {
