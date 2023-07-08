@@ -83,7 +83,9 @@ public class MjpegStream implements Runnable {
 					if (outputStream != null) {
 						outputStream.write((byte) cur);
 						if (prev == 0xFF && cur == 0xD9) {
-							currentFrame = outputStream.toByteArray();
+							synchronized (currentFrame) {
+								currentFrame = outputStream.toByteArray();
+							}
 							outputStream.close();
 							// the image is now available - read it
 							handleNewFrame();
