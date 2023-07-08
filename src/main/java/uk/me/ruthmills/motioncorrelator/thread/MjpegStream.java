@@ -134,7 +134,7 @@ public class MjpegStream implements Runnable {
 
 		JpegImageMetadata imageMetadata = (JpegImageMetadata) Imaging.getMetadata(currentFrame);
 		long imageTimestampMillis = Long
-				.parseLong(imageMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_ANNOTATIONS).toString());
+				.parseLong(imageMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_APPLICATION_NOTES).toString());
 
 		long latency = millisNow - imageTimestampMillis;
 		if (latency < 0) {
