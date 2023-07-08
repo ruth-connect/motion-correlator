@@ -81,6 +81,10 @@ function getWeight(detection) {
 		detection.personDetections.personDetections[0].weight.toFixed(3).padEnd(5, "0") : "";
 }
 
+function getLatencyMilliseconds(detection) {
+	return detection.latency + "ms";
+}
+
 function getDetectionTimeMilliseconds(detection) {
 	return detection.personDetections ? detection.personDetections.detectionTimeMilliseconds + "ms" : "";
 }
@@ -187,6 +191,7 @@ function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 				getVectorData(detection) +
 				"<td>" + getNumPersonDetections(detection) + "</td>" +
 				"<td>" + getWeight(detection) + "</td>" +
+				"<td>" + getLatencyMilliseconds(detection) + "</td>" +
 				"<td>" + getDetectionTimeMilliseconds(detection) + "</td>" +
 			"</tr>";
 }
