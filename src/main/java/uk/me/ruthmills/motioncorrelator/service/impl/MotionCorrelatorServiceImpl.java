@@ -192,6 +192,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		}
 
 		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
+			logger.info("Performing motion correlation for timestamp: " + motionCorrelation.getFrameTimestamp()
+					+ " and sequence: " + motionCorrelation.getFrame().getSequence());
 			Frame frame = motionCorrelation.getFrame();
 			if (frame == null) {
 				logger.warn("Attempt to perform motion correlation with no frame. Camera: "
@@ -201,6 +203,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					logger.warn("No average frame for frame: " + frame.getTimestamp() + " for camera: "
 							+ motionCorrelation.getCamera());
 				} else {
+					logger.info("About to do person detection for timestamp: " + motionCorrelation.getFrameTimestamp()
+							+ " and sequence: " + motionCorrelation.getFrame().getSequence());
 					motionCorrelation.setPersonDetectionTime(LocalDateTime.now());
 					personDetectionService.detectPersonsFromDelta(motionCorrelation);
 					motionCorrelation.setProcessed(true);
