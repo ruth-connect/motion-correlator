@@ -201,6 +201,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					logger.warn("No average frame for frame: " + frame.getTimestamp() + " for camera: "
 							+ motionCorrelation.getCamera());
 				} else {
+					motionCorrelation.setPersonDetectionTime(LocalDateTime.now());
 					personDetectionService.detectPersonsFromDelta(motionCorrelation);
 					motionCorrelation.setProcessed(true);
 
@@ -335,7 +336,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					while (previousFrame != null && imageTimeDifferenceMilliseconds <= 3000) {
 						if (previousFrame.getMotionCorrelation() == null) {
 							previousFrame.setMotionCorrelation(
-									new MotionCorrelation(currentDetection.getCamera(), previousFrame, false));
+									new MotionCorrelation(currentDetection.getCamera(), previousFrame));
 						}
 
 						previousFrame = previousFrame.getPreviousFrame();

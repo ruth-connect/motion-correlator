@@ -15,20 +15,23 @@ public class MotionCorrelation {
 	private PersonDetections personDetections;
 	private Image averageFrame;
 	private Image delta;
-	private boolean roundRobin;
 	private boolean processed;
+	private LocalDateTime motionDetectionTime;
+	private LocalDateTime personDetectionTime;
 
 	public MotionCorrelation() {
+		motionDetectionTime = LocalDateTime.now();
 	}
 
-	public MotionCorrelation(String camera, Frame frame, boolean roundRobin) {
+	public MotionCorrelation(String camera, Frame frame) {
+		motionDetectionTime = LocalDateTime.now();
 		this.camera = camera;
 		this.frame = frame;
-		this.roundRobin = roundRobin;
 		frame.setMotionCorrelation(this);
 	}
 
 	public MotionCorrelation(String camera, Frame frame, VectorMotionDetection vectorMotionDetection) {
+		motionDetectionTime = LocalDateTime.now();
 		this.camera = camera;
 		this.frame = frame;
 		this.vectorMotionDetection = vectorMotionDetection;
@@ -48,6 +51,7 @@ public class MotionCorrelation {
 	}
 
 	public void setVectorMotionDetection(VectorMotionDetection vectorMotionDetection) {
+		motionDetectionTime = LocalDateTime.now();
 		this.vectorMotionDetection = vectorMotionDetection;
 		processed = false;
 	}
@@ -84,20 +88,24 @@ public class MotionCorrelation {
 		this.delta = delta;
 	}
 
-	public boolean isRoundRobin() {
-		return roundRobin;
-	}
-
-	public void setRoundRobin(boolean roundRobin) {
-		this.roundRobin = roundRobin;
-	}
-
 	public boolean isProcessed() {
 		return processed;
 	}
 
 	public void setProcessed(boolean processed) {
 		this.processed = processed;
+	}
+
+	public LocalDateTime getMotionDetectionTime() {
+		return motionDetectionTime;
+	}
+
+	public LocalDateTime getPersonDetectionTime() {
+		return personDetectionTime;
+	}
+
+	public void setPersonDetectionTime(LocalDateTime personDetectionTime) {
+		this.personDetectionTime = personDetectionTime;
 	}
 
 	public boolean hasFrameVector() {

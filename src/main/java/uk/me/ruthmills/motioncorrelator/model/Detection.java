@@ -15,7 +15,8 @@ public class Detection {
 	private AlarmState alarmState;
 	private VectorMotionDetection vectorMotionDetection;
 	private PersonDetections personDetections;
-	private boolean roundRobin;
+	private LocalDateTime motionDetectionTime;
+	private LocalDateTime personDetectionTime;
 	private LocalDateTime processTime;
 	private byte[] image;
 	private byte[] averageImage;
@@ -29,21 +30,23 @@ public class Detection {
 	}
 
 	public Detection(String camera, long sequence, LocalDateTime timestamp, AlarmState alarmState,
-			VectorMotionDetection vectorMotionDetection, PersonDetections personDetections, boolean roundRobin,
-			byte[] image, byte[] averageImage, byte[] deltaImage, int latency, int width, int height) {
+			VectorMotionDetection vectorMotionDetection, PersonDetections personDetections, byte[] image,
+			byte[] averageImage, byte[] deltaImage, int latency, int width, int height,
+			LocalDateTime motionDetectionTime, LocalDateTime personDetectionTime) {
 		this.camera = camera;
 		this.sequence = sequence;
 		this.timestamp = timestamp;
 		this.alarmState = alarmState;
 		this.vectorMotionDetection = vectorMotionDetection;
 		this.personDetections = personDetections;
-		this.roundRobin = roundRobin;
 		this.image = image;
 		this.averageImage = averageImage;
 		this.deltaImage = deltaImage;
 		this.latency = latency;
 		this.width = width;
 		this.height = height;
+		this.motionDetectionTime = motionDetectionTime;
+		this.personDetectionTime = personDetectionTime;
 	}
 
 	public String getCamera() {
@@ -62,8 +65,20 @@ public class Detection {
 		return alarmState;
 	}
 
-	public boolean isRoundRobin() {
-		return roundRobin;
+	public LocalDateTime getMotionDetectionTime() {
+		return motionDetectionTime;
+	}
+
+	public void setMotionDetectionTime(LocalDateTime motionDetectionTime) {
+		this.motionDetectionTime = motionDetectionTime;
+	}
+
+	public LocalDateTime getPersonDetectionTime() {
+		return personDetectionTime;
+	}
+
+	public void setPersonDetectionTime(LocalDateTime personDetectionTime) {
+		this.personDetectionTime = personDetectionTime;
 	}
 
 	public LocalDateTime getProcessTime() {

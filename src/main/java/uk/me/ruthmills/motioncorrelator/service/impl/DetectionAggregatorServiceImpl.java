@@ -95,11 +95,12 @@ public class DetectionAggregatorServiceImpl implements DetectionAggregatorServic
 								motionCorrelation.getFrame().getSequence(), motionCorrelation.getFrame().getTimestamp(),
 								motionCorrelation.getFrame().getImage().getAlarmState(),
 								motionCorrelation.getVectorMotionDetection(), motionCorrelation.getPersonDetections(),
-								motionCorrelation.isRoundRobin(), motionCorrelation.getFrame().getImage().getBytes(),
+								motionCorrelation.getFrame().getImage().getBytes(),
 								motionCorrelation.getAverageFrame().getBytes(), motionCorrelation.getDelta().getBytes(),
 								motionCorrelation.getFrame().getImage().getLatency(),
 								motionCorrelation.getFrame().getImage().getWidth(),
-								motionCorrelation.getFrame().getImage().getHeight());
+								motionCorrelation.getFrame().getImage().getHeight(),
+								motionCorrelation.getMotionDetectionTime(), motionCorrelation.getPersonDetectionTime());
 
 						// Write the images.
 						writeImages(detection);
