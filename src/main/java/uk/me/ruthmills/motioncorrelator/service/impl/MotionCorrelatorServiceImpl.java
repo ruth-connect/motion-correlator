@@ -89,26 +89,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		public void run() {
 			while (true) {
 				try {
-					VectorDataList vectorDataList = vectorDataQueue.pollFirst(10, TimeUnit.MILLISECONDS);
-					if (vectorDataList != null) {
-						// We have a new vector detection.
-						logger.info("NEW VECTOR DETECTION for camera: " + vectorDataList.getCamera()
-								+ " with VECTOR timestamp: " + vectorDataList.getTimestamp());
-						VectorMotionDetection vectorMotionDetection = new VectorMotionDetection(
-								vectorDataList.getCamera(), vectorDataList.getTimestamp(),
-								vectorDataList.getFrameVector(), vectorDataList.getRegionVectors(),
-								vectorDataList.getBurst(), vectorDataList.getExternalTrigger());
-
-						// Queue the detection so it stays in sequence.
-						Queue<VectorMotionDetection> motionDetectionsForCamera = queuedMotionDetections
-								.get(vectorMotionDetection.getCamera());
-
-						if (motionDetectionsForCamera == null) {
-							motionDetectionsForCamera = new LinkedList<>();
-							queuedMotionDetections.put(vectorMotionDetection.getCamera(), motionDetectionsForCamera);
-						}
-						motionDetectionsForCamera.add(vectorMotionDetection);
-					}
+					// Poll for new vectors.
+					pollForNewVectors();
 
 					// Is there a vector motion detection to process?
 					VectorMotionDetection vectorMotionDetection = getQueuedMotionDetection();
@@ -166,6 +148,29 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				} catch (Exception ex) {
 					logger.error("Failed performing motion correlation", ex);
 				}
+			}
+		}
+
+		private void pollForNewVectors() throws InterruptedException {
+			VectorDataList vectorDataList = vectorDataQueue.pollFirst(10, TimeUnit.MILLISECONDS);
+			if (vectorDataList != null) {
+				// We have a new vector detection.
+				logger.info("NEW VECTOR DETECTION for camera: " + vectorDataList.getCamera()
+						+ " with VECTOR timestamp: " + vectorDataList.getTimestamp());
+				VectorMotionDetection vectorMotionDetection = new VectorMotionDetection(vectorDataList.getCamera(),
+						vectorDataList.getTimestamp(), vectorDataList.getFrameVector(),
+						vectorDataList.getRegionVectors(), vectorDataList.getBurst(),
+						vectorDataList.getExternalTrigger());
+
+				// Queue the detection so it stays in sequence.
+				Queue<VectorMotionDetection> motionDetectionsForCamera = queuedMotionDetections
+						.get(vectorMotionDetection.getCamera());
+
+				if (motionDetectionsForCamera == null) {
+					motionDetectionsForCamera = new LinkedList<>();
+					queuedMotionDetections.put(vectorMotionDetection.getCamera(), motionDetectionsForCamera);
+				}
+				motionDetectionsForCamera.add(vectorMotionDetection);
 			}
 		}
 
