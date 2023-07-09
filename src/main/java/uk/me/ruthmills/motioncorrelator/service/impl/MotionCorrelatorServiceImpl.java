@@ -162,8 +162,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					personDetectionService.detectPersonsFromDelta(motionCorrelation);
 					motionCorrelation.setProcessed(true);
 
-					// Send to the detection aggregator service if this is not a speculative round
-					// robin - i.e. we have an actual or recent detection.
+					// Send to the detection aggregator service if we have a detection.
 					if (motionCorrelation.getPersonDetections() != null
 							&& motionCorrelation.getPersonDetections().getPersonDetections() != null
 							&& motionCorrelation.getPersonDetections().getPersonDetections().size() > 0) {
