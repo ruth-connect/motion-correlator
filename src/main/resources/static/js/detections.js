@@ -133,7 +133,7 @@ function displayRegionVectors(regionVectors) {
 }
 
 function displayAlarmState(detection) {
-	return	detection.alarmState && detection.alarmState !== "UNKNOWN" ? 
+	return detection.alarmState && detection.alarmState !== "UNKNOWN" ? 
 		("<td" + getAlarmState(detection) + "</td>") : "";
 }
 
@@ -206,7 +206,7 @@ function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
 								"<div class=\"large-12 cell\">" +
-									"<table>" +
+									"<table style=\"margin-top: 20px;\">" +
 										"<thead>" +
 											((detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) ? "<th>Trigger</th>" : "") +
 											((detection.alarmState && detection.alarmState !== "UNKNOWN") ? "<th>Burglar Alarm</th>" : "") +
