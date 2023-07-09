@@ -90,39 +90,28 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			while (true) {
 				try {
 					VectorDataList vectorDataList = vectorDataQueue.pollFirst(10, TimeUnit.MILLISECONDS);
-					VectorMotionDetection vectorMotionDetection = null;
 					if (vectorDataList != null) {
 						// We have a new vector detection.
 						logger.info("NEW VECTOR DETECTION for camera: " + vectorDataList.getCamera()
 								+ " with VECTOR timestamp: " + vectorDataList.getTimestamp());
-						vectorMotionDetection = new VectorMotionDetection(vectorDataList.getCamera(),
-								vectorDataList.getTimestamp(), vectorDataList.getFrameVector(),
-								vectorDataList.getRegionVectors(), vectorDataList.getBurst(),
-								vectorDataList.getExternalTrigger());
+						VectorMotionDetection vectorMotionDetection = new VectorMotionDetection(
+								vectorDataList.getCamera(), vectorDataList.getTimestamp(),
+								vectorDataList.getFrameVector(), vectorDataList.getRegionVectors(),
+								vectorDataList.getBurst(), vectorDataList.getExternalTrigger());
 
-						// Get the LATEST frame for this vector detection.
-						Frame latestFrame = frameService.getLatestFrame(vectorMotionDetection.getCamera());
+						// Queue the detection so it stays in sequence.
+						Queue<VectorMotionDetection> motionDetectionsForCamera = queuedMotionDetections
+								.get(vectorMotionDetection.getCamera());
 
-						// Is the detection AFTER the latest frame?
-						if (vectorMotionDetection.getTimestamp().isAfter(latestFrame.getTimestamp())) {
-							// Queue the detection until we get more frames.
-							Queue<VectorMotionDetection> motionDetectionsForCamera = queuedMotionDetections
-									.get(vectorMotionDetection.getCamera());
-
-							if (motionDetectionsForCamera == null) {
-								motionDetectionsForCamera = new LinkedList<>();
-								queuedMotionDetections.put(vectorMotionDetection.getCamera(),
-										motionDetectionsForCamera);
-							}
-							motionDetectionsForCamera.add(vectorMotionDetection);
-							vectorMotionDetection = null;
+						if (motionDetectionsForCamera == null) {
+							motionDetectionsForCamera = new LinkedList<>();
+							queuedMotionDetections.put(vectorMotionDetection.getCamera(), motionDetectionsForCamera);
 						}
+						motionDetectionsForCamera.add(vectorMotionDetection);
 					}
 
-					// If there is no vector motion detection, do we have a queued one?
-					if (vectorMotionDetection == null) {
-						vectorMotionDetection = getQueuedMotionDetection();
-					}
+					// Is there a vector motion detection to process?
+					VectorMotionDetection vectorMotionDetection = getQueuedMotionDetection();
 
 					// Is there a vector motion detection?
 					if (vectorMotionDetection != null) {
