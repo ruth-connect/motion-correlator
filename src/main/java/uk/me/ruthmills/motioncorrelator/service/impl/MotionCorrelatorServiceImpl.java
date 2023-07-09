@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
@@ -71,7 +70,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		private BlockingDeque<VectorDataList> vectorDataQueue = new LinkedBlockingDeque<>();
 		private Map<String, MotionCorrelation> previousMotionDetectionMap = new HashMap<>();
 		private Map<String, MotionCorrelation> previousPersonDetectionMap = new HashMap<>();
-		private Map<String, Queue<VectorMotionDetection>> queuedMotionDetections = new HashMap<>();
+		private Map<String, LinkedList<VectorMotionDetection>> queuedMotionDetections = new HashMap<>();
 		private Thread motionCorrelatorThread;
 
 		public void initialise() {
@@ -144,17 +143,23 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							// Run person detection on the detection.
 							performMotionCorrelation(currentDetection);
 
-							// Does the previous frame have a motion correlation but no person detection?
-							Frame previousFrame = currentDetection.getFrame().getPreviousFrame();
-							if (previousFrame != null) {
-								MotionCorrelation previousMotionDetection = previousFrame.getMotionCorrelation();
-								if (previousMotionDetection != null && !previousMotionDetection.isProcessed()) {
+							// Find the earliest frame with no person detection.
+							boolean found = false;
+							Frame previousFrame = null;
+							do {
+								previousFrame = currentDetection.getFrame().getPreviousFrame();
+								if (previousFrame != null) {
+									MotionCorrelation previousMotionDetection = previousFrame.getMotionCorrelation();
+									if (previousMotionDetection != null && !previousMotionDetection.isProcessed()) {
 
-									// Set the previous motion detection for next time round.
-									previousMotionDetectionMap.put(previousMotionDetection.getCamera(),
-											previousMotionDetection);
+										// Set the previous motion detection for next time round.
+										previousMotionDetectionMap.put(previousMotionDetection.getCamera(),
+												previousMotionDetection);
+
+										found = true;
+									}
 								}
-							}
+							} while (previousFrame != null && !found);
 						}
 					}
 				} catch (Exception ex) {
@@ -175,25 +180,29 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						vectorDataList.getExternalTrigger());
 
 				// Queue the detection so it stays in sequence.
-				Queue<VectorMotionDetection> motionDetectionsForCamera = queuedMotionDetections
+				LinkedList<VectorMotionDetection> motionDetectionsForCamera = queuedMotionDetections
 						.get(vectorMotionDetection.getCamera());
 
 				if (motionDetectionsForCamera == null) {
 					motionDetectionsForCamera = new LinkedList<>();
 					queuedMotionDetections.put(vectorMotionDetection.getCamera(), motionDetectionsForCamera);
 				}
-				motionDetectionsForCamera.add(vectorMotionDetection);
+				motionDetectionsForCamera.addLast(vectorMotionDetection);
 			}
 		}
 
 		private VectorMotionDetection getQueuedMotionDetection() {
 			for (String camera : queuedMotionDetections.keySet()) {
-				Queue<VectorMotionDetection> vectorMotionDetections = queuedMotionDetections.get(camera);
-				VectorMotionDetection vectorMotionDetection = vectorMotionDetections.peek();
+				LinkedList<VectorMotionDetection> vectorMotionDetections = queuedMotionDetections.get(camera);
+				VectorMotionDetection vectorMotionDetection = vectorMotionDetections.peekFirst();
 				if (vectorMotionDetection != null) {
 					Frame latestFrame = frameService.getLatestFrame(camera);
 					if (!vectorMotionDetection.getTimestamp().isAfter(latestFrame.getTimestamp())) {
-						return vectorMotionDetections.remove();
+						vectorMotionDetections.removeFirst();
+						if (vectorMotionDetections.isEmpty()) {
+							queuedMotionDetections.remove(camera);
+						}
+						return vectorMotionDetection;
 					}
 				}
 			}
