@@ -134,36 +134,39 @@ function displayRegionVectors(regionVectors) {
 
 function displayAlarmState(detection) {
 	return	detection.alarmState && detection.alarmState !== "UNKNOWN" ? 
-		("<h6 style=\"margin-top: 20px;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h6>") : "";
+		("<td" + getAlarmState(detection) + "</td>") : "";
 }
 
 function displayExternalTrigger(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
-		return "<h6 style=\"margin-top: 20px;\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("-", " ") + "</b></h6>";
+		return "<td>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("-", " ") + "</td>";
 	}
 	return "";
 }
 
 function displaySequence(detection) {
-	return "<h6 style=\"margin-top: 20px;\">Sequence: <b>" + detection.sequence + "</b></h6>";
+	return "<td>" + detection.sequence + "</td>";
 }
 
 function displayMotionDetectionTime(detection) {
 	if (detection.motionDetectionTime) {
-		return "<h6 style=\"margin-top: 20px;\">Motion Detection Time: <b>" + formatTime(detection.motionDetectionTime) + "</b></h6>";
+		return "<td>" + formatTime(detection.motionDetectionTime) + "</td>";
 	}
+	return "";
 }
 
 function displayPersonDetectionTime(detection) {
 	if (detection.personDetectionTime) {
-		return "<h6 style=\"margin-top: 20px;\">Person Detection Time: <b>" + formatTime(detection.personDetectionTime) + "</b></h6>";
+		return "<td>" + formatTime(detection.personDetectionTime) + "</td>";
 	}
+	return "";
 }
 
 function displayProcessTime(detection) {
 	if (detection.processTime) {
-		return "<h6 style=\"margin-top: 20px;\">Process Time: <b>" + formatTime(detection.processTime) + "</b></h6>";
+		return "<td>" + formatTime(detection.processTime) + "</td>";
 	}
+	return "";
 }
 
 function displayVectors(detection) {
@@ -203,14 +206,26 @@ function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
 								"<div class=\"large-12 cell\">" +
-									"<div style=\"float: right; text-align: right;\">" +
-										displayExternalTrigger(detection) +
-										displayAlarmState(detection) +
-										displaySequence(detection) +
-									"</div>" +
-									displayMotionDetectionTime(detection) +
-									displayPersonDetectionTime(detection) +
-									displayProcessTime(detection) +
+									"<table>" +
+										"<thead>" +
+											((detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) ? "<th>Trigger</th>" : "") +
+											((detection.alarmState && detection.alarmState !== "UNKNOWN") ? "<th>Burglar Alarm</th>" : ")" +
+											"<th>Sequence</th>" +
+											"<th>Motion Detect Time</th>" +
+											"<th>Person Detect Time</th>" +
+											"<th>Process Time</th>" +
+										"</thead>" +
+										"<tbody>" +
+											"<tr>" +
+												displayExternalTrigger(detection) +
+												displayAlarmState(detection) +
+												displaySequence(detection) +
+												displayMotionDetectionTime(detection) +
+												displayPersonDetectionTime(detection) +
+												displayProcessTime(detection) +
+											"</tr>" +
+										"</tbody>" +
+									"</table>" +
 									displayVectors(detection) +
 								"</div>" +
 							"</div>" +
