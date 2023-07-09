@@ -142,24 +142,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						if (currentDetection != null) {
 							// Run person detection on the detection.
 							performMotionCorrelation(currentDetection);
-
-							// Find the earliest frame with no person detection.
-							boolean found = false;
-							Frame previousFrame = null;
-							do {
-								previousFrame = currentDetection.getFrame().getPreviousFrame();
-								if (previousFrame != null) {
-									MotionCorrelation previousMotionDetection = previousFrame.getMotionCorrelation();
-									if (previousMotionDetection != null && !previousMotionDetection.isProcessed()) {
-
-										// Set the previous motion detection for next time round.
-										previousMotionDetectionMap.put(previousMotionDetection.getCamera(),
-												previousMotionDetection);
-
-										found = true;
-									}
-								}
-							} while (previousFrame != null && !found);
 						}
 					}
 				} catch (Exception ex) {
@@ -378,8 +360,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			latestDetections.sort(Comparator.comparing(MotionCorrelation::getFrameTimestamp).reversed());
 			for (MotionCorrelation detection : latestDetections) {
 				Frame frame = detection.getFrame();
-				while (frame != null && frame.getMotionCorrelation() != null) {
-					if (!frame.getMotionCorrelation().isProcessed()) {
+				while (frame != null) {
+					if (frame.getMotionCorrelation() != null && !frame.getMotionCorrelation().isProcessed()) {
 						return frame.getMotionCorrelation();
 					} else {
 						frame = frame.getPreviousFrame();
