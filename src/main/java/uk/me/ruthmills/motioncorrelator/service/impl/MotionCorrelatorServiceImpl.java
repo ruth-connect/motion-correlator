@@ -111,6 +111,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 							if (motionDetectionsForCamera == null) {
 								motionDetectionsForCamera = new LinkedList<>();
+								queuedMotionDetections.put(vectorMotionDetection.getCamera(),
+										motionDetectionsForCamera);
 							}
 							motionDetectionsForCamera.add(vectorMotionDetection);
 							vectorMotionDetection = null;
