@@ -134,7 +134,7 @@ function displayRegionVectors(regionVectors) {
 
 function displayAlarmState(detection) {
 	return	detection.alarmState && detection.alarmState !== "UNKNOWN" ? 
-		("<h5 style=\"margin-top: 20px; float: right;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>") : "";
+		("<h5 style=\"margin-top: 20px;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>") : "";
 }
 
 function displayExternalTrigger(detection) {
@@ -145,7 +145,7 @@ function displayExternalTrigger(detection) {
 }
 
 function displaySequence(detection) {
-	return "<h5 style=\"margin-top: 20px; float: right;\">Sequence: <b>" + detection.sequence + "</b></h5>";
+	return "<h5 style=\"margin-top: 20px;\">Sequence: <b>" + detection.sequence + "</b></h5>";
 }
 
 function displayMotionDetectionTime(detection) {
