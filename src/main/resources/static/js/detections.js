@@ -6,6 +6,11 @@ function formatMilliseconds(milliseconds, display) {
 	return (display || (milliseconds && milliseconds != "0")) ? "." + milliseconds.padEnd(3, "0") : "";
 }
 
+function formatTime(time) {
+	return time.substring(11, 19) +
+		formatMilliseconds(time.substring(20, time.length), true)
+}
+
 function formatTimestamp(timestamp) {
 	return timestamp.substring(0, 19) + formatMilliseconds(timestamp.substring(20, timestamp.length), false);
 }
@@ -140,24 +145,24 @@ function displayExternalTrigger(detection) {
 }
 
 function displaySequence(detection) {
-	return "<h5 style=\"margin-top: 20px;\">Sequence: <b>" + detection.sequence + "</b></h5>";
+	return "<h5 style=\"margin-top: 20px; float: right;\">Sequence: <b>" + detection.sequence + "</b></h5>";
 }
 
 function displayMotionDetectionTime(detection) {
 	if (detection.motionDetectionTime) {
-		return "<h5 style=\"margin-top: 20px;\">Motion Detection Time: <b>" + getTime(detection.motionDetectionTime) + "</b></h5>";
+		return "<h5 style=\"margin-top: 20px;\">Motion Detection Time: <b>" + formatTime(detection.motionDetectionTime) + "</b></h5>";
 	}
 }
 
 function displayPersonDetectionTime(detection) {
 	if (detection.personDetectionTime) {
-		return "<h5 style=\"margin-top: 20px;\">Person Detection Time: <b>" + getTime(detection.personDetectionTime) + "</b></h5>";
+		return "<h5 style=\"margin-top: 20px;\">Person Detection Time: <b>" + formatTime(detection.personDetectionTime) + "</b></h5>";
 	}
 }
 
 function displayProcessTime(detection) {
 	if (detection.processTime) {
-		return "<h5 style=\"margin-top: 20px;\">Process Time: <b>" + getTime(detection.processTime) + "</b></h5>";
+		return "<h5 style=\"margin-top: 20px;\">Process Time: <b>" + formatTime(detection.processTime) + "</b></h5>";
 	}
 }
 
