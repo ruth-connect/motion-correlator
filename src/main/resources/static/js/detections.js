@@ -139,6 +139,28 @@ function displayExternalTrigger(detection) {
 	return "";
 }
 
+function displaySequence(detection) {
+	return "<h5 style=\"margin-top: 20px;\">Sequence: <b>" + detection.sequence + "</b></h5>";
+}
+
+function displayMotionDetectionTime(detection) {
+	if (detection.motionDetectionTime) {
+		return "<h5 style=\"margin-top: 20px;\">Motion Detection Time: <b>" + formatTimestamp(detection.motionDetectionTime) + "</b></h5>";
+	}
+}
+
+function displayPersonDetectionTime(detection) {
+	if (detection.personDetectionTime) {
+		return "<h5 style=\"margin-top: 20px;\">Person Detection Time: <b>" + formatTimestamp(detection.personDetectionTime) + "</b></h5>";
+	}
+}
+
+function displayProcessTime(detection) {
+	if (detection.processTime) {
+		return "<h5 style=\"margin-top: 20px;\">Process Time: <b>" + formatTimestamp(detection.processTime) + "</b></h5>";
+	}
+}
+
 function displayVectors(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.frameVector) {
 		return	"<h5 style=\"margin-top: 20px;\">Vectors" + (detection.vectorMotionDetection && detection.vectorMotionDetection.interpolated ? " (Interpolated)" : "") + "</h5>" +
@@ -178,6 +200,10 @@ function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 								"<div class=\"large-12 cell\">" +
 									displayAlarmState(detection) +
 									displayExternalTrigger(detection) +
+									displaySequence(detection) +
+									displayMotionDetectionTime(detection) +
+									displayPersonDetectionTime(detection) +
+									displayProcessTime(detection) +
 									displayVectors(detection) +
 								"</div>" +
 							"</div>" +
