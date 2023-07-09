@@ -145,19 +145,19 @@ function displaySequence(detection) {
 
 function displayMotionDetectionTime(detection) {
 	if (detection.motionDetectionTime) {
-		return "<h5 style=\"margin-top: 20px;\">Motion Detection Time: <b>" + formatTimestamp(detection.motionDetectionTime) + "</b></h5>";
+		return "<h5 style=\"margin-top: 20px;\">Motion Detection Time: <b>" + getTime(detection.motionDetectionTime) + "</b></h5>";
 	}
 }
 
 function displayPersonDetectionTime(detection) {
 	if (detection.personDetectionTime) {
-		return "<h5 style=\"margin-top: 20px;\">Person Detection Time: <b>" + formatTimestamp(detection.personDetectionTime) + "</b></h5>";
+		return "<h5 style=\"margin-top: 20px;\">Person Detection Time: <b>" + getTime(detection.personDetectionTime) + "</b></h5>";
 	}
 }
 
 function displayProcessTime(detection) {
 	if (detection.processTime) {
-		return "<h5 style=\"margin-top: 20px;\">Process Time: <b>" + formatTimestamp(detection.processTime) + "</b></h5>";
+		return "<h5 style=\"margin-top: 20px;\">Process Time: <b>" + getTime(detection.processTime) + "</b></h5>";
 	}
 }
 
