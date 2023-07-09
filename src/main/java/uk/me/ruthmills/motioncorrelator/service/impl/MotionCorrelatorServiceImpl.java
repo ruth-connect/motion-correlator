@@ -107,6 +107,12 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							logger.info("Vector detection. Creating new motion correlation for camera: " + camera
 									+ " and frame timestamp: " + frame.getTimestamp());
 							currentMotionDetection = new MotionCorrelation(camera, frame, vectorMotionDetection);
+
+							// Perform the motion correlation.
+							if (!performMotionCorrelation(currentMotionDetection)) {
+								// No people detected. Add the vector detection.
+								detectionAggregatorService.addDetection(currentMotionDetection);
+							}
 						} else {
 							logger.info("Vector detection. Adding vector to existing motion correlation for camera: "
 									+ camera + " and frame timestamp: " + currentMotionDetection.getFrameTimestamp());
@@ -114,11 +120,10 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							if (currentMotionDetection.isProcessed()) {
 								// Re-add the detection to the Detection Aggregator Service.
 								detectionAggregatorService.addDetection(currentMotionDetection);
+							} else {
+								performMotionCorrelation(currentMotionDetection);
 							}
 						}
-
-						// Perform the motion correlation.
-						performMotionCorrelation(currentMotionDetection);
 
 						// Is there a previous motion detection for this camera?
 						MotionCorrelation previousMotionDetection = previousMotionDetectionMap.get(camera);
@@ -191,9 +196,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			return null;
 		}
 
-		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
-			logger.info("Performing motion correlation for timestamp: " + motionCorrelation.getFrameTimestamp()
-					+ " and sequence: " + motionCorrelation.getFrame().getSequence());
+		private boolean performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
 			Frame frame = motionCorrelation.getFrame();
 			if (frame == null) {
 				logger.warn("Attempt to perform motion correlation with no frame. Camera: "
@@ -203,8 +206,6 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					logger.warn("No average frame for frame: " + frame.getTimestamp() + " for camera: "
 							+ motionCorrelation.getCamera());
 				} else {
-					logger.info("About to do person detection for timestamp: " + motionCorrelation.getFrameTimestamp()
-							+ " and sequence: " + motionCorrelation.getFrame().getSequence());
 					motionCorrelation.setPersonDetectionTime(LocalDateTime.now());
 					personDetectionService.detectPersonsFromDelta(motionCorrelation);
 					motionCorrelation.setProcessed(true);
@@ -214,9 +215,11 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 							&& motionCorrelation.getPersonDetections().getPersonDetections() != null
 							&& motionCorrelation.getPersonDetections().getPersonDetections().size() > 0) {
 						detectionAggregatorService.addDetection(motionCorrelation);
+						return true;
 					}
 				}
 			}
+			return false;
 		}
 
 		private void interpolateVectorsOverTime(MotionCorrelation currentMotionDetection,
