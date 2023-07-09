@@ -143,6 +143,18 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						if (currentDetection != null) {
 							// Run person detection on the detection.
 							performMotionCorrelation(currentDetection);
+
+							// Does the previous frame have a motion correlation but no person detection?
+							Frame previousFrame = currentDetection.getFrame().getPreviousFrame();
+							if (previousFrame != null) {
+								MotionCorrelation previousMotionDetection = previousFrame.getMotionCorrelation();
+								if (previousMotionDetection != null && !previousMotionDetection.isProcessed()) {
+
+									// Set the previous motion detection for next time round.
+									previousMotionDetectionMap.put(previousMotionDetection.getCamera(),
+											previousMotionDetection);
+								}
+							}
 						}
 					}
 				} catch (Exception ex) {
