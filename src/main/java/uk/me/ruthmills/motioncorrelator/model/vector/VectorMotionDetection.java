@@ -5,6 +5,7 @@ import java.util.List;
 
 public class VectorMotionDetection {
 
+	private String camera;
 	private LocalDateTime timestamp;
 	private Vector frameVector;
 	private List<Vector> regionVectors;
@@ -15,19 +16,25 @@ public class VectorMotionDetection {
 	public VectorMotionDetection() {
 	}
 
-	public VectorMotionDetection(LocalDateTime timestamp, Vector frameVector, boolean interpolated) {
+	public VectorMotionDetection(String camera, LocalDateTime timestamp, Vector frameVector, boolean interpolated) {
+		this.camera = camera;
 		this.timestamp = timestamp;
 		this.frameVector = frameVector;
 		this.interpolated = interpolated;
 	}
 
-	public VectorMotionDetection(LocalDateTime timestamp, Vector frameVector, List<Vector> regionVectors, Burst burst,
-			ExternalTrigger externalTrigger) {
+	public VectorMotionDetection(String camera, LocalDateTime timestamp, Vector frameVector, List<Vector> regionVectors,
+			Burst burst, ExternalTrigger externalTrigger) {
+		this.camera = camera;
 		this.timestamp = timestamp;
 		this.frameVector = frameVector;
 		this.regionVectors = regionVectors;
 		this.burst = burst;
 		this.externalTrigger = externalTrigger;
+	}
+
+	public String getCamera() {
+		return camera;
 	}
 
 	public LocalDateTime getTimestamp() {
@@ -80,6 +87,9 @@ public class VectorMotionDetection {
 
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
+		if (camera != null) {
+			stringBuilder.append("Camera: " + camera + "\n");
+		}
 		if (timestamp != null) {
 			stringBuilder.append("Timestamp: " + timestamp + "\n");
 		}

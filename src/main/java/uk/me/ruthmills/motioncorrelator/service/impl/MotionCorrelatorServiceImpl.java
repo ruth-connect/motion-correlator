@@ -5,8 +5,10 @@ import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
@@ -69,6 +71,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 		private BlockingDeque<VectorDataList> vectorDataQueue = new LinkedBlockingDeque<>();
 		private Map<String, MotionCorrelation> previousMotionDetectionMap = new HashMap<>();
 		private Map<String, MotionCorrelation> previousPersonDetectionMap = new HashMap<>();
+		private Map<String, Queue<VectorMotionDetection>> queuedMotionDetections = new HashMap<>();
 		private Thread motionCorrelatorThread;
 
 		public void initialise() {
@@ -87,18 +90,44 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			while (true) {
 				try {
 					VectorDataList vectorDataList = vectorDataQueue.pollFirst(10, TimeUnit.MILLISECONDS);
+					VectorMotionDetection vectorMotionDetection = null;
 					if (vectorDataList != null) {
 						// We have a new vector detection.
 						logger.info("NEW VECTOR DETECTION for camera: " + vectorDataList.getCamera()
 								+ " with VECTOR timestamp: " + vectorDataList.getTimestamp());
-						VectorMotionDetection vectorMotionDetection = new VectorMotionDetection(
+						vectorMotionDetection = new VectorMotionDetection(vectorDataList.getCamera(),
 								vectorDataList.getTimestamp(), vectorDataList.getFrameVector(),
 								vectorDataList.getRegionVectors(), vectorDataList.getBurst(),
 								vectorDataList.getExternalTrigger());
-						String camera = vectorDataList.getCamera();
+
+						// Get the LATEST frame for this vector detection.
+						Frame latestFrame = frameService.getLatestFrame(vectorMotionDetection.getCamera());
+
+						// Is the detection AFTER the latest frame?
+						if (vectorMotionDetection.getTimestamp().isAfter(latestFrame.getTimestamp())) {
+							// Queue the detection until we get more frames.
+							Queue<VectorMotionDetection> motionDetectionsForCamera = queuedMotionDetections
+									.get(vectorMotionDetection.getCamera());
+
+							if (motionDetectionsForCamera == null) {
+								motionDetectionsForCamera = new LinkedList<>();
+							}
+							motionDetectionsForCamera.add(vectorMotionDetection);
+							vectorMotionDetection = null;
+						}
+					}
+
+					// If there is no vector motion detection, do we have a queued one?
+					if (vectorMotionDetection == null) {
+						vectorMotionDetection = getQueuedMotionDetection();
+					}
+
+					// Is there a vector motion detection?
+					if (vectorMotionDetection != null) {
+						String camera = vectorMotionDetection.getCamera();
 
 						// Get the frame for this vector detection.
-						Frame frame = frameService.getFrame(vectorDataList.getCamera(), vectorDataList.getTimestamp());
+						Frame frame = frameService.getFrame(camera, vectorMotionDetection.getTimestamp());
 
 						// Get the detection for this frame.
 						MotionCorrelation currentMotionDetection = frame.getMotionCorrelation();
@@ -147,6 +176,20 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					logger.error("Failed performing motion correlation", ex);
 				}
 			}
+		}
+
+		private VectorMotionDetection getQueuedMotionDetection() {
+			for (String camera : queuedMotionDetections.keySet()) {
+				Queue<VectorMotionDetection> vectorMotionDetections = queuedMotionDetections.get(camera);
+				VectorMotionDetection vectorMotionDetection = vectorMotionDetections.peek();
+				if (vectorMotionDetection != null) {
+					Frame latestFrame = frameService.getLatestFrame(camera);
+					if (!vectorMotionDetection.getTimestamp().isAfter(latestFrame.getTimestamp())) {
+						return vectorMotionDetections.remove();
+					}
+				}
+			}
+			return null;
 		}
 
 		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
@@ -251,8 +294,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 					frameVector.setCount(
 							interpolateIntValue(startVector.getCount(), endVector.getCount(), ratioTimeElapsed));
 
-					VectorMotionDetection vectorMotionDetection = new VectorMotionDetection(frameVectorTime,
-							frameVector, true);
+					VectorMotionDetection vectorMotionDetection = new VectorMotionDetection(
+							currentMotionDetection.getCamera(), frameVectorTime, frameVector, true);
 
 					// Add the vector to the motion correlation for this frame.
 					MotionCorrelation motionCorrelation = frame.getMotionCorrelation();
