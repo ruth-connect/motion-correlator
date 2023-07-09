@@ -146,7 +146,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						MotionCorrelation currentDetection = getLatestDetection();
 						if (currentDetection != null) {
 							// Run person detection on the detection.
-							performMotionCorrelation(currentDetection);
+							if (!performMotionCorrelation(currentDetection)) {
+								detectionAggregatorService.addDetection(currentDetection);
+							}
 						}
 					}
 				} catch (Exception ex) {
