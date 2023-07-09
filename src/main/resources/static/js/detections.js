@@ -203,7 +203,7 @@ function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 						"<div class=\"large-12 cell\">" +
 							"<div class=\"grid-x grid-padding-x\">" +
 								"<div class=\"large-12 cell\">" +
-									"<div class=\"float: right; text-align: right;\">" +
+									"<div style=\"float: right; text-align: right;\">" +
 										displayExternalTrigger(detection) +
 										displayAlarmState(detection) +
 										displaySequence(detection) +
