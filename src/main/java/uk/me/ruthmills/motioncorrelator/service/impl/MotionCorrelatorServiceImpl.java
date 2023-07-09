@@ -117,7 +117,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						}
 
 						// Perform the motion correlation.
-						performMotionCorrelation(currentMotionDetection, false);
+						performMotionCorrelation(currentMotionDetection);
 
 						// Is there a previous motion detection for this camera?
 						MotionCorrelation previousMotionDetection = previousMotionDetectionMap.get(camera);
@@ -140,10 +140,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 						MotionCorrelation currentDetection = getLatestDetection();
 						if (currentDetection != null) {
 							// Run person detection on the detection.
-							performMotionCorrelation(currentDetection, false);
-						} else {
-							// Perform motion correlation on the next camera round robin.
-							// performMotionCorrelationOnNextCameraRoundRobin();
+							performMotionCorrelation(currentDetection);
 						}
 					}
 				} catch (Exception ex) {
@@ -152,8 +149,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			}
 		}
 
-		private void performMotionCorrelation(MotionCorrelation motionCorrelation, boolean speculativeRoundRobin)
-				throws IOException {
+		private void performMotionCorrelation(MotionCorrelation motionCorrelation) throws IOException {
 			Frame frame = motionCorrelation.getFrame();
 			if (frame == null) {
 				logger.warn("Attempt to perform motion correlation with no frame. Camera: "
@@ -168,9 +164,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 
 					// Send to the detection aggregator service if this is not a speculative round
 					// robin - i.e. we have an actual or recent detection.
-					if (!speculativeRoundRobin || (motionCorrelation.getPersonDetections() != null
+					if (motionCorrelation.getPersonDetections() != null
 							&& motionCorrelation.getPersonDetections().getPersonDetections() != null
-							&& motionCorrelation.getPersonDetections().getPersonDetections().size() > 0)) {
+							&& motionCorrelation.getPersonDetections().getPersonDetections().size() > 0) {
 						detectionAggregatorService.addDetection(motionCorrelation);
 					}
 				}
