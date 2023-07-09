@@ -121,7 +121,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 								// Re-add the detection to the Detection Aggregator Service.
 								detectionAggregatorService.addDetection(currentMotionDetection);
 							} else {
-								performMotionCorrelation(currentMotionDetection);
+								if (!performMotionCorrelation(currentMotionDetection)) {
+									detectionAggregatorService.addDetection(currentMotionDetection);
+								}
 							}
 						}
 
