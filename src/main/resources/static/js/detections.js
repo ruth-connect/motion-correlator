@@ -209,7 +209,7 @@ function displayDetectionRow(detection, prefix, id, processTime, replaced) {
 									"<table>" +
 										"<thead>" +
 											((detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) ? "<th>Trigger</th>" : "") +
-											((detection.alarmState && detection.alarmState !== "UNKNOWN") ? "<th>Burglar Alarm</th>" : ")" +
+											((detection.alarmState && detection.alarmState !== "UNKNOWN") ? "<th>Burglar Alarm</th>" : "") +
 											"<th>Sequence</th>" +
 											"<th>Motion Detect Time</th>" +
 											"<th>Person Detect Time</th>" +
