@@ -134,35 +134,35 @@ function displayRegionVectors(regionVectors) {
 
 function displayAlarmState(detection) {
 	return	detection.alarmState && detection.alarmState !== "UNKNOWN" ? 
-		("<h5 style=\"margin-top: 20px;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h5>") : "";
+		("<h6 style=\"margin-top: 20px;\">Burglar Alarm: <b>" + getAlarmState(detection) + "</b></h6>") : "";
 }
 
 function displayExternalTrigger(detection) {
 	if (detection.vectorMotionDetection && detection.vectorMotionDetection.externalTrigger) {
-		return "<h5 style=\"margin-top: 20px;\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("-", " ") + "</b></h5>";
+		return "<h6 style=\"margin-top: 20px;\"><b>" + detection.vectorMotionDetection.externalTrigger.code.replaceAll("-", " ") + "</b></h6>";
 	}
 	return "";
 }
 
 function displaySequence(detection) {
-	return "<h5 style=\"margin-top: 20px;\">Sequence: <b>" + detection.sequence + "</b></h5>";
+	return "<h6 style=\"margin-top: 20px;\">Sequence: <b>" + detection.sequence + "</b></h6>";
 }
 
 function displayMotionDetectionTime(detection) {
 	if (detection.motionDetectionTime) {
-		return "<h5 style=\"margin-top: 20px;\">Motion Detection Time: <b>" + formatTime(detection.motionDetectionTime) + "</b></h5>";
+		return "<h6 style=\"margin-top: 20px;\">Motion Detection Time: <b>" + formatTime(detection.motionDetectionTime) + "</b></h6>";
 	}
 }
 
 function displayPersonDetectionTime(detection) {
 	if (detection.personDetectionTime) {
-		return "<h5 style=\"margin-top: 20px;\">Person Detection Time: <b>" + formatTime(detection.personDetectionTime) + "</b></h5>";
+		return "<h6 style=\"margin-top: 20px;\">Person Detection Time: <b>" + formatTime(detection.personDetectionTime) + "</b></h6>";
 	}
 }
 
 function displayProcessTime(detection) {
 	if (detection.processTime) {
-		return "<h5 style=\"margin-top: 20px;\">Process Time: <b>" + formatTime(detection.processTime) + "</b></h5>";
+		return "<h6 style=\"margin-top: 20px;\">Process Time: <b>" + formatTime(detection.processTime) + "</b></h6>";
 	}
 }
 
