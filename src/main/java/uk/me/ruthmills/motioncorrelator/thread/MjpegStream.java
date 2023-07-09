@@ -1,6 +1,5 @@
 package uk.me.ruthmills.motioncorrelator.thread;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +31,7 @@ import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MjpegStream implements Runnable {
 
-	private static final int INPUT_BUFFER_SIZE = 16384;
+	private static final int BUFFER_SIZE = 16384;
 	private static final int MAX_QUEUE_SIZE = 60; // 1 minute.
 
 	@Autowired
@@ -77,7 +76,7 @@ public class MjpegStream implements Runnable {
 				// EOF is -1
 				while ((inputStream != null) && ((cur = inputStream.read()) >= 0)) {
 					if (prev == 0xFF && cur == 0xD8) {
-						outputStream = new ByteArrayOutputStream(INPUT_BUFFER_SIZE);
+						outputStream = new ByteArrayOutputStream(BUFFER_SIZE);
 						outputStream.write((byte) prev);
 					}
 					if (outputStream != null) {
@@ -116,14 +115,12 @@ public class MjpegStream implements Runnable {
 		}
 	}
 
-	private BufferedInputStream openConnection() throws IOException {
-		BufferedInputStream bufferedInputStream = null;
+	private InputStream openConnection() throws IOException {
 		URL url = new URL(camera.getStreamUrl());
 		conn = url.openConnection();
 		conn.setReadTimeout(5000); // 5 seconds
 		conn.connect();
-		bufferedInputStream = new BufferedInputStream(conn.getInputStream(), INPUT_BUFFER_SIZE);
-		return bufferedInputStream;
+		return conn.getInputStream();
 	}
 
 	private void handleNewFrame() throws ImageReadException, IOException {
