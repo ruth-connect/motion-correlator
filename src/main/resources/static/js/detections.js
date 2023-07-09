@@ -134,7 +134,7 @@ function displayRegionVectors(regionVectors) {
 
 function displayAlarmState(detection) {
 	return detection.alarmState && detection.alarmState !== "UNKNOWN" ? 
-		("<td" + getAlarmState(detection) + "</td>") : "";
+		("<td>" + getAlarmState(detection) + "</td>") : "";
 }
 
 function displayExternalTrigger(detection) {
