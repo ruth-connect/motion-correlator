@@ -139,8 +139,9 @@ public class MjpegStream implements Runnable {
 		int width = 640; // default
 		int height = 480; // default
 		try {
-			Long.parseLong(imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_OWNER_NAME)
-					.getValueDescription().replaceAll("\'", ""));
+			imageTimestampMillis = Long
+					.parseLong(imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_OWNER_NAME)
+							.getValueDescription().replaceAll("\'", ""));
 			width = imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
 			height = imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH)
 					.getIntValue();
