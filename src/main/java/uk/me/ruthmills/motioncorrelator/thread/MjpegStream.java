@@ -48,6 +48,7 @@ public class MjpegStream implements Runnable {
 	private Thread streamReader;
 	private long sequence;
 	private int size;
+	private long startTimeMillis;
 	private Deque<Frame> frames = new ConcurrentLinkedDeque<>();
 
 	private static final Logger logger = LoggerFactory.getLogger(MjpegStream.class);
@@ -77,6 +78,8 @@ public class MjpegStream implements Runnable {
 				// EOF is -1
 				while ((inputStream != null) && ((cur = inputStream.read()) >= 0)) {
 					if (prev == 0xFF && cur == 0xD8) {
+						LocalDateTime now = LocalDateTime.now();
+						this.startTimeMillis = TimeUtils.toMilliseconds(now);
 						outputStream = new ByteArrayOutputStream(INPUT_BUFFER_SIZE);
 						outputStream.write((byte) prev);
 					}
@@ -132,12 +135,18 @@ public class MjpegStream implements Runnable {
 		long millisNow = TimeUtils.toMilliseconds(now);
 
 		JpegImageMetadata imageMetadata = (JpegImageMetadata) Imaging.getMetadata(currentFrame);
-		long imageTimestampMillis = Long
-				.parseLong(imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_OWNER_NAME)
-						.getValueDescription().replaceAll("\'", ""));
-		int width = imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
-		int height = imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH)
-				.getIntValue();
+		long imageTimestampMillis = 0;
+		int width = 640; // default
+		int height = 480; // default
+		try {
+			Long.parseLong(imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_OWNER_NAME)
+					.getValueDescription().replaceAll("\'", ""));
+			width = imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
+			height = imageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH)
+					.getIntValue();
+		} catch (Exception ex) {
+			imageTimestampMillis = this.startTimeMillis;
+		}
 
 		long latency = millisNow - imageTimestampMillis;
 		if (latency < 0) {
