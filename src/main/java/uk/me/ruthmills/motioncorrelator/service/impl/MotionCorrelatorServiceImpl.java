@@ -188,7 +188,8 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 				VectorMotionDetection vectorMotionDetection = vectorMotionDetections.peekFirst();
 				if (vectorMotionDetection != null) {
 					Frame latestFrame = frameService.getLatestFrame(camera);
-					if (!vectorMotionDetection.getTimestamp().isAfter(latestFrame.getTimestamp())) {
+					if (latestFrame != null
+							&& !vectorMotionDetection.getTimestamp().isAfter(latestFrame.getTimestamp())) {
 						vectorMotionDetections.removeFirst();
 						if (vectorMotionDetections.isEmpty()) {
 							queuedMotionDetections.remove(camera);
