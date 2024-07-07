@@ -50,7 +50,14 @@ public class FrameServiceImpl implements FrameService {
 	@Override
 	public Frame getLatestFrame(String camera) {
 		try {
-			return streamsMap.get(camera).getFrames().getLast();
+			MjpegStream mjpegStream = streamsMap.get(camera);
+			if (mjpegStream != null) {
+				Deque<Frame> frames = mjpegStream.getFrames();
+				if (frames != null) {
+					return frames.getLast();
+				}
+			}
+			return null;
 		} catch (Exception ex) {
 			logger.error("Could not get latest frame for camera: " + camera, ex);
 			return null;
