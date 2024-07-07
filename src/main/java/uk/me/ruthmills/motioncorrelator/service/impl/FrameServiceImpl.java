@@ -54,7 +54,9 @@ public class FrameServiceImpl implements FrameService {
 			if (mjpegStream != null) {
 				Deque<Frame> frames = mjpegStream.getFrames();
 				if (frames != null) {
-					return frames.getLast();
+					if (!frames.isEmpty()) {
+						return frames.getLast();
+					}
 				}
 			}
 			return null;
