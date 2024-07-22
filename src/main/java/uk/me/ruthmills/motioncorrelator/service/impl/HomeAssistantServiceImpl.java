@@ -165,6 +165,11 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 		}
 	}
 
+	public void notifyBrightness(Camera camera, Double brightness) {
+		logger.info(camera.getName() + " brightness = " + brightness);
+		homeAssistantNotifier.notify(camera.getName() + "_" + "brightness", brightness.toString());
+	}
+
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {
 		int timeout = 9000;
 		RequestConfig config = RequestConfig.custom().setConnectTimeout(timeout).setConnectionRequestTimeout(timeout)

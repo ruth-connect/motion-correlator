@@ -43,4 +43,6 @@ public interface HomeAssistantService {
 			PersonDetections personDetections);
 
 	public void notifyLatency(Camera camera);
+
+	public void notifyBrightness(Camera camera, Double brightness);
 }

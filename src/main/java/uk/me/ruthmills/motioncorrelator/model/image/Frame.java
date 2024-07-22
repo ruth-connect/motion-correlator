@@ -2,8 +2,10 @@ package uk.me.ruthmills.motioncorrelator.model.image;
 
 import java.time.LocalDateTime;
 
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ public class Frame {
 	private Camera camera;
 	private volatile Mat blurredFrame;
 	private volatile Mat averageFrame;
+	private Double brightness;
 	private Frame previousFrame;
 	private Frame nextFrame;
 	private MotionCorrelation motionCorrelation;
@@ -72,6 +75,13 @@ public class Frame {
 			computeAverageFrames();
 		}
 		return averageFrame;
+	}
+
+	public Double getBrightness() {
+		if (brightness == null) {
+			computeBrightness();
+		}
+		return brightness;
 	}
 
 	public Frame getPreviousFrame() {
@@ -126,6 +136,10 @@ public class Frame {
 						Mat frame = new Mat();
 						decoded.convertTo(frame, CvType.CV_32F);
 						decoded.release();
+						Scalar mean = Core.mean(frame);
+						if (brightness == null) {
+							brightness = mean.val[0];
+						}
 						Mat blurredFrame = new Mat();
 						Imgproc.GaussianBlur(frame, blurredFrame, new Size(25, 25), 0d);
 						frame.release();
@@ -143,6 +157,27 @@ public class Frame {
 							initialFrame = initialFrame.nextFrame;
 						}
 					}
+				}
+			} catch (UnsatisfiedLinkError ex) {
+				logger.error("Unsatisfied link error for Frame processor thread for camera: " + camera.getName()
+						+ " - should only ever happen on start up!", ex);
+			}
+		}
+	}
+
+	private void computeBrightness() {
+		synchronized (camera) {
+			try {
+				if (brightness == null) {
+					Mat decoded = ImageUtils.decodeImage(image, new PersonDetectionParameters().getImageWidthPixels());
+					Mat frame = new Mat();
+					decoded.convertTo(frame, CvType.CV_32F);
+					decoded.release();
+					Scalar mean = Core.mean(frame);
+					if (brightness == null) {
+						brightness = mean.val[0];
+					}
+					frame.release();
 				}
 			} catch (UnsatisfiedLinkError ex) {
 				logger.error("Unsatisfied link error for Frame processor thread for camera: " + camera.getName()
