@@ -33,7 +33,8 @@ import uk.me.ruthmills.motioncorrelator.util.TimeUtils;
 public class MjpegStream implements Runnable {
 
 	private static final int INPUT_BUFFER_SIZE = 16384;
-	private static final int MAX_QUEUE_SIZE = 60; // 1 minute.
+	private static final int MAX_QUEUE_SIZE_SECONDS = 90; // 90 seconds.
+	private static final int TIMEOUT_MILLIS = 10000; // 10 seconds.
 
 	@Autowired
 	private HomeAssistantService homeAssistantService;
@@ -123,7 +124,7 @@ public class MjpegStream implements Runnable {
 		BufferedInputStream bufferedInputStream = null;
 		URL url = new URL(camera.getStreamUrl());
 		conn = url.openConnection();
-		conn.setReadTimeout(5000); // 5 seconds
+		conn.setReadTimeout(TIMEOUT_MILLIS);
 		conn.connect();
 		bufferedInputStream = new BufferedInputStream(conn.getInputStream(), INPUT_BUFFER_SIZE);
 		return bufferedInputStream;
@@ -157,8 +158,8 @@ public class MjpegStream implements Runnable {
 		// Process the latency.
 		camera.getLatency().processLatency((int) latency);
 
-		// Do not allow the latency to get more than 5 seconds behind.
-		if (latency > 5000) {
+		// Do not allow the latency to get more than the timeout behind.
+		if (latency > TIMEOUT_MILLIS) {
 			homeAssistantService.notifyCameraStreamBehindSchedule(camera);
 			throw new RuntimeException(
 					camera.getLocation() + " camera stream is: " + (latency) + " milliseconds behind schedule");
@@ -172,7 +173,7 @@ public class MjpegStream implements Runnable {
 		}
 		frames.addLast(new Frame(image, camera, previousFrame));
 
-		if (size > MAX_QUEUE_SIZE * camera.getFramesPerSecond()) {
+		if (size > MAX_QUEUE_SIZE_SECONDS * camera.getFramesPerSecond()) {
 			frames.removeFirst().release();
 		} else {
 			size++;
