@@ -24,11 +24,13 @@ public class BrightnessServiceImpl implements BrightnessService {
 	 * @param camera The camera.
 	 */
 	public void notifyBrightness(Camera camera) {
-		Frame frame = frameService.getLatestFrame(camera.getName());
-		if (frame != null) {
-			Double brightness = frame.getBrightness();
-			if (brightness != null) {
-				homeAssistantService.notifyBrightness(camera, brightness);
+		if (camera.isConnected()) {
+			Frame frame = frameService.getLatestFrame(camera.getName());
+			if (frame != null) {
+				Double brightness = frame.getBrightness();
+				if (brightness != null) {
+					homeAssistantService.notifyBrightness(camera, brightness);
+				}
 			}
 		}
 	}
