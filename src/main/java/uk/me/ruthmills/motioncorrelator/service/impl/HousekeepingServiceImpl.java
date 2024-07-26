@@ -51,10 +51,15 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 	@Override
 	public void reportDiskUsage() {
 		BigDecimal mediaPercentUsed = new BigDecimal(100d - getPercentageDiskSpaceFree(mediaPath));
-		BigDecimal remotePercentUsed = new BigDecimal(100d - getPercentageDiskSpaceFree(remotePath));
 		homeAssistantService.notifyMediaDiskSpaceUsed(mediaPercentUsed.setScale(1, RoundingMode.DOWN).toPlainString());
-		homeAssistantService
-				.notifyRemoteDiskSpaceUsed(remotePercentUsed.setScale(1, RoundingMode.DOWN).toPlainString());
+		double remotePercentageDiskSpaceFree = getPercentageDiskSpaceFree(remotePath);
+		if (remotePercentageDiskSpaceFree == Double.NaN) {
+			homeAssistantService.notifyRemoteDiskSpaceUsed("unavailable");
+		} else {
+			BigDecimal remotePercentUsed = new BigDecimal(100d - getPercentageDiskSpaceFree(remotePath));
+			homeAssistantService
+					.notifyRemoteDiskSpaceUsed(remotePercentUsed.setScale(1, RoundingMode.DOWN).toPlainString());
+		}
 	}
 
 	private double getPercentageDiskSpaceFree(String path) {
@@ -103,7 +108,9 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 				logger.info("Media percent free is below minimum of " + mediaMinPercentFree + "%");
 				freeDiskSpace(false, mediaPath, mediaPercentFree, mediaMinPercentFree);
 			}
-			if (remotePercentFree < remoteMinPercentFree) {
+			if (remotePercentFree == Double.NaN) {
+				logger.warn("Remote percent free is unavailable - remote disk may be offline");
+			} else if (remotePercentFree < remoteMinPercentFree) {
 				logger.info("Remote percent free is below minimum of " + remoteMinPercentFree + "%");
 				freeDiskSpace(true, remotePath, remotePercentFree, remoteMinPercentFree);
 			}
