@@ -42,14 +42,19 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 	@Autowired
 	private HomeAssistantService homeAssistantService;
 
-	private Housekeeping housekeeping;
+	private LocalHousekeeping localHousekeeping;
+
+	private RemoteHousekeeping remoteHousekeeping;
 
 	private static final Logger logger = LoggerFactory.getLogger(HousekeepingServiceImpl.class);
 
 	@PostConstruct
 	public void initialise() {
-		housekeeping = new Housekeeping();
-		housekeeping.initialise();
+		localHousekeeping = new LocalHousekeeping();
+		localHousekeeping.initialise();
+
+		remoteHousekeeping = new RemoteHousekeeping();
+		remoteHousekeeping.initialise();
 	}
 
 	@Override
@@ -79,51 +84,8 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 		return percentageDiskSpaceFree;
 	}
 
-	private class Housekeeping implements Runnable {
-
-		private Thread housekeepingThread;
-
-		public void initialise() {
-			housekeepingThread = new Thread(this, "Housekeeping");
-			housekeepingThread.setPriority(3); // lower priority than normal (5).
-			housekeepingThread.start();
-			logger.info("Housekeeping Thread started");
-		}
-
-		@Override
-		public void run() {
-			while (true) {
-				try {
-					runHousekeeping();
-				} catch (Exception ex) {
-					logger.error("Failed to run housekeeping", ex);
-				}
-				try {
-					Thread.sleep(600000);
-				} catch (Exception ex) {
-					logger.error("Interrupted", ex);
-				}
-			}
-		}
-
-		public void runHousekeeping() {
-			logger.info("Running Housekeeping...");
-			mediaPercentFree = getPercentageDiskSpaceFree(mediaPath);
-			remotePercentFree = getPercentageDiskSpaceFree(remotePath);
-			if (mediaPercentFree < mediaMinPercentFree) {
-				logger.info("Media percent free is below minimum of " + mediaMinPercentFree + "%");
-				freeDiskSpace(false, mediaPath, mediaPercentFree, mediaMinPercentFree);
-			}
-			if (remotePercentFree == Double.NaN) {
-				logger.warn("Remote percent free is unavailable - remote disk may be offline");
-			} else if (remotePercentFree < remoteMinPercentFree) {
-				logger.info("Remote percent free is below minimum of " + remoteMinPercentFree + "%");
-				freeDiskSpace(true, remotePath, remotePercentFree, remoteMinPercentFree);
-			}
-			logger.info("Housekeeping Complete!");
-		}
-
-		private void freeDiskSpace(boolean isRemote, String path, double percentFree, double minPercentFree) {
+	private abstract class Housekeeping {
+		protected void freeDiskSpace(boolean isRemote, String path, double percentFree, double minPercentFree) {
 			if (isRemote) {
 				homeAssistantService.notifyRemoteDiskSpaceFreeStart();
 			} else {
@@ -271,6 +233,83 @@ public class HousekeepingServiceImpl implements HousekeepingService {
 			}
 			logger.warn("No earliest day for camera: " + camera + " found! Returning null");
 			return null;
+		}
+	}
+
+	private class LocalHousekeeping extends Housekeeping implements Runnable {
+		private Thread housekeepingThread;
+
+		public void initialise() {
+			housekeepingThread = new Thread(this, "Local Housekeeping");
+			housekeepingThread.setPriority(3); // lower priority than normal (5).
+			housekeepingThread.start();
+			logger.info("Local Housekeeping Thread started");
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					runHousekeeping();
+				} catch (Exception ex) {
+					logger.error("Failed to run local housekeeping", ex);
+				}
+				try {
+					Thread.sleep(600000);
+				} catch (Exception ex) {
+					logger.error("Local Housekeeping Delay Interrupted", ex);
+				}
+			}
+		}
+
+		public void runHousekeeping() {
+			logger.info("Running Local Housekeeping...");
+			mediaPercentFree = getPercentageDiskSpaceFree(mediaPath);
+			if (mediaPercentFree < mediaMinPercentFree) {
+				logger.info("Media percent free is below minimum of " + mediaMinPercentFree + "%");
+				freeDiskSpace(false, mediaPath, mediaPercentFree, mediaMinPercentFree);
+			}
+			logger.info("Local Housekeeping Complete!");
+		}
+	}
+
+	private class RemoteHousekeeping extends Housekeeping implements Runnable {
+
+		private Thread housekeepingThread;
+
+		public void initialise() {
+			housekeepingThread = new Thread(this, "Remote Housekeeping");
+			housekeepingThread.setPriority(3); // lower priority than normal (5).
+			housekeepingThread.start();
+			logger.info("Remote Housekeeping Thread started");
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					runHousekeeping();
+				} catch (Exception ex) {
+					logger.error("Failed to run remote housekeeping", ex);
+				}
+				try {
+					Thread.sleep(600000);
+				} catch (Exception ex) {
+					logger.error("Remote Housekeeping Delay Interrupted", ex);
+				}
+			}
+		}
+
+		public void runHousekeeping() {
+			logger.info("Running Remote Housekeeping...");
+			remotePercentFree = getPercentageDiskSpaceFree(remotePath);
+			if (remotePercentFree == Double.NaN) {
+				logger.warn("Remote percent free is unavailable - remote disk may be offline");
+			} else if (remotePercentFree < remoteMinPercentFree) {
+				logger.info("Remote percent free is below minimum of " + remoteMinPercentFree + "%");
+				freeDiskSpace(true, remotePath, remotePercentFree, remoteMinPercentFree);
+			}
+			logger.info("Remote Housekeeping Complete!");
 		}
 	}
 }
