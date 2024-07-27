@@ -153,6 +153,12 @@ public class HomeAssistantServiceImpl implements HomeAssistantService {
 	}
 
 	@Override
+	public void notifyVectorDetection(String camera, LocalDateTime timestamp) {
+		logger.info(camera + " vector detection");
+		homeAssistantNotifier.notify(camera + "_" + "camera_vector_detection", timestamp.toString());
+	}
+
+	@Override
 	public void notifyLatency(Camera camera) {
 		logger.info(camera.getName() + " latency");
 		Latency latency = camera.getLatency();

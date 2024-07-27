@@ -42,6 +42,8 @@ public interface HomeAssistantService {
 	public void notifyPersonDetected(Camera camera, long sequence, LocalDateTime timestamp,
 			PersonDetections personDetections);
 
+	public void notifyVectorDetection(String camera, LocalDateTime timestamp);
+
 	public void notifyLatency(Camera camera);
 
 	public void notifyBrightness(Camera camera, Double brightness);

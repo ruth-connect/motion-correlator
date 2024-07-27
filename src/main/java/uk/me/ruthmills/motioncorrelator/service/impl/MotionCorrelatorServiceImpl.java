@@ -27,6 +27,7 @@ import uk.me.ruthmills.motioncorrelator.model.vector.VectorDataList;
 import uk.me.ruthmills.motioncorrelator.model.vector.VectorMotionDetection;
 import uk.me.ruthmills.motioncorrelator.service.DetectionAggregatorService;
 import uk.me.ruthmills.motioncorrelator.service.FrameService;
+import uk.me.ruthmills.motioncorrelator.service.HomeAssistantService;
 import uk.me.ruthmills.motioncorrelator.service.MotionCorrelatorService;
 import uk.me.ruthmills.motioncorrelator.service.PersonDetectionService;
 import uk.me.ruthmills.motioncorrelator.service.VectorDataService;
@@ -47,6 +48,9 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 	@Autowired
 	private DetectionAggregatorService detectionAggregatorService;
 
+	@Autowired
+	private HomeAssistantService homeAssistantService;
+
 	private MotionCorrelator motionCorrelator;
 
 	private static final Logger logger = LoggerFactory.getLogger(MotionCorrelatorServiceImpl.class);
@@ -62,6 +66,7 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			throws IOException, URISyntaxException {
 		VectorDataList vectorDataList = vectorDataService.parseVectorData(camera, vectorData);
 		logger.info("Got vector data for camera " + camera);
+		homeAssistantService.notifyVectorDetection(camera, vectorDataList.getTimestamp());
 		motionCorrelator.addVectorData(vectorDataList);
 	}
 
