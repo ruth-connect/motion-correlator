@@ -66,7 +66,12 @@ public class MotionCorrelatorServiceImpl implements MotionCorrelatorService {
 			throws IOException, URISyntaxException {
 		VectorDataList vectorDataList = vectorDataService.parseVectorData(camera, vectorData);
 		logger.info("Got vector data for camera " + camera);
-		homeAssistantService.notifyVectorDetection(camera, vectorDataList.getTimestamp());
+
+		// Do we have a vector as opposed to an external trigger?
+		if (vectorDataList.getFrameVector() != null || vectorDataList.getBurst() != null) {
+			homeAssistantService.notifyVectorDetection(camera, vectorDataList.getTimestamp());
+		}
+
 		motionCorrelator.addVectorData(vectorDataList);
 	}
 
