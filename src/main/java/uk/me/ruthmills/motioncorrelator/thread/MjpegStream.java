@@ -103,7 +103,8 @@ public class MjpegStream implements Runnable {
 				}
 			} catch (Exception ex) {
 				if (camera.isConnected()) {
-					logger.error("Failed to read stream", ex);
+					logger.error("Failed to read stream at: " + LocalDateTime.now() + ", for sequence: " + sequence,
+							ex);
 				}
 			}
 
